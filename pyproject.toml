@@ -1,0 +1,33 @@
+[project]
+name = "deltares_coastal_structures_toolbox"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Joost den Bieman",email = "joost.denbieman@deltares.nl"},
+	{name = "Ivo van der Werf",email = "ivo.vanderwerf@deltares.nl"},
+]
+license = {text = "Proprietary"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy (>=2.2.3,<3.0.0)",
+    "deltares-wave-toolbox (>=1.1.0,<2.0.0)",
+    "matplotlib (>=3.10.0,<4.0.0)"
+]
+
+[tool.poetry]
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+flake8 = "^7.1.2"
+pytest = "^8.3.4"
+flake8-pyproject = "^1.2.3"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+ignore = ["E203", "W503"]
+max-line-length = 120
+exclude = ["docs", "examples", ".venv", "tests"]
