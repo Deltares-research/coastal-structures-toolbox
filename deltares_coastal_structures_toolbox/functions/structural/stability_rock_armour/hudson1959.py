@@ -158,7 +158,7 @@ def calculate_median_rock_mass_M50(
     rock_type: str = "rough",
     alpha_Hs: float | npt.NDArray[np.float64] = 1.27,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the required M50 using the Hudson 1959 approach, including damage percentage
+    """Calculate the required M50 based on Hs using the Hudson 1959 approach, including damage percentage
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
@@ -222,7 +222,7 @@ def calculate_significant_wave_height_Hs(
     rock_type: str = "rough",
     alpha_Hs: float | npt.NDArray[np.float64] = 1.27,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the required Hs using the Hudson 1959 approach, including damage percentage
+    """Calculate the Hs based on M50 using the Hudson 1959 approach, including damage percentage
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
