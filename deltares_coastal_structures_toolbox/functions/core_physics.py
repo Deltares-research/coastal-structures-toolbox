@@ -108,3 +108,70 @@ def check_usage_Dn50_or_M50(
         else:
             Dn50 = calculate_Dn50_from_M50(M50, rho_rock=rho_armour)
     return Dn50
+
+
+def calculate_S_from_Nod(
+    Nod: float | npt.NDArray[np.float64],
+    G: float | npt.NDArray[np.float64],
+    nv: float | npt.NDArray[np.float64],
+) -> float | npt.NDArray[np.float64]:
+    """Estimates S value from Nod value
+
+    Estimation of S damage value from Nod damage value according to CEM (2006)
+    and the Rock Manual (2007, 2012)
+
+    Parameters
+    ----------
+    Nod : float | npt.NDArray[np.float64]
+        Number of displaced units normalized to 1 unit width of structure
+    G : float | npt.NDArray[np.float64]
+        Gradation factor depending on armour layer, G = 1 for concrete armour
+         units and 1.2 - 1.6 for stone armor
+    nv : float | npt.NDArray[np.float64]
+        Porosity depending on armour layer, generally between 0.4 and 0.6
+
+    In general the S is about twice the value of Nod
+
+    Returns
+    -------
+    S: float | npt.NDArray[np.float64]
+        Damage value based on eroded cross sectional area
+    """
+
+    factor = G * (1 - nv)
+    S = Nod / factor
+
+    return S
+
+
+def calculate_Nod_from_S(
+    S: float | npt.NDArray[np.float64],
+    G: float | npt.NDArray[np.float64],
+    nv: float | npt.NDArray[np.float64],
+) -> float | npt.NDArray[np.float64]:
+    """Estimates Nod value from S value
+
+    Estimation of Nod damage value from S damage value according to CEM (2006)
+    and the Rock Manual (2007, 2012)
+
+    Parameters
+    ----------
+    S : float | npt.NDArray[np.float64]
+        Damage value based on eroded cross sectional area
+    G : float | npt.NDArray[np.float64]
+        Gradation factor depending on armour layer, G = 1 for concrete armour
+         units and 1.2 - 1.6 for stone armor
+    nv : float | npt.NDArray[np.float64]
+        Porosity depending on armour layer, generally between 0.4 and 0.6
+
+    In general the Nod is about half the value of S
+
+    Returns
+    -------
+    Nod: float | npt.NDArray[np.float64]
+        Number of displaced units normalized to 1 unit width of structure
+    """
+    factor = G * (1 - nv)
+    Nod = S * factor
+
+    return Nod

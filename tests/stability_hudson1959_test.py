@@ -201,3 +201,44 @@ def test_Hs_damage_backward(
     )
 
     assert Hs_calculated == pytest.approx(Hs_expected, abs=1e-1)
+
+
+@pytest.mark.parametrize(
+    (
+        "M50, rho_water, rho_armour, KD, cot_alpha, alpha_Hs, rock_type, damage_percentage, Hs_expected"
+    ),
+    (([4500, 1025, 2650, 4.0, 3.0, 1.27, "rough", 0, 3.41]),),
+)
+def test_Hs_damage_zeroperc_equal_to_nodamage(
+    M50,
+    rho_water,
+    rho_armour,
+    KD,
+    cot_alpha,
+    alpha_Hs,
+    rock_type,
+    damage_percentage,
+    Hs_expected,
+):
+    Hs_calculated_damage = hudson1959.calculate_significant_wave_height_Hs(
+        M50=M50,
+        rho_water=rho_water,
+        rho_armour=rho_armour,
+        KD=KD,
+        cot_alpha=cot_alpha,
+        alpha_Hs=alpha_Hs,
+        rock_type=rock_type,
+        damage_percentage=damage_percentage,
+    )
+
+    Hs_calculated_no_damage = hudson1959.calculate_significant_wave_height_Hs_no_damage(
+        M50=M50,
+        rho_water=rho_water,
+        rho_armour=rho_armour,
+        KD=KD,
+        cot_alpha=cot_alpha,
+        alpha_Hs=alpha_Hs,
+    )
+
+    assert Hs_calculated_damage == pytest.approx(Hs_expected, abs=1e-1)
+    assert Hs_calculated_damage == pytest.approx(Hs_calculated_no_damage, abs=1e-1)
