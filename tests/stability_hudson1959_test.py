@@ -24,7 +24,7 @@ def test_internal_consistency_nodamage_Hs_M50(
     alpha_Hs,
     M50_expected,
 ):
-    M50_result = hudson1959.calculate_hudson1959_no_damage_M50(
+    M50_result = hudson1959.calculate_median_rock_mass_M50_no_damage(
         Hs=Hs,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -33,7 +33,7 @@ def test_internal_consistency_nodamage_Hs_M50(
         alpha_Hs=alpha_Hs,
     )
 
-    Hs_result = hudson1959.calculate_hudson1959_no_damage_Hs(
+    Hs_result = hudson1959.calculate_significant_wave_height_Hs_no_damage(
         M50=M50_result,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -66,7 +66,7 @@ def test_M50_nodamage_backward(
     alpha_Hs,
     M50_expected,
 ):
-    M50_calculated = hudson1959.calculate_hudson1959_no_damage_M50(
+    M50_calculated = hudson1959.calculate_median_rock_mass_M50_no_damage(
         Hs=Hs,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -99,7 +99,7 @@ def test_Hs_nodamage_backward(
     alpha_Hs,
     Hs_expected,
 ):
-    Hs_calculated = hudson1959.calculate_hudson1959_no_damage_Hs(
+    Hs_calculated = hudson1959.calculate_significant_wave_height_Hs_no_damage(
         M50=M50,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -143,7 +143,7 @@ def test_M50_damage_backward(
     damage_percentage,
     M50_expected,
 ):
-    M50_calculated = hudson1959.calculate_hudson1959_damage_M50(
+    M50_calculated = hudson1959.calculate_median_rock_mass_M50(
         Hs=Hs,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -189,7 +189,7 @@ def test_Hs_damage_backward(
     damage_percentage,
     Hs_expected,
 ):
-    Hs_calculated = hudson1959.calculate_hudson1959_damage_Hs(
+    Hs_calculated = hudson1959.calculate_significant_wave_height_Hs(
         M50=M50,
         rho_water=rho_water,
         rho_armour=rho_armour,

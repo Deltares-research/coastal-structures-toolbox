@@ -4,15 +4,13 @@ import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 
-# import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
-
 
 def check_validity_range():
     """No validity ranges provided"""
     pass
 
 
-def calculate_hudson1959_no_damage_M50(
+def calculate_median_rock_mass_M50_no_damage(
     Hs: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -62,7 +60,7 @@ def calculate_hudson1959_no_damage_M50(
     return M50
 
 
-def calculate_hudson1959_no_damage_Hs(
+def calculate_significant_wave_height_Hs_no_damage(
     M50: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -139,9 +137,6 @@ def lookup_table_damage_factors(
     mult_factors_rough = np.array([1.0, 1.0, 1.08, 1.14, 1.20, 1.29, 1.41, 1.54, 1.54])
     mult_factors_smooth = np.array([1.0, 1.0, 1.08, 1.19, 1.27, 1.37, 1.47, 1.56, 1.56])
 
-    # if damage_percentage > percentages.max():
-    #     raise ValueError("Damage percentage higher then allowed value")
-
     ind = np.searchsorted(percentages, damage_percentage, "right")
     if rock_type.lower().strip() == "rough":
         factor = mult_factors_rough[ind]
@@ -153,10 +148,7 @@ def lookup_table_damage_factors(
     return factor
 
 
-lookup_table_damage_factors(60, "rough")
-
-
-def calculate_hudson1959_damage_M50(
+def calculate_median_rock_mass_M50(
     Hs: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -206,7 +198,7 @@ def calculate_hudson1959_damage_M50(
     mult_factor = lookup_table_damage_factors(
         damage_percentage=damage_percentage, rock_type=rock_type
     )
-    M50 = calculate_hudson1959_no_damage_M50(
+    M50 = calculate_median_rock_mass_M50_no_damage(
         Hs=Hs,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -215,12 +207,12 @@ def calculate_hudson1959_damage_M50(
         alpha_Hs=alpha_Hs,
     )
 
-    M50 = M50 / mult_factor**3
+    M50 = M50 / np.power(mult_factor, 3)
 
     return M50
 
 
-def calculate_hudson1959_damage_Hs(
+def calculate_significant_wave_height_Hs(
     M50: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -270,7 +262,7 @@ def calculate_hudson1959_damage_Hs(
     mult_factor = lookup_table_damage_factors(
         damage_percentage=damage_percentage, rock_type=rock_type
     )
-    Hs = calculate_hudson1959_no_damage_Hs(
+    Hs = calculate_significant_wave_height_Hs_no_damage(
         M50=M50,
         rho_water=rho_water,
         rho_armour=rho_armour,
