@@ -3,7 +3,8 @@ import numpy as np
 import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
-import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
+
+# import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 
 
 def check_validity_range():
@@ -23,7 +24,8 @@ def calculate_hudson1959_no_damage_M50(
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
-    or more information in the Rock Manual (2007 / 2012): https://kennisbank-waterbouw.nl/DesignCodes/rockmanual/BWchapter%205.pdf page 564
+    or more information in the Rock Manual (2007 / 2012):
+    https://kennisbank-waterbouw.nl/DesignCodes/rockmanual/BWchapter%205.pdf page 564
 
     Note: no limits to the formula have been provided in the paper
 
@@ -44,7 +46,8 @@ def calculate_hudson1959_no_damage_M50(
     cot_alpha : float | npt.NDArray[np.float64]
         Cotangent of the front-side slope of the structure (-)
     alpha_Hs : float | npt.NDArray[np.float64], optional
-        Factor between Hs and H10Percent according to SPM, by default 1.27 (as per Hudson approach since Shore Protection Manual 1984)
+        Factor between Hs and H10Percent according to SPM, by default 1.27
+        (as per Hudson approach since Shore Protection Manual 1984)
 
     Returns
     -------
@@ -71,7 +74,8 @@ def calculate_hudson1959_no_damage_Hs(
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
-    or more information in the Rock Manual (2007 / 2012): https://kennisbank-waterbouw.nl/DesignCodes/rockmanual/ page 564
+    or more information in the Rock Manual (2007 / 2012):
+    https://kennisbank-waterbouw.nl/DesignCodes/rockmanual/ page 564
 
     Note: no limits to the formula have been provided in the paper
 
@@ -92,7 +96,8 @@ def calculate_hudson1959_no_damage_Hs(
     cot_alpha : float | npt.NDArray[np.float64]
         Cotangent of the front-side slope of the structure (-)
     alpha_Hs : float | npt.NDArray[np.float64], optional
-        Factor between Hs and H10Percent according to SPM, by default 1.27 (as per Hudson approach since Shore Protection Manual 1984)
+        Factor between Hs and H10Percent according to SPM, by default 1.27
+        (as per Hudson approach since Shore Protection Manual 1984)
 
     Returns
     -------
