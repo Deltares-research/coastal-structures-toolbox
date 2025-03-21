@@ -195,7 +195,9 @@ def determine_average_slope(
 
     # This is the procedure as described in section 5.3.4 of the EurOtop (2007) manual
 
-    L_slope_iter1 = 1.5 * Hm0 * cot_alpha_down + B_berm + 1.5 * Hm0 * cot_alpha_up
+    L_slope_iter1 = (
+        (1.5 * Hm0 - db) * cot_alpha_down + B_berm + (1.5 * Hm0 + db) * cot_alpha_up
+    )
     tan_alpha_average_iter1 = 3 * Hm0 / (L_slope_iter1 - B_berm)
 
     # TODO L_berm is unrelated, move to separate function
@@ -213,7 +215,10 @@ def determine_average_slope(
         gamma_b=gamma_b,
         gamma_f=gamma_f,
     )
-    L_slope_iter2 = 1.5 * Hm0 * cot_alpha_down + B_berm + z2p * cot_alpha_up
+    # TODO the -db / +db terms come from BREAKWAT -> double check with sheet Alex
+    L_slope_iter2 = (
+        (1.5 * Hm0 - db) * cot_alpha_down + B_berm + (z2p + db) * cot_alpha_up
+    )
     tan_alpha_average_iter2 = (1.5 * Hm0 + z2p) / (L_slope_iter2 - B_berm)
 
     cot_alpha_average = 1.0 / tan_alpha_average_iter2
