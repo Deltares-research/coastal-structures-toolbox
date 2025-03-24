@@ -211,25 +211,25 @@ def check_usage_stabilitynumber(
     ValueError
         No missing variable
     """
-    allchecks = [Hs == None, Dn == None, Delta == None, Ns == None]
+    allchecks = [Hs is None, Dn is None, Delta is None, Ns is None]
     if sum(allchecks) > 1:
         raise ValueError("More then one missing variable")
     elif sum(allchecks) == 0:
         raise ValueError("No missing variable")
 
-    if Hs == None and not (Dn == None or Delta == None or Ns == None):
+    if Hs is None and not (Dn is None or Delta is None or Ns is None):
         # calculate Hs
         out1 = Dn * Delta * Ns
         out2 = "Hs"
-    elif Dn == None and not (Hs == None or Delta == None or Ns == None):
+    elif Dn is None and not (Hs is None or Delta is None or Ns is None):
         # calculate Dn
         out1 = Hs / Ns / Delta
         out2 = "Dn"
-    elif Delta == None and not (Dn == None or Hs == None or Ns == None):
+    elif Delta is None and not (Dn is None or Hs is None or Ns is None):
         # calculate Delta
         out1 = Hs / Ns / Dn
         out2 = "Delta"
-    elif Ns == None and not (Dn == None or Hs == None or Delta == None):
+    elif Ns is None and not (Dn is None or Hs is None or Delta is None):
         # calculate Ns
         out1 = Hs / (Delta * Dn)
         out2 = "Ns"
