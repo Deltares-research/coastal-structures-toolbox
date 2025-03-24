@@ -3,6 +3,7 @@ import warnings
 
 import numpy as np
 import numpy.typing as npt
+from typing import Union
 
 
 def calculate_wave_steepness_s(
@@ -175,3 +176,62 @@ def calculate_Nod_from_S(
     Nod = S * factor
 
     return Nod
+
+
+def check_usage_stabilitynumber(
+    Hs: float | npt.NDArray[np.float64] = None,
+    Dn: float | npt.NDArray[np.float64] = None,
+    Delta: float | npt.NDArray[np.float64] = None,
+    Ns: float | npt.NDArray[np.float64] = None,
+) -> Union[float | npt.NDArray[np.float64], str]:
+    """Calculates missing value from stability number Ns = Hs / Delta*Dn
+
+    Parameter that is None in the input will be calculated
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64]
+        Significant wave height (m), by default None
+    Dn : float | npt.NDArray[np.float64], optional
+        Nomincal diameter (m), by default None
+    Delta : float | npt.NDArray[np.float64], optional
+        Relative buoyant density of material, by default None
+    Ns : float | npt.NDArray[np.float64], optional
+        Stability number, by default None
+
+    Returns
+    -------
+    Union[float | npt.NDArray[np.float64], str]
+        (missing parameter value, missing parameter as calculated)
+
+    Raises
+    ------
+    ValueError
+        More then one missing variable
+    ValueError
+        No missing variable
+    """
+    allchecks = [Hs == None, Dn == None, Delta == None, Ns == None]
+    if sum(allchecks) > 1:
+        raise ValueError("More then one missing variable")
+    elif sum(allchecks) == 0:
+        raise ValueError("No missing variable")
+
+    if Hs == None and not (Dn == None or Delta == None or Ns == None):
+        # calculate Hs
+        out1 = Dn * Delta * Ns
+        out2 = "Hs"
+    elif Dn == None and not (Hs == None or Delta == None or Ns == None):
+        # calculate Dn
+        out1 = Hs / Ns / Delta
+        out2 = "Dn"
+    elif Delta == None and not (Dn == None or Hs == None or Ns == None):
+        # calculate Delta
+        out1 = Hs / Ns / Dn
+        out2 = "Delta"
+    elif Ns == None and not (Dn == None or Hs == None or Delta == None):
+        # calculate Ns
+        out1 = Hs / (Delta * Dn)
+        out2 = "Ns"
+
+    return out1, out2

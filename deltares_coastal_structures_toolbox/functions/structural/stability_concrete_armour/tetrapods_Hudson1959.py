@@ -116,7 +116,7 @@ def calculate_significant_wave_height_Hs_Hudson1959(
 
     Returns
     -------
-    M: float | npt.NDArray[np.float64]
+    Hs: float | npt.NDArray[np.float64]
         Significant wave height (m)
     """
     Hs = hudson.calculate_significant_wave_height_Hs_no_damage(
