@@ -72,6 +72,7 @@ def calculate_unit_mass_M(
         trunk_breaking: 12
         head_non_breaking: 11.5
         head_breaking: 9.5
+        see also functions to calculate KD from seabed slope
     cot_alpha : float | npt.NDArray[np.float64]
         Cotangent of the front-side slope of the structure (-)
         Note that 1.33 is recommended, and shallower then 1.5
@@ -128,6 +129,7 @@ def calculate_significant_wave_height_Hs(
         trunk_breaking: 12
         head_non_breaking: 11.5
         head_breaking: 9.5
+        see also functions to calculate KD from seabed slope
     cot_alpha : float | npt.NDArray[np.float64]
         Cotangent of the front-side slope of the structure (-)
         Note that 1.33 is recommended, and shallower then 1.5

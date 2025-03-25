@@ -7,11 +7,10 @@ import deltares_coastal_structures_toolbox.functions.core_utility as core_utilit
 
 unit_properties = {
     "KD": {
-        "trunk": 16.0,
-        "head": 13.0,
-        "Note": "Depending on seabed slope, see website concrete layer innovations",
+        "trunk_breaking": 16,
+        "head_breaking": 13,
     },  # numbers are from rock manual
-    "kt": 1.516,  # as per concretelayer innovations design table information
+    "kt": 1.40,
     "nlayers": 1,
 }
 
@@ -20,24 +19,7 @@ def check_validity_range(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     seabed_slope_perc: float | npt.NDArray[np.float64] = np.nan,
 ):
-
-    if not np.any(np.isnan(cot_alpha)):
-        core_utility.check_variable_validity_range(
-            "Cotangent of the front-side slope of the structure",
-            "Core Loc Hudson 1959",
-            cot_alpha,
-            1.33,
-            1.5,
-        )
-
-    if not np.any(np.isnan(seabed_slope_perc)):
-        core_utility.check_variable_validity_range(
-            "Seabed slope in percentage",
-            "Core Loc documentation",
-            seabed_slope_perc,
-            0,
-            10,
-        )
+    pass
 
 
 def calculate_unit_mass_M(
@@ -48,7 +30,7 @@ def calculate_unit_mass_M(
     cot_alpha: float | npt.NDArray[np.float64] = 1.33,
     alpha_Hs: float | npt.NDArray[np.float64] = 1.0,
 ) -> float | npt.NDArray[np.float64]:
-    """Determine required unit mass M based on Hs for Coreloc, using Hudson 1959
+    """Determine required unit mass M based on Hs for Xbloc, using Hudson 1959
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
@@ -66,9 +48,8 @@ def calculate_unit_mass_M(
     rho_armour : float | npt.NDArray[np.float64]
         Armour density (kg/m^3)
     KD : float | npt.NDArray[np.float64]
-        trunk: 16
-        head: 13
-        see also functions to calculate KD from seabed slope
+        trunk_breaking: 16
+        head_breaking: 13
     cot_alpha : float | npt.NDArray[np.float64]
         Cotangent of the front-side slope of the structure (-)
         Note that 1.33 is recommended, and shallower then 1.5
@@ -90,6 +71,8 @@ def calculate_unit_mass_M(
         alpha_Hs=alpha_Hs,
     )
 
+    check_validity_range(cot_alpha=cot_alpha)
+
     return M
 
 
@@ -101,7 +84,7 @@ def calculate_significant_wave_height_Hs(
     cot_alpha: float | npt.NDArray[np.float64] = 1.33,
     alpha_Hs: float | npt.NDArray[np.float64] = 1.0,
 ) -> float | npt.NDArray[np.float64]:
-    """Determine significant wave height Hs based on M for Coreloc, using Hudson 1959
+    """Determine significant wave height Hs based on M for Accropode II, using Hudson 1959
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
@@ -119,9 +102,8 @@ def calculate_significant_wave_height_Hs(
     rho_armour : float | npt.NDArray[np.float64]
         Armour density (kg/m^3)
     KD : float | npt.NDArray[np.float64]
-        trunk: 16
-        head: 13
-        see also functions to calculate KD from seabed slope
+        trunk_breaking: 16
+        head_breaking: 13
     cot_alpha : float | npt.NDArray[np.float64]
         Cotangent of the front-side slope of the structure (-)
         Note that 1.33 is recommended, and shallower then 1.5
@@ -143,58 +125,127 @@ def calculate_significant_wave_height_Hs(
         alpha_Hs=alpha_Hs,
     )
 
+    check_validity_range(cot_alpha=cot_alpha)
+
     return Hs
 
 
-def calculate_KD_breaking_trunk_from_seabed_slope(
-    seabed_slope_perc: float | npt.NDArray[np.float64],
+def xbloc_calculate_unit_volume_V_base(
+    Hs: float | npt.NDArray[np.float64],
+    rho_water: float | npt.NDArray[np.float64],
+    rho_armour: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64] = 1.33,
 ) -> float | npt.NDArray[np.float64]:
-    """Returns the KD value based on the seabed slope.
-    Only to be applied for breaking condition at the trunk
 
-    For more information, see Concrete Layer Innovations:
-    https://www.concretelayer.com/en/solutions/technologies/core-loc
-
-    This value is an interpretation of graphical information in the design table
-    (design table 2012, retrieved march-2025)
-
-    Parameters
-    ----------
-    seabed_slope_perc : float | npt.NDArray[np.float64]
-        slope of seabed (%)
-
-    Returns
-    -------
-    float | npt.NDArray[np.float64]
-        KD value
-    """
-    graph_seabed_slope_perc = np.array([0, 1, 5, 10])  # fitted from design table 2012
-    graph_KD = np.array([16, 16, 10.66, 9])
-
-    seabed_slope_KD = np.interp(seabed_slope_perc, graph_seabed_slope_perc, graph_KD)
-    seabed_slope_KD = np.floor(seabed_slope_KD / 0.1) * 0.1
-
-    check_validity_range(seabed_slope_perc=seabed_slope_perc)
-
-    return seabed_slope_KD
+    pass
 
 
-def calculate_KD_nonbreaking_trunk_from_seabed_slope() -> (
-    float | npt.NDArray[np.float64]
+def xbloc_calculate_unit_mass_M_base(
+    Hs: float | npt.NDArray[np.float64],
+    rho_water: float | npt.NDArray[np.float64],
+    rho_armour: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64] = 1.33,
+) -> float | npt.NDArray[np.float64]:
+
+    pass
+
+
+def calculate_correctionfactor_unit_mass_M_by_cotalpha_seabed(
+    cot_alpha: float | npt.NDArray[np.float64],
+) -> float | npt.NDArray[np.float64]:
+
+    correction_factor = 1.0
+    if cot_alpha <= 30 and cot_alpha > 20:
+        correction_factor = 1.1
+    elif cot_alpha <= 20 and cot_alpha > 15:
+        correction_factor = 1.25
+    elif cot_alpha <= 15 and cot_alpha > 10:
+        correction_factor = 1.5
+    elif cot_alpha < 10:
+        correction_factor = 2.0
+
+    return correction_factor
+
+
+def calculate_correctionfactor_unit_mass_M_by_slopeperc_seabed(
+    slope_perc: float | npt.NDArray[np.float64],
+) -> float | npt.NDArray[np.float64]:
+
+    cot_alpha = 100 / slope_perc
+    correction_factor = calculate_correctionfactor_unit_mass_M_by_cotalpha_seabed(
+        cot_alpha=cot_alpha
+    )
+
+    return correction_factor
+
+
+def calculate_correctionfactor_unit_mass_M_by_relative_freeboard(
+    freeboard: float | npt.NDArray[np.float64],
+    Hs: float | npt.NDArray[np.float64],
 ):
-    """Returns the KD value based on the seabed slope.
-    Only to be applied for nonbreaking condition at the trunk.
-    This value is fixed at 16, similar to 1% trunk breaking waves value
 
-    For more information, see Concrete Layer Innovations:
-    https://www.concretelayer.com/en/solutions/technologies/core-loc
+    rel_freeboard = freeboard / Hs
 
-    This value is an interpretation of graphical information in the design table
-    (design table 2012, retrieved march-2025)
+    correction_factor = 1.0
 
-    Returns
-    -------
-    float | npt.NDArray[np.float64]
-        KD value
-    """
-    return 16.0
+    if rel_freeboard < 0.5:
+        correction_factor = 2.0
+    elif rel_freeboard < 1.0:
+        correction_factor = 1.5
+
+    return correction_factor
+
+
+def calculate_correctionfactor_unit_mass_M_by_h(
+    h: float | npt.NDArray[np.float64],
+    Hs: float | npt.NDArray[np.float64],
+):
+
+    rel_h = h / Hs
+
+    correction_factor = 1.0
+
+    if rel_h > 2.5:
+        correction_factor = 1.5
+    elif rel_h > 3.5:
+        correction_factor = 2.0
+
+    return correction_factor
+
+
+def switch_correction_factor_unit_mass_M_design_event_frequency(
+    design_event_occurs_frequently: bool = False,
+):
+    correction_factor = 1.0
+    if design_event_occurs_frequently:
+        correction_factor = 1.25
+
+    return correction_factor
+
+
+def switch_correctionfactor_unit_mass_M_by_core_permeability(
+    low_core_permeability: bool = False,
+    core_impermeable: bool = False,
+):
+
+    correction_factor = 1.0
+
+    if low_core_permeability:
+        correction_factor = 1.5
+    if core_impermeable:
+        correction_factor = 2.0
+
+    return correction_factor
+
+
+def calculate_correctionfactor_unit_mass_M_by_slope_armour(
+    cot_alpha: float | npt.NDArray[np.float64],
+):
+
+    correction_factor = 1.0
+    if cot_alpha > 2 / 3:
+        correction_factor = 1.25
+    elif cot_alpha > 1 / 2:
+        correction_factor = 1.5
+
+    return correction_factor
