@@ -184,7 +184,7 @@ def calculate_damage_number_S(
             * (1 / c_pl)
             * np.power(P, -0.18)
             * np.power(ksi_mcc, 0.5)
-            * np.power(ksi_mcc / ksi_0m, 0.5),
+            * np.power(ksi_mcc / ksi_0m, P),  # * np.power(ksi_mcc / ksi_0m, 0.5),
             5,
         )
         * (1 / gamma_N)
@@ -216,7 +216,7 @@ def calculate_nominal_rock_diameter_Dn50(
     P: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
     S: float | npt.NDArray[np.float64],
-    c_pl: float = 8.7,
+    c_pl: float = 8.68,
     c_s: float = 1.4,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the nominal rock diameter Dn50 for rock armour layers with the Van der Meer (1988) formula.
@@ -327,7 +327,7 @@ def calculate_significant_wave_height_Hs(
     S: float | npt.NDArray[np.float64],
     Dn50: float | npt.NDArray[np.float64] = np.nan,
     M50: float | npt.NDArray[np.float64] = np.nan,
-    c_pl: float = 8.7,
+    c_pl: float = 8.68,
     c_s: float = 1.4,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
