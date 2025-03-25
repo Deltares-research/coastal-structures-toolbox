@@ -1,6 +1,6 @@
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.accropodes_hudson1959 as hudson1959
+import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.accropode_hudson1959 as hudson1959
 
 
 @pytest.mark.parametrize(
