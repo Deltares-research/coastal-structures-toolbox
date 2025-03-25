@@ -14,13 +14,13 @@ unit_properties = {
 }
 
 
-def check_validity_range_vanDerMeer1988(
-    Hs: float | npt.NDArray[np.float64],
-    Tm: float | npt.NDArray[np.float64],
-    rho_armour: float | npt.NDArray[np.float64],
-    N_waves: float | npt.NDArray[np.float64],
-    cot_alpha: float | npt.NDArray[np.float64],
-    Nod: float | npt.NDArray[np.float64],
+def check_validity_range(
+    Hs: float | npt.NDArray[np.float64] = np.nan,
+    Tm: float | npt.NDArray[np.float64] = np.nan,
+    rho_armour: float | npt.NDArray[np.float64] = np.nan,
+    N_waves: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    Nod: float | npt.NDArray[np.float64] = np.nan,
 ):
 
     if not np.any(np.isnan(Hs)):
@@ -123,7 +123,7 @@ def calculate_nominal_diameter_Dn_vanDerMeer1988(
         Nominal block diameter, or equivalent cube size (m)
     """
 
-    check_validity_range_vanDerMeer1988(
+    check_validity_range(
         Hs=Hs,
         Tm=Tm,
         rho_armour=rho_armour,
@@ -193,7 +193,7 @@ def calculate_wave_height_Hs_vanDerMeer1988(
     Hs = core_physics.check_usage_stabilitynumber(Ns=Ns, Dn=Dn, Delta=Delta)[0]
     Tm = ((Hs / s0m) / (9.81 / (2 * np.pi))) ** 0.5
 
-    check_validity_range_vanDerMeer1988(
+    check_validity_range(
         Hs=Hs,
         Tm=Tm,
         rho_armour=rho_armour,
@@ -257,7 +257,7 @@ def calculate_damage_Nod_vanDerMeer1988(
 
     Tm = ((Hs / s0m) / (9.81 / (2 * np.pi))) ** 0.5
 
-    check_validity_range_vanDerMeer1988(
+    check_validity_range(
         Hs=Hs,
         Tm=Tm,
         rho_armour=rho_armour,

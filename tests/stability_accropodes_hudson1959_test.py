@@ -1,6 +1,6 @@
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.accropodes_Hudson1959 as hudson1959
+import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.accropodes_hudson1959 as hudson1959
 
 
 @pytest.mark.parametrize(
@@ -12,6 +12,7 @@ import deltares_coastal_structures_toolbox.functions.structural.stability_concre
         ([3.0, 1025, 2400, 15.0, 1.33, 1.0, 1345.5]),
         ([3.0, 1025, 2400, 12.0, 1.5, 1.0, 1491.3]),
         ([5.0, 1025, 2400, 12.0, 1.33, 1.0, 7786.7]),
+        ([3.0, 1025, 2400, 12.0, 2.0, 1.0, 1118.5]),
     ),
 )
 def test_M_nodamage_backward(
@@ -23,7 +24,7 @@ def test_M_nodamage_backward(
     alpha_Hs,
     M_expected,
 ):
-    M_calculated = hudson1959.calculate_unit_mass_M_Hudson1959(
+    M_calculated = hudson1959.calculate_unit_mass_M(
         Hs=Hs,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -44,6 +45,7 @@ def test_M_nodamage_backward(
         ([3000, 1025, 2600, 12.0, 1.33, 1.0, 4.06]),
         ([3000, 1025, 2400, 15.0, 1.33, 1.0, 3.92]),
         ([3000, 1025, 2400, 12.0, 1.5, 1.0, 3.79]),
+        ([3000, 1025, 2400, 12.0, 2.0, 1.0, 4.17]),
     ),
 )
 def test_Hs_nodamage_backward(
@@ -55,7 +57,7 @@ def test_Hs_nodamage_backward(
     alpha_Hs,
     Hs_expected,
 ):
-    Hs_calculated = hudson1959.calculate_significant_wave_height_Hs_Hudson1959(
+    Hs_calculated = hudson1959.calculate_significant_wave_height_Hs(
         M=M,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -65,3 +67,23 @@ def test_Hs_nodamage_backward(
     )
 
     assert Hs_calculated == pytest.approx(Hs_expected, abs=1e-2)
+
+
+@pytest.mark.parametrize(
+    ("seabed_slope_perc, KD_expected"),
+    (
+        ([1, 15]),
+        ([2, 13.6]),
+        ([4, 10.9]),
+        ([5.5, 9.4]),
+    ),
+)
+def test_KD_seabedslope(
+    seabed_slope_perc,
+    KD_expected,
+):
+    KD_calculated = hudson1959.calculate_KD_breaking_trunk_from_seabed_slope(
+        seabed_slope_perc=seabed_slope_perc,
+    )
+
+    assert KD_calculated == pytest.approx(KD_expected, abs=1e-1)
