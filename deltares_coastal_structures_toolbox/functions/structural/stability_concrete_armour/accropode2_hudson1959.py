@@ -7,13 +7,12 @@ import deltares_coastal_structures_toolbox.functions.core_utility as core_utilit
 
 unit_properties = {
     "KD": {
-        "trunk_non_breaking": 15,
-        "trunk_breaking": 12,
-        "head_non_breaking": 11.5,
-        "head_breaking": 9.5,
+        "trunk_breaking_min": 9,
+        "trunk_breaking_max": 16,
+        "trunk_nonbreaking": 16,
         "Note": "Depending on seabed slope, see website concrete layer innovations",
     },  # numbers are from rock manual
-    "kt": 1.29,  # as per concretelayer innovations design table information
+    "kt": 1.52,  # as per concretelayer innovations design table information
     "nlayers": 1,
 }
 
@@ -26,7 +25,7 @@ def check_validity_range(
     if not np.any(np.isnan(cot_alpha)):
         core_utility.check_variable_validity_range(
             "Cotangent of the front-side slope of the structure",
-            "Accropodes Hudson 1959",
+            "Accropode II Hudson 1959",
             cot_alpha,
             1.33,
             1.5,
@@ -35,7 +34,7 @@ def check_validity_range(
     if not np.any(np.isnan(seabed_slope_perc)):
         core_utility.check_variable_validity_range(
             "Seabed slope in percentage",
-            "Accropode documentation",
+            "Accropode II documentation",
             seabed_slope_perc,
             0,
             10,
@@ -50,7 +49,7 @@ def calculate_unit_mass_M(
     cot_alpha: float | npt.NDArray[np.float64] = 1.33,
     alpha_Hs: float | npt.NDArray[np.float64] = 1.0,
 ) -> float | npt.NDArray[np.float64]:
-    """Determine required unit mass M based on Hs for Accropodes, using Hudson 1959
+    """Determine required unit mass M based on Hs for Accropode II, using Hudson 1959
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
@@ -106,7 +105,7 @@ def calculate_significant_wave_height_Hs(
     cot_alpha: float | npt.NDArray[np.float64] = 1.33,
     alpha_Hs: float | npt.NDArray[np.float64] = 1.0,
 ) -> float | npt.NDArray[np.float64]:
-    """Determine significant wave height Hs based on M for Accropodes, using Hudson 1959
+    """Determine significant wave height Hs based on M for Accropode II, using Hudson 1959
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
@@ -161,7 +160,7 @@ def calculate_KD_breaking_trunk_from_seabed_slope(
     Only to be applied for breaking condition at the trunk
 
     For more information, see Concrete Layer Innovations:
-    https://www.concretelayer.com/en/solutions/technologies/accropode
+    https://www.concretelayer.com/en/solutions/technologies/accropode-2
 
     This value is an interpretation of graphical information in the design table
     (design table 2012, retrieved march-2025)
@@ -177,7 +176,7 @@ def calculate_KD_breaking_trunk_from_seabed_slope(
         KD value
     """
     graph_seabed_slope_perc = np.array([0, 1, 5, 10])  # fitted from design table 2012
-    graph_KD = np.array([15, 15, 9.6, 8])
+    graph_KD = np.array([16, 16, 10.66, 9])
 
     seabed_slope_KD = np.interp(seabed_slope_perc, graph_seabed_slope_perc, graph_KD)
     seabed_slope_KD = np.floor(seabed_slope_KD / 0.1) * 0.1
@@ -192,10 +191,10 @@ def calculate_KD_nonbreaking_trunk_from_seabed_slope() -> (
 ):
     """Returns the KD value based on the seabed slope.
     Only to be applied for nonbreaking condition at the trunk.
-    This value is fixed at 15, similar to 1% trunk breaking waves value
+    This value is fixed at 16, similar to 1% trunk breaking waves value
 
     For more information, see Concrete Layer Innovations:
-    https://www.concretelayer.com/en/solutions/technologies/accropode
+    https://www.concretelayer.com/en/solutions/technologies/accropode-2
 
     This value is an interpretation of graphical information in the design table
     (design table 2012, retrieved march-2025)
@@ -205,4 +204,4 @@ def calculate_KD_nonbreaking_trunk_from_seabed_slope() -> (
     float | npt.NDArray[np.float64]
         KD value
     """
-    return 15.0
+    return 16.0

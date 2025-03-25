@@ -1,17 +1,17 @@
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.core_loc_hudson1959 as hudson1959
+import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.accropode2_hudson1959 as hudson1959
 
 
 @pytest.mark.parametrize(
     ("Hs, rho_water, rho_armour, KD, cot_alpha, alpha_Hs, M_expected"),
     (
         ([3.0, 1025, 2400, 16.0, 1.33, 1.0, 1261.4]),
+        ([5.0, 1025, 2400, 16.0, 1.33, 1.0, 5840.0]),
         ([3.0, 1000, 2400, 16.0, 1.33, 1.0, 1109.7]),
         ([3.0, 1025, 2600, 16.0, 1.33, 1.0, 909.28]),
-        ([3.0, 1025, 2400, 13.0, 1.33, 1.0, 1552.5]),
+        ([3.0, 1025, 2400, 9.0, 1.33, 1.0, 2242.6]),
         ([3.0, 1025, 2400, 16.0, 1.5, 1.0, 1118.5]),
-        ([5.0, 1025, 2400, 16.0, 1.33, 1.0, 5840.0]),
     ),
 )
 def test_M_nodamage_backward(
