@@ -3,6 +3,7 @@ import numpy as np
 import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.hudson1959 as hudson
+import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 
 unit_properties = {
     "KD": {
@@ -15,12 +16,31 @@ unit_properties = {
 }
 
 
-def check_validity_range_Hudson1959():
-    """No validity ranges provided"""
-    pass
+def check_validity_range(
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    seabed_slope_perc: float | npt.NDArray[np.float64] = np.nan,
+):
+
+    if not np.any(np.isnan(cot_alpha)):
+        core_utility.check_variable_validity_range(
+            "Cotangent of the front-side slope of the structure",
+            "Accropodes Hudson 1959",
+            cot_alpha,
+            1.33,
+            1.5,
+        )
+
+    if not np.any(np.isnan(seabed_slope_perc)):
+        core_utility.check_variable_validity_range(
+            "Seabed slope in percentage",
+            "Accropode documentation",
+            seabed_slope_perc,
+            0,
+            10,
+        )
 
 
-def calculate_unit_mass_M_Hudson1959(
+def calculate_unit_mass_M(
     Hs: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -28,7 +48,7 @@ def calculate_unit_mass_M_Hudson1959(
     cot_alpha: float | npt.NDArray[np.float64] = 1.33,
     alpha_Hs: float | npt.NDArray[np.float64] = 1.0,
 ) -> float | npt.NDArray[np.float64]:
-    """Determine required unit mass M based on Hs for Accropodes, using Hudson 1959
+    """Determine required unit mass M based on Hs for Coreloc, using Hudson 1959
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
@@ -72,7 +92,7 @@ def calculate_unit_mass_M_Hudson1959(
     return M
 
 
-def calculate_significant_wave_height_Hs_Hudson1959(
+def calculate_significant_wave_height_Hs(
     M: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -80,7 +100,7 @@ def calculate_significant_wave_height_Hs_Hudson1959(
     cot_alpha: float | npt.NDArray[np.float64] = 1.33,
     alpha_Hs: float | npt.NDArray[np.float64] = 1.0,
 ) -> float | npt.NDArray[np.float64]:
-    """Determine significant wave height Hs based on M for Accropodes, using Hudson 1959
+    """Determine significant wave height Hs based on M for Coreloc, using Hudson 1959
 
     For more details see: Hudson 1959 and Rock Manual:
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
@@ -122,3 +142,57 @@ def calculate_significant_wave_height_Hs_Hudson1959(
     )
 
     return Hs
+
+
+def calculate_KD_breaking_trunk_from_seabed_slope(
+    seabed_slope_perc: float | npt.NDArray[np.float64],
+) -> float | npt.NDArray[np.float64]:
+    """Returns the KD value based on the seabed slope.
+    Only to be applied for breaking condition at the trunk
+
+    For more information, see Concrete Layer Innovations:
+    https://www.concretelayer.com/en/solutions/technologies/core-loc
+
+    This value is an interpretation of graphical information in the design table
+    (design table 2012, retrieved march-2025)
+
+    Parameters
+    ----------
+    seabed_slope_perc : float | npt.NDArray[np.float64]
+        slope of seabed (%)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        KD value
+    """
+    graph_seabed_slope_perc = np.array([0, 1, 5, 10])  # fitted from design table 2012
+    graph_KD = np.array([16, 16, 10.66, 9])
+
+    seabed_slope_KD = np.interp(seabed_slope_perc, graph_seabed_slope_perc, graph_KD)
+    seabed_slope_KD = np.floor(seabed_slope_KD / 0.1) * 0.1
+
+    check_validity_range(seabed_slope_perc=seabed_slope_perc)
+
+    return seabed_slope_KD
+
+
+def calculate_KD_nonbreaking_trunk_from_seabed_slope() -> (
+    float | npt.NDArray[np.float64]
+):
+    """Returns the KD value based on the seabed slope.
+    Only to be applied for nonbreaking condition at the trunk.
+    This value is fixed at 16, similar to 1% trunk breaking waves value
+
+    For more information, see Concrete Layer Innovations:
+    https://www.concretelayer.com/en/solutions/technologies/core-loc
+
+    This value is an interpretation of graphical information in the design table
+    (design table 2012, retrieved march-2025)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        KD value
+    """
+    return 16.0

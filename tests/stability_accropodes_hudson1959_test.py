@@ -72,10 +72,11 @@ def test_Hs_nodamage_backward(
 @pytest.mark.parametrize(
     ("seabed_slope_perc, KD_expected"),
     (
-        ([1, 15]),
-        ([2, 13.6]),
-        ([4, 10.9]),
-        ([5.5, 9.4]),
+        ([0.9, 15]),
+        ([1.1, 14.87]),
+        ([4.8, 9.97]),
+        ([5.2, 9.63]),
+        ([8, 8.68]),
     ),
 )
 def test_KD_seabedslope(

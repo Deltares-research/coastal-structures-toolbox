@@ -177,7 +177,7 @@ def calculate_KD_breaking_trunk_from_seabed_slope(
         KD value
     """
     graph_seabed_slope_perc = np.array([0, 1, 5, 10])  # fitted from design table 2012
-    graph_KD = np.array([15, 15, 9.6, 8])
+    graph_KD = np.array([15, 15, 9.7, 8])
 
     seabed_slope_KD = np.interp(seabed_slope_perc, graph_seabed_slope_perc, graph_KD)
     seabed_slope_KD = np.floor(seabed_slope_KD / 0.1) * 0.1
