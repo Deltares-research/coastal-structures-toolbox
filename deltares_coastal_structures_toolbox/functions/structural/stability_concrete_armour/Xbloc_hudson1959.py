@@ -4,6 +4,7 @@ import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.hudson1959 as hudson
 import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
+import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 
 unit_properties = {
     "KD": {
@@ -137,7 +138,12 @@ def xbloc_calculate_unit_volume_V_base(
     cot_alpha: float | npt.NDArray[np.float64] = 1.33,
 ) -> float | npt.NDArray[np.float64]:
 
-    pass
+    Delta = core_physics.calculate_buoyant_density_Delta(
+        rho_rock=rho_armour, rho_water=rho_water
+    )
+    V = (Hs / (2.77 * Delta)) ** 3
+
+    return V
 
 
 def xbloc_calculate_unit_mass_M_base(
