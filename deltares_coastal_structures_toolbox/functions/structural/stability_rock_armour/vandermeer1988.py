@@ -94,7 +94,7 @@ def calculate_damage_number_S(
     rho_armour: float | npt.NDArray[np.float64],
     Dn50: float | npt.NDArray[np.float64] = np.nan,
     M50: float | npt.NDArray[np.float64] = np.nan,
-    c_pl: float = 8.7,
+    c_pl: float = 8.68,
     c_s: float = 1.4,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the damage number S for rock armour layers with the Van der Meer (1988) formula.
