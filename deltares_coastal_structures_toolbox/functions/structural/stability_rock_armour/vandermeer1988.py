@@ -57,7 +57,7 @@ def check_validity_range(
 
     # TODO double check this: in formula only Tm is used, not Tp
     if not np.any(np.isnan(Hs)) and not np.any(np.isnan(Tp)):
-        s0p = core_physics.calculate_wave_steepness_s(Hs, Tp)
+        s0p = core_physics.calculate_wave_steepness_s(H=Hs, T=Tp)
         core_utility.check_variable_validity_range(
             "Wave steepness s0p", "Van der Meer (1988)", s0p, 0.005, 0.06
         )
