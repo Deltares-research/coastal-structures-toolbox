@@ -8,9 +8,8 @@ import deltares_coastal_structures_toolbox.functions.structural.stability_rock_a
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988_modified as stability_rock_vandermeer1988_modified
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_rear.vangent2007 as stability_rear_with_crest_vangent2007
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.hudson1959 as stability_hudson1959
-import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubes_double_layer_hudson1959 as stability_cubes
-import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubes_double_layer_vandermeer1988 as stability_cubes_vdM
 import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.accropode_hudson1959 as stability_accropodes
+import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.Xbloc as xbloc
 
 
 out = stability_accropodes.calculate_KD_breaking_trunk_from_seabed_slope(100)
@@ -27,8 +26,13 @@ allKD = np.array([16, 15, 14, 13, 12, 11, 10, 9, 8])
 
 M = stability_accropodes.calculate_unit_mass_M(3.0, 1025, 2400, allKD)
 
+Hs_in = 5.0
 
-plt.plot(allKD, M)
-plt.xlabel("KD")
-plt.ylabel("M")
-plt.show()
+M = xbloc.xbloc_calculate_unit_mass_M(Hs_in, 1025, 2400)
+V = xbloc.xbloc_calculate_unit_volume_V(Hs_in, 1025, 2400)
+
+Hs_out = xbloc.xbloc_calculate_wave_height_Hs_from_M(
+    M=M, rho_water=1025, rho_armour=2400
+)
+
+print(Hs_out)

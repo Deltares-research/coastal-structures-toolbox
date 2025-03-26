@@ -56,8 +56,15 @@ def calculate_unit_mass_M(
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
     or more information in the Rock Manual (2007 / 2012):
     https://kennisbank-waterbouw.nl/DesignCodes/rockmanual/BWchapter%205.pdf page 591
+    Information in this set of functions is also based on the design manual
+    (design table 2012, retrieved in march-2025)
 
     For more properties, see also unit_properties
+
+    More information is available at the Accropode website and from the concrete layer innovations (CLI) team
+    https://www.concretelayer.com/en/solutions/technologies/accropode
+
+    A calculator is also available on the CLI website
 
     Parameters
     ----------
@@ -113,8 +120,15 @@ def calculate_significant_wave_height_Hs(
     Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
     or more information in the Rock Manual (2007 / 2012):
     https://kennisbank-waterbouw.nl/DesignCodes/rockmanual/BWchapter%205.pdf page 591
+    Information in this set of functions is also based on the design manual
+    (design table 2012, retrieved in march-2025)
 
     For more properties, see also unit_properties
+
+    More information is available at the Accropode website and from the concrete layer innovations (CLI) team
+    https://www.concretelayer.com/en/solutions/technologies/accropode
+
+    A calculator is also available on the CLI website
 
     Parameters
     ----------
@@ -166,7 +180,7 @@ def calculate_KD_breaking_trunk_from_seabed_slope(
     https://www.concretelayer.com/en/solutions/technologies/accropode
 
     This value is an interpretation of graphical information in the design table
-    (design table 2012, retrieved march-2025)
+    (design table 2012, retrieved in march-2025)
 
     Parameters
     ----------
@@ -200,7 +214,7 @@ def calculate_KD_nonbreaking_trunk_from_seabed_slope() -> (
     https://www.concretelayer.com/en/solutions/technologies/accropode
 
     This value is an interpretation of graphical information in the design table
-    (design table 2012, retrieved march-2025)
+    (design table 2012, retrieved in march-2025)
 
     Returns
     -------
