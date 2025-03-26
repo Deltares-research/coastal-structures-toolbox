@@ -10,7 +10,7 @@ unit_properties = {
         "trunk_breaking": 7.0,
         "head_non_breaking": 5.5,
         "head_breaking": 4.5,
-    },  # manual of breakwat shows slightly different numbers, these are from rock manual 
+    },  # manual of breakwat shows slightly different numbers, these are from rock manual
     "nv": 0.5,
     "kt": 1.02,
     "nlayers": 2,

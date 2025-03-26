@@ -120,7 +120,7 @@ def calculate_nominal_diameter_Dn_vanDerMeer1988(
     Returns
     -------
     Dn: float | npt.NDArray[np.float64]
-        Nominal block diameter, or equivalent cube size (m) 
+        Nominal block diameter, or equivalent cube size (m)
     """
 
     check_validity_range(
