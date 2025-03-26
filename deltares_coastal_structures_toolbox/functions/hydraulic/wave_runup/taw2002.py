@@ -100,14 +100,47 @@ def calculate_wave_runup_height_z2p(
     beta: float | npt.NDArray[np.float64],
     gamma_b: float | npt.NDArray[np.float64] = 1.0,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
-    use_best_fit: bool = False,
     B_berm: float | npt.NDArray[np.float64] = 0.0,
     db: float | npt.NDArray[np.float64] = 0.0,
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
-) -> float | npt.NDArray[np.float64]:
+    use_best_fit: bool = False,
+) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+    """_summary_
 
+    _extended_summary_
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    gamma_b : float | npt.NDArray[np.float64], optional
+        Influence factor for a berm, by default 1.0
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
+
+    Returns
+    -------
+    tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
+        _description_
+    """
     # TAW eq 3a & 3b (EurOtop I eq 5.3)
 
     z2p_diml, _ = calculate_dimensionless_wave_runup_height_z2p(
@@ -142,9 +175,41 @@ def calculate_dimensionless_wave_runup_height_z2p(
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    gamma_b : float | npt.NDArray[np.float64], optional
+        Influence factor for a berm, by default 1.0
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
+
+    Returns
+    -------
+    tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
+        _description_
     """
-    TAW eq 3a & 3b (EurOtop I eq 5.3)
-    """
+    # TAW eq 3a & 3b (EurOtop I eq 5.3)
 
     if use_best_fit:
         c1 = 1.65
@@ -203,9 +268,21 @@ def calculate_dimensionless_wave_runup_height_z2p(
 def calculate_influence_oblique_waves_gamma_beta(
     beta: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The influence factor for oblique wave incidence gamma_beta (-)
     """
-    TAW eq 8
-    """
+    # TAW eq 8
 
     beta_calc = np.where(beta < 0, np.abs(beta), beta)
     beta_calc = np.where(beta_calc > 80, 80, beta_calc)
@@ -220,9 +297,25 @@ def calculate_adjusted_influence_roughness_gamma_f(
     gamma_b: float | npt.NDArray[np.float64],
     ksi_mm10: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    gamma_f : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness (-)
+    gamma_b : float | npt.NDArray[np.float64]
+        Influence factor for a berm
+    ksi_mm10 : float | npt.NDArray[np.float64]
+        _description_
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The adjusted influence factor for surface roughness gamma_f (-)
     """
-    Breakwat User Manual eq 3.62
-    """
+    # Breakwat User Manual eq 3.62
 
     gamma_f_adj = np.where(
         (gamma_b * ksi_mm10 >= 1.8) & (gamma_b * ksi_mm10 <= 10.0),
@@ -246,6 +339,34 @@ def determine_average_slope(
     db: float | npt.NDArray[np.float64],
     gamma_f: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    cot_alpha_down : float | npt.NDArray[np.float64]
+        Cotangent of the lower part of the front-side slope of the structure (-)
+    cot_alpha_up : float | npt.NDArray[np.float64]
+        Cotangent of the upper part of the front-side slope of the structure (-)
+    B_berm : float | npt.NDArray[np.float64]
+        Berm width of the structure (m)
+    db : float | npt.NDArray[np.float64]
+        Berm height of the structure (m)
+    gamma_f : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness (-)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        _description_
+    """
 
     # This is the procedure as described in section 5.3.4 of the EurOtop (2007) manual
 
@@ -283,7 +404,31 @@ def check_composite_slope(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
-) -> float | npt.NDArray[np.float64]:
+) -> bool:
+    """Check whether the structure has a composite slope
+
+    This function checks whether the structure has a composite slope, i.e. the lower and upper part of the front-side
+    of the structure have different slopes. If so, it returns true, if not it returns false.
+
+    Parameters
+    ----------
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+
+    Returns
+    -------
+    bool
+        True if the structure has a composite slope, false if upper and lower slopes are equal
+
+    Raises
+    ------
+    ValueError
+        Raise error when no slopes are provided
+    """
 
     if np.all(np.isnan(cot_alpha)) and np.all(np.isnan(cot_alpha_down)):
         raise ValueError(
