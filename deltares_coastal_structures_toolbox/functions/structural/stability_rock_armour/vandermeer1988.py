@@ -17,8 +17,8 @@ def check_validity_range(
 ) -> None:
     """Check the parameter values vs the validity range of the Van der Meer (1988) formula
 
-    For all parameters supplied, their values are checked versus the range of test conditions specified in
-    (Van der Meer, 1988). When parameters are nan (by default), they are not checked.
+    For all parameters supplied, their values are checked versus the range of test conditions specified by
+    Van der Meer (1988). When parameters are nan (by default), they are not checked.
 
     For more details see Van der Meer (1988), available here
     https://resolver.tudelft.nl/uuid:67e5692c-0905-4ddd-8487-37fdda9af6b4
