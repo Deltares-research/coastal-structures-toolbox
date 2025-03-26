@@ -15,10 +15,7 @@ unit_properties = {
 }
 
 
-def check_validity_range(
-    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
-    seabed_slope_perc: float | npt.NDArray[np.float64] = np.nan,
-):
+def check_validity_range():
     pass
 
 
@@ -220,8 +217,41 @@ def calculate_correctionfactor_unit_mass_M_by_cotalpha_seabed(
         correction_factor = 1.25
     elif cot_alpha <= 15 and cot_alpha > 10:
         correction_factor = 1.5
-    elif cot_alpha < 10:
+    elif cot_alpha <= 10:
         correction_factor = 2.0
+
+    return correction_factor
+
+
+def calculate_correctionfactor_unit_mass_M_by_percslope_seabed(
+    perc_slope: float | npt.NDArray[np.float64],
+) -> float | npt.NDArray[np.float64]:
+    """Calculate correction factor based on seabed slope in percentage
+
+    A steep foreshore can lead to adverse wave impact against the armour layer
+
+    The design manual states on correction factors: "It should be noted that the factors
+    presented should be used with care as these are based
+    more on project specific model test experience rather than
+    on vast research programs. For the detailed design, physical
+    model tests are always recommended."
+
+    Parameters
+    ----------
+    perc_slope : float | npt.NDArray[np.float64]
+        Seabed slope (%)
+
+    Returns
+    -------
+    correction_factor = float | npt.NDArray[np.float64]
+        Correction factor applied on volume or mass
+    """
+
+    cot_alpha = 100 / perc_slope
+
+    correction_factor = calculate_correctionfactor_unit_mass_M_by_cotalpha_seabed(
+        cot_alpha=cot_alpha
+    )
 
     return correction_factor
 
@@ -271,7 +301,7 @@ def calculate_correctionfactor_unit_mass_M_by_rel_depth(
 
     if rel_depth > 2.5:
         correction_factor = 1.5
-    elif rel_depth > 3.5:
+    if rel_depth > 3.5:
         correction_factor = 2.0
 
     return correction_factor
