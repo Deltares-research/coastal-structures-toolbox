@@ -6,7 +6,7 @@ import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
-import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as taw2002
+import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as wave_runup_taw2002
 
 
 def check_validity_range(
@@ -277,7 +277,7 @@ def calculate_dimensionless_overtopping_discharge_q(
                 )
             )
 
-    cot_alpha_average, _, L_berm = taw2002.determine_average_slope(
+    cot_alpha_average = wave_runup_taw2002.determine_average_slope(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -292,7 +292,11 @@ def calculate_dimensionless_overtopping_discharge_q(
         Hm0, Tmm10, cot_alpha_average
     )
 
-    gamma_b = iteration_procedure_gamma_b(
+    L_berm = wave_runup_taw2002.calculate_berm_length(
+        Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
+    )
+
+    gamma_b = wave_runup_taw2002.iteration_procedure_gamma_b(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -363,118 +367,6 @@ def calculate_influence_oblique_waves_gamma_beta(
 
     gamma_beta = 1 - 0.0033 * beta_calc
     return gamma_beta
-
-
-def calculate_influence_berm_gamma_b(
-    Hm0: float | npt.NDArray[np.float64],
-    z2p: float | npt.NDArray[np.float64],
-    db: float | npt.NDArray[np.float64],
-    B_berm: float | npt.NDArray[np.float64],
-    L_berm: float | npt.NDArray[np.float64],
-) -> float | npt.NDArray[np.float64]:
-    """_summary_
-
-    TODO: fill out properly
-    TAW eq 10, 11 & 12
-
-    Parameters
-    ----------
-    Hm0 : float | npt.NDArray[np.float64]
-        Spectral significant wave height (m)
-    z2p : float | npt.NDArray[np.float64]
-        Wave runup height exceeded by 2% of waves z2% (m)
-    db : float | npt.NDArray[np.float64]
-        Berm height of the structure (m)
-    B_berm : float | npt.NDArray[np.float64]
-        Berm width of the structure (m)
-    L_berm : float | npt.NDArray[np.float64]
-        Berm length of the structure (m)
-
-    Returns
-    -------
-    float | npt.NDArray[np.float64]
-        The influence factor for a berm gamma_b (-)
-    """
-
-    x = np.where(db < 0, z2p, 2 * Hm0)
-    rdh = np.where(
-        (db > 2 * Hm0) | (db < -z2p), 1.0, 0.5 - 0.5 * np.cos(np.pi * db / x)
-    )
-    rB = B_berm / L_berm
-
-    gamma_b = np.max([np.min([1.0 - rB * (1.0 - rdh), 1.0]), 0.6])
-    return gamma_b
-
-
-def iteration_procedure_gamma_b(
-    Hm0: float | npt.NDArray[np.float64],
-    Tmm10: float | npt.NDArray[np.float64],
-    beta: float | npt.NDArray[np.float64],
-    cot_alpha_average: float | npt.NDArray[np.float64],
-    B_berm: float | npt.NDArray[np.float64],
-    L_berm: float | npt.NDArray[np.float64],
-    db: float | npt.NDArray[np.float64],
-    gamma_f: float | npt.NDArray[np.float64] = 1.0,
-) -> float | npt.NDArray[np.float64]:
-    """_summary_
-
-    TODO: fill out properly
-    _extended_summary_
-
-    Parameters
-    ----------
-    Hm0 : float | npt.NDArray[np.float64]
-        Spectral significant wave height (m)
-    Tmm10 : float | npt.NDArray[np.float64]
-        Spectral wave period Tm-1,0 (s)
-    beta : float | npt.NDArray[np.float64]
-        Angle of wave incidence (degrees)
-    cot_alpha_average : float | npt.NDArray[np.float64]
-        Cotangent of the average front-side slope of the structure (-)
-    B_berm : float | npt.NDArray[np.float64]
-        Berm width of the structure (m)
-    L_berm : float | npt.NDArray[np.float64]
-        Berm length of the structure (m)
-    db : float | npt.NDArray[np.float64]
-        Berm height of the structure (m)
-    gamma_f : float | npt.NDArray[np.float64], optional
-        Influence factor for surface roughness (-), by default 1.0
-
-    Returns
-    -------
-    float | npt.NDArray[np.float64]
-        The influence factor for a berm gamma_b (-)
-    """
-
-    if B_berm == 0.0 or L_berm == 0.0:
-        gamma_b = 1.0
-    else:
-        z2p_i1 = taw2002.calculate_wave_runup_height_z2p(
-            Hm0=Hm0,
-            Tmm10=Tmm10,
-            beta=beta,
-            cot_alpha=cot_alpha_average,
-            gamma_b=1.0,
-            gamma_f=gamma_f,
-        )
-
-        gamma_b_runup = calculate_influence_berm_gamma_b(
-            Hm0=Hm0, z2p=z2p_i1, db=db, B_berm=B_berm, L_berm=L_berm
-        )
-
-        z2p_i2 = taw2002.calculate_wave_runup_height_z2p(
-            Hm0=Hm0,
-            Tmm10=Tmm10,
-            beta=beta,
-            cot_alpha=cot_alpha_average,
-            gamma_b=gamma_b_runup,
-            gamma_f=gamma_f,
-        )
-
-        gamma_b = calculate_influence_berm_gamma_b(
-            Hm0=Hm0, z2p=z2p_i2, db=db, B_berm=B_berm, L_berm=L_berm
-        )
-    return gamma_b
 
 
 def calculate_influence_vertical_wall_gamma_v(
