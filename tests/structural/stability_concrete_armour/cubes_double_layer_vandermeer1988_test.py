@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubes_double_layer_vandermeer1988 as cubes_vanDerMeer
+import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubes_double_layer_vanDerMeer1988 as cubes_vanDerMeer
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 
 

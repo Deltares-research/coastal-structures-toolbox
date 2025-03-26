@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubes_double_layer_hudson1959 as cubes_hudson
+import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubes_double_layer_Hudson1959 as cubes_hudson
 
 
 @pytest.mark.parametrize(
