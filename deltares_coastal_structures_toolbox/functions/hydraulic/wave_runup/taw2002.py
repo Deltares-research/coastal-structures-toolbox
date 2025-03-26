@@ -3,6 +3,95 @@ import numpy as np
 import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
+import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
+
+
+def check_validity_range(
+    Hm0: float | npt.NDArray[np.float64] = np.nan,
+    Tmm10: float | npt.NDArray[np.float64] = np.nan,
+    gamma_f: float | npt.NDArray[np.float64] = np.nan,
+    gamma_b: float | npt.NDArray[np.float64] = np.nan,
+    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_v: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+) -> None:
+    """Check the parameter values vs the validity range of the TAW (2002) wave runup formulas
+
+    For all parameters supplied, their values are checked versus the range of test conditions specified by
+    TAW (2002) in the table on pages 39-40. When parameters are nan (by default), they are not checked.
+
+    For more details see TAW (2002), available here:
+    https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m), by default np.nan
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness (-), by default np.nan
+    gamma_b : float | npt.NDArray[np.float64]
+        Influence factor for a berm, by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64]
+        Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_v : float | npt.NDArray[np.float64]
+        Influence factor for a wave wall (-), by default np.nan
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    """
+
+    if not np.any(np.isnan(gamma_b)):
+        core_utility.check_variable_validity_range(
+            "Influence factor for a berm gamma_b", "TAW (2002)", gamma_b, 0.6, 1.0
+        )
+
+    if not np.any(np.isnan(gamma_beta)):
+        core_utility.check_variable_validity_range(
+            "Influence factor for oblique wave incidence gamma_beta",
+            "TAW (2002)",
+            gamma_beta,
+            0.7,
+            1.0,
+        )
+
+    if not np.any(np.isnan(gamma_f)):
+        core_utility.check_variable_validity_range(
+            "Influence factor for surface roughness gamma_f",
+            "TAW (2002)",
+            gamma_f,
+            0.5,
+            1.0,
+        )
+
+    if not np.any(np.isnan(gamma_v)):
+        core_utility.check_variable_validity_range(
+            "The influence factor for a wave wall gamma_v",
+            "TAW (2002)",
+            gamma_v,
+            0.65,
+            1.0,
+        )
+
+    if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
+        smm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
+        core_utility.check_variable_validity_range(
+            "Wave steepness smm10", "TAW (2002)", smm10, 0.001, 0.07
+        )
+
+    if (
+        not np.any(np.isnan(Hm0))
+        and not np.any(np.isnan(Tmm10))
+        and not np.any(np.isnan(cot_alpha))
+    ):
+        ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+            H=Hm0, T=Tmm10, cot_alpha=cot_alpha
+        )
+        core_utility.check_variable_validity_range(
+            "Irribarren number ksi_mm10", "TAW (2002)", ksi_mm10, 0.4, 20.0
+        )
+
+    return
 
 
 def calculate_wave_runup_height_z2p(
@@ -18,9 +107,8 @@ def calculate_wave_runup_height_z2p(
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
 ) -> float | npt.NDArray[np.float64]:
-    """
-    TAW eq 3a & 3b (EurOtop I eq 5.3)
-    """
+
+    # TAW eq 3a & 3b (EurOtop I eq 5.3)
 
     z2p_diml, _ = calculate_dimensionless_wave_runup_height_z2p(
         Hm0=Hm0,
@@ -99,6 +187,16 @@ def calculate_dimensionless_wave_runup_height_z2p(
     z2p_diml = np.min([z2p_diml_eq3a, z2p_diml_eq3b], axis=0)
     max_reached = np.min([z2p_diml_eq3a, z2p_diml_eq3b], axis=0) == z2p_diml_eq3b
 
+    check_validity_range(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        gamma_f=gamma_f,
+        gamma_b=gamma_b,
+        gamma_beta=gamma_beta,
+        gamma_v=1.0,
+        cot_alpha=cot_alpha,
+    )
+
     return z2p_diml, max_reached
 
 
@@ -135,50 +233,6 @@ def calculate_adjusted_influence_roughness_gamma_f(
     )
 
     return gamma_f_adj
-
-
-# def determine_average_slope(
-#     Hm0: float | npt.NDArray[np.float64],
-#     Tmm10: float | npt.NDArray[np.float64],
-#     beta: float | npt.NDArray[np.float64],
-#     cot_alpha_down: float | npt.NDArray[np.float64],
-#     cot_alpha_up: float | npt.NDArray[np.float64],
-#     B_berm: float | npt.NDArray[np.float64],
-#     dh: float | npt.NDArray[np.float64],
-#     gamma_f: float | npt.NDArray[np.float64],
-# ) -> float | npt.NDArray[np.float64]:
-
-#     L_slope_iter1 = 1.5 * Hm0 * cot_alpha_down + B_berm + 1.5 * Hm0 * cot_alpha_up
-#     tan_alpha_average_iter1 = 3 * Hm0 / (L_slope_iter1 - B_berm)
-
-#     # TODO L_berm is unrelated, move to separate function
-#     L_berm = 1.0 * Hm0 * cot_alpha_down + B_berm + 1.0 * Hm0 * cot_alpha_up
-
-#     # do not account for berm influence in wave runup
-#     # TODO double check this
-#     gamma_b = 1.0
-
-#     z2p = calculate_wave_runup_height_z2p(
-#         Hm0=Hm0,
-#         Tmm10=Tmm10,
-#         beta=beta,
-#         cot_alpha=1.0 / tan_alpha_average_iter1,
-#         gamma_b=gamma_b,
-#         gamma_f=gamma_f,
-#     )
-#     L_slope_iter2 = (
-#         np.maximum((1.5 * Hm0 - dh) * cot_alpha_down, 0.0)
-#         + B_berm
-#         + np.maximum((z2p - dh) * cot_alpha_down, 0.0)
-#     )
-#     tan_alpha_average_iter2 = (1.5 * Hm0 + z2p) / (L_slope_iter2 - B_berm)
-
-#     # If both slopes are equal, do not modify that value
-#     cot_alpha_average = np.where(
-#         cot_alpha_down == cot_alpha_down, cot_alpha_down, 1.0 / tan_alpha_average_iter2
-#     )
-
-#     return cot_alpha_average, z2p, L_berm
 
 
 # def determine_average_slope_EurOtopI(
