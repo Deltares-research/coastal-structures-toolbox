@@ -596,7 +596,7 @@ def calculate_adjusted_influence_roughness_gamma_f(
     """Calculate adjusted influence factor for surface roughness gamma_f
 
     In case of longer waves, slope roughness has a smaller effect on the wave runup height. This is reflected in an
-    adjusted value of the influence factor.
+    adjusted value of the influence factor, as described in the last paragraph of Section 2.7 in TAW (2002).
 
     Parameters
     ----------
@@ -612,7 +612,6 @@ def calculate_adjusted_influence_roughness_gamma_f(
     float | npt.NDArray[np.float64]
         The adjusted influence factor for surface roughness gamma_f (-)
     """
-    # Breakwat User Manual eq 3.62
 
     gamma_f_adj = np.where(
         (gamma_b * ksi_mm10 >= 1.8) & (gamma_b * ksi_mm10 <= 10.0),
