@@ -285,7 +285,17 @@ def calculate_dimensionless_overtopping_discharge_q(
                 )
             )
 
-    cot_alpha_average = wave_runup_taw2002.determine_average_slope(
+    # cot_alpha_average = wave_runup_taw2002.determine_average_slope_hand(
+    #     Hm0=Hm0,
+    #     Tmm10=Tmm10,
+    #     beta=beta,
+    #     cot_alpha_down=cot_alpha_down,
+    #     cot_alpha_up=cot_alpha_up,
+    #     B_berm=B_berm,
+    #     db=db,
+    #     gamma_f=gamma_f,
+    # )
+    z2p_for_slope = wave_runup_taw2002.iteration_procedure_z2p(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -294,6 +304,15 @@ def calculate_dimensionless_overtopping_discharge_q(
         B_berm=B_berm,
         db=db,
         gamma_f=gamma_f,
+    )
+
+    cot_alpha_average = wave_runup_taw2002.determine_average_slope(
+        Hm0=Hm0,
+        z2p=z2p_for_slope,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        B_berm=B_berm,
+        db=db,
     )
 
     ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(

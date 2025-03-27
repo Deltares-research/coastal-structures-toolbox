@@ -236,7 +236,17 @@ def calculate_dimensionless_wave_runup_height_z2p(
     if check_composite_slope(
         cot_alpha=cot_alpha, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up
     ):
-        cot_alpha = determine_average_slope(
+        # cot_alpha = determine_average_slope_hand(
+        #     Hm0=Hm0,
+        #     Tmm10=Tmm10,
+        #     beta=beta,
+        #     cot_alpha_down=cot_alpha_down,
+        #     cot_alpha_up=cot_alpha_up,
+        #     B_berm=B_berm,
+        #     db=db,
+        #     gamma_f=gamma_f,
+        # )
+        z2p_for_slope = iteration_procedure_z2p(
             Hm0=Hm0,
             Tmm10=Tmm10,
             beta=beta,
@@ -245,6 +255,15 @@ def calculate_dimensionless_wave_runup_height_z2p(
             B_berm=B_berm,
             db=db,
             gamma_f=gamma_f,
+        )
+
+        cot_alpha = determine_average_slope(
+            Hm0=Hm0,
+            z2p=z2p_for_slope,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+            db=db,
         )
 
     ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
@@ -297,7 +316,7 @@ def calculate_dimensionless_wave_runup_height_z2p(
     return z2p_diml, max_reached
 
 
-def determine_average_slope(
+def determine_average_slope_hand(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     beta: float | npt.NDArray[np.float64],
@@ -364,7 +383,80 @@ def determine_average_slope(
     tan_alpha_average_iter2 = (1.5 * Hm0 + z2p) / (L_slope_iter2 - B_berm)
 
     cot_alpha_average = 1.0 / tan_alpha_average_iter2
+
     return cot_alpha_average
+
+
+def determine_average_slope(
+    Hm0: float | npt.NDArray[np.float64],
+    z2p: float | npt.NDArray[np.float64],
+    cot_alpha_down: float | npt.NDArray[np.float64],
+    cot_alpha_up: float | npt.NDArray[np.float64],
+    B_berm: float | npt.NDArray[np.float64],
+    db: float | npt.NDArray[np.float64],
+) -> float | npt.NDArray[np.float64]:
+
+    L_slope = (1.5 * Hm0 - db) * cot_alpha_down + B_berm + (z2p + db) * cot_alpha_up
+    tan_alpha_average = (1.5 * Hm0 + z2p) / (L_slope - B_berm)
+
+    cot_alpha_average = 1.0 / tan_alpha_average
+
+    return cot_alpha_average
+
+
+def iteration_procedure_z2p(
+    Hm0: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    beta: float | npt.NDArray[np.float64],
+    cot_alpha_down: float | npt.NDArray[np.float64],
+    cot_alpha_up: float | npt.NDArray[np.float64],
+    B_berm: float | npt.NDArray[np.float64],
+    db: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    tolerance: float = 1e-4,
+    max_iter: int = 1000,
+):
+    n_iter = 0
+    z2p_estimate_i1 = 1.5 * Hm0
+    z2p_estimate_i0 = z2p_estimate_i1 + 2 * tolerance
+
+    while n_iter <= max_iter and abs(z2p_estimate_i1 - z2p_estimate_i0) > tolerance:
+        z2p_estimate_i0 = z2p_estimate_i1
+
+        L_berm = calculate_berm_length(
+            Hm0=Hm0,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+        )
+
+        gamma_b = calculate_influence_berm_gamma_b(
+            Hm0=Hm0, z2p=z2p_estimate_i0, db=db, B_berm=B_berm, L_berm=L_berm
+        )
+
+        cot_alpha_average = determine_average_slope(
+            Hm0=Hm0,
+            z2p=z2p_estimate_i0,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+            db=db,
+        )
+
+        z2p_estimate_i1 = calculate_wave_runup_height_z2p(
+            Hm0=Hm0,
+            Tmm10=Tmm10,
+            beta=beta,
+            cot_alpha=cot_alpha_average,
+            gamma_b=gamma_b,
+            gamma_f=gamma_f,
+        )
+
+        n_iter += 1
+
+    z2p = z2p_estimate_i1
+
+    return z2p
 
 
 def calculate_berm_length(
