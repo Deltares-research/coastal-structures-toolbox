@@ -109,8 +109,8 @@ def calculate_wave_runup_height_z2p(
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the wave runup height with a 2% probability of exceedance z2% with the TAW (2002) formula.
 
-    The 2% exceedance wave runup height z2% (m) is calculated using the TAW (2002) formulas. Here eq. 3a and 3b from
-    TAW (2002) are implemented for design calculations and eq. 5a and 5b for best fit calculations (using the option
+    The 2% exceedance wave runup height z2% (m) is calculated using the TAW (2002) formulas. Here eqs. 3a and 3b from
+    TAW (2002) are implemented for design calculations and eqs. 5a and 5b for best fit calculations (using the option
     best_fit=True).
 
     For more details see TAW (2002), available here (in Dutch):
@@ -185,7 +185,7 @@ def calculate_dimensionless_wave_runup_height_z2p(
     with the TAW (2002) formula.
 
     The dimensionless 2% exceedance wave runup height z2%/Hm0 (-) is calculated using the TAW (2002) formulas.
-    Here eq. 3a and 3b from TAW (2002) are implemented for design calculations and eq. 5a and 5b for best fit
+    Here eqs. 3a and 3b from TAW (2002) are implemented for design calculations and eqs. 5a and 5b for best fit
     calculations (using the option best_fit=True).
 
     For more details see TAW (2002), available here (in Dutch):
