@@ -3,7 +3,6 @@ import numpy as np
 import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.hudson1959 as hudson
-import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 
 unit_properties = {
     "KD": {
