@@ -166,7 +166,7 @@ def calculate_overtopping_discharge_q(
     cot_alpha_up : float | npt.NDArray[np.float64]
         Cotangent of the upper part of the front-side slope of the structure (-)
     Rc : float | npt.NDArray[np.float64]
-        Freeboard of the structure (m)
+        Crest freeboard of the structure (m)
     B_berm : float | npt.NDArray[np.float64]
         Berm width of the structure (m)
     db : float | npt.NDArray[np.float64]
@@ -242,7 +242,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     cot_alpha_up : float | npt.NDArray[np.float64]
         Cotangent of the upper part of the front-side slope of the structure (-)
     Rc : float | npt.NDArray[np.float64]
-        Freeboard of the structure (m)
+        Crest freeboard of the structure (m)
     B_berm : float | npt.NDArray[np.float64]
         Berm width of the structure (m)
     db : float | npt.NDArray[np.float64]
@@ -419,6 +419,82 @@ def calculate_influence_wave_wall_gamma_v(
     return gamma_v
 
 
+def calculate_crest_freeboard_Rc(
+    Hm0: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    beta: float | npt.NDArray[np.float64],
+    cot_alpha_down: float | npt.NDArray[np.float64],
+    cot_alpha_up: float | npt.NDArray[np.float64],
+    q: float | npt.NDArray[np.float64],
+    B_berm: float | npt.NDArray[np.float64],
+    db: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64] = 1.0,
+    gamma_v: float | npt.NDArray[np.float64] = 1.0,
+    sigma: float | npt.NDArray[np.float64] = 0,
+    use_best_fit: bool = False,
+) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+    """Calculate the crest freeboard Rc with the TAW (2002) formula.
+
+    The crest freeboard Rc (m) is calculated using the TAW (2002) formulas. Here eqs. 22 and 23 from TAW (2002)
+    are implemented for design calculations and eqs. 24 and 25 for best fit calculations (using the option
+    best_fit=True).
+
+    For more details see TAW (2002), available here (in Dutch):
+    https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    cot_alpha_down : float | npt.NDArray[np.float64]
+        Cotangent of the lower part of the front-side slope of the structure (-)
+    cot_alpha_up : float | npt.NDArray[np.float64]
+        Cotangent of the upper part of the front-side slope of the structure (-)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    B_berm : float | npt.NDArray[np.float64]
+        Berm width of the structure (m)
+    db : float | npt.NDArray[np.float64]
+        Berm height of the structure (m)
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    gamma_v : float | npt.NDArray[np.float64], optional
+        Influence factor for a wave wall (-), by default 1.0
+    sigma : float | npt.NDArray[np.float64], optional
+        Apply sigma standard deviations to the best fit coefficients, by default 0
+    use_best_fit : bool, optional
+        Use the coefficients of the best fit instead of the more conservative design variant, by default False
+
+    Returns
+    -------
+    tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
+        The crest freeboard of the structure Rc (m)
+    """
+
+    Rc_diml_TAW, max_reached = calculate_dimensionless_crest_freeboard(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        q=q,
+        B_berm=B_berm,
+        db=db,
+        gamma_f=gamma_f,
+        gamma_v=gamma_v,
+        sigma=sigma,
+        use_best_fit=use_best_fit,
+    )
+
+    Rc = Rc_diml_TAW * Hm0
+
+    return Rc, max_reached
+
+
 def calculate_dimensionless_crest_freeboard(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
@@ -433,7 +509,48 @@ def calculate_dimensionless_crest_freeboard(
     sigma: float | npt.NDArray[np.float64] = 0,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
-    """Calculate the dimensionless crest freeboard Rc/Hm0 with the TAW (2002) formula."""
+    """Calculate the dimensionless crest freeboard Rc/Hm0 with the TAW (2002) formula.
+
+    The dimensionless crest freeboard Rc/Hm0 (-) is calculated using the TAW (2002) formulas. Here eqs. 22
+    and 23 from TAW (2002) are implemented for design calculations and eqs. 24 and 25 for best fit calculations
+    (using the option best_fit=True).
+
+    For more details see TAW (2002), available here (in Dutch):
+    https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
+
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    cot_alpha_down : float | npt.NDArray[np.float64]
+        Cotangent of the lower part of the front-side slope of the structure (-)
+    cot_alpha_up : float | npt.NDArray[np.float64]
+        Cotangent of the upper part of the front-side slope of the structure (-)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    B_berm : float | npt.NDArray[np.float64]
+        Berm width of the structure (m)
+    db : float | npt.NDArray[np.float64]
+        Berm height of the structure (m)
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    gamma_v : float | npt.NDArray[np.float64], optional
+        Influence factor for a wave wall (-), by default 1.0
+    sigma : float | npt.NDArray[np.float64], optional
+        Apply sigma standard deviations to the best fit coefficients, by default 0
+    use_best_fit : bool, optional
+        Use the coefficients of the best fit instead of the more conservative design variant, by default False
+
+    Returns
+    -------
+    tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
+        The dimensionless crest freeboard of the structure Rc/Hm0 (-)
+    """
 
     if use_best_fit:
         c1 = 4.75
@@ -505,6 +622,7 @@ def calculate_dimensionless_crest_freeboard(
     Rc_diml_eq24 = (
         np.log(
             (1.0 / 0.067)
+            * np.sqrt(1.0 / cot_alpha_average)
             * (1.0 / gamma_b)
             * (1.0 / ksi_mm10)
             * q
