@@ -1,6 +1,6 @@
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.Xbloc as Xbloc
+import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.xbloc as Xbloc
 
 
 @pytest.mark.parametrize(
