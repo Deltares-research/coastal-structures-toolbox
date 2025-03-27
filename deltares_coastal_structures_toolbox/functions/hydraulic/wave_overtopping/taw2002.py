@@ -317,6 +317,10 @@ def calculate_dimensionless_overtopping_discharge_q(
 
     gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta)
 
+    gamma_f_adj = wave_runup_taw2002.calculate_adjusted_influence_roughness_gamma_f(
+        gamma_f=gamma_f, gamma_b=gamma_b, ksi_mm10=ksi_mm10
+    )
+
     q_diml_eq24 = (
         (0.067 / np.sqrt(1.0 / cot_alpha_average))
         * ksi_mm10
@@ -325,11 +329,11 @@ def calculate_dimensionless_overtopping_discharge_q(
             -1
             * (c1 + cor1)
             * (Rc / Hm0)
-            * (1 / (ksi_mm10 * gamma_b * gamma_f * gamma_beta * gamma_v))
+            * (1 / (ksi_mm10 * gamma_b * gamma_f_adj * gamma_beta * gamma_v))
         )
     )
     q_diml_eq25 = 0.2 * np.exp(
-        -1 * (c2 + cor2) * (Rc / Hm0) * (1 / (gamma_f * gamma_beta))
+        -1 * (c2 + cor2) * (Rc / Hm0) * (1 / (gamma_f_adj * gamma_beta))
     )
 
     q_diml_TAW = np.min([q_diml_eq24, q_diml_eq25], axis=0)
