@@ -153,9 +153,8 @@ def calculate_wave_runup_height_z2p(
         The 2% exceedance wave runup height z2% (m) and a boolean indicating
         whether the maximum value formula was used
     """
-    # TODO include reference to EurOtop I (2007) and its equations in the docstring?
 
-    z2p_diml, _ = calculate_dimensionless_wave_runup_height_z2p(
+    z2p_diml, max_reached = calculate_dimensionless_wave_runup_height_z2p(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -171,7 +170,7 @@ def calculate_wave_runup_height_z2p(
 
     z2p = z2p_diml * Hm0
 
-    return z2p
+    return z2p, max_reached
 
 
 def calculate_dimensionless_wave_runup_height_z2p(
@@ -231,7 +230,6 @@ def calculate_dimensionless_wave_runup_height_z2p(
         The dimensionless 2% exceedance wave runup height z2%/Hm0 (-) and a boolean indicating
         whether the maximum value formula was used
     """
-    # TODO include reference to EurOtop I (2007) and its equations in the docstring?
 
     if use_best_fit:
         c1 = 1.65
