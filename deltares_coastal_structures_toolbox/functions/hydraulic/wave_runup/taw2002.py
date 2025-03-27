@@ -23,6 +23,9 @@ def check_validity_range(
     For more details see TAW (2002), available here (in Dutch):
     https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
 
+    The TAW (2002) formulas are also included in the EurOtop (2007) manual, available here (in English):
+    https://www.overtopping-manual.com/assets/downloads/EAK-K073_EurOtop_2007.pdf
+
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
@@ -116,6 +119,9 @@ def calculate_wave_runup_height_z2p(
     For more details see TAW (2002), available here (in Dutch):
     https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
 
+    The TAW (2002) formulas are also included in the EurOtop (2007) manual, available here (in English):
+    https://www.overtopping-manual.com/assets/downloads/EAK-K073_EurOtop_2007.pdf
+
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
@@ -190,6 +196,9 @@ def calculate_dimensionless_wave_runup_height_z2p(
 
     For more details see TAW (2002), available here (in Dutch):
     https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
+
+    The TAW (2002) formulas are also included in the EurOtop (2007) manual, available here (in English):
+    https://www.overtopping-manual.com/assets/downloads/EAK-K073_EurOtop_2007.pdf
 
     Parameters
     ----------
