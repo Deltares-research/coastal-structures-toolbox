@@ -21,9 +21,13 @@ def check_validity_range(
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_v: float | npt.NDArray[np.float64] = np.nan,
 ) -> None:
-    """_summary_
+    """Check the parameter values vs the validity range of the TAW (2002) wave overtopping formula
 
-    _extended_summary_
+    For all parameters supplied, their values are checked versus the range of test conditions specified by
+    TAW (2002) in the table on pages 39-40. When parameters are nan (by default), they are not checked.
+
+    For more details see TAW (2002), available here (in Dutch):
+    https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
 
     Parameters
     ----------
@@ -142,10 +146,12 @@ def calculate_overtopping_discharge_q(
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the mean wave overtopping discharge q with the TAW (2002) formula.
 
-    TODO: fill out properly
+    The mean wave overtopping discharge q (m^3/s/m) is calculated using the TAW (2002) formulas. Here eqs. 22 and 23
+    from TAW (2002) are implemented for design calculations and eqs. 24 and 25 for best fit calculations (using the
+    option best_fit=True).
 
-    TAW (2002) formula for MEAN through data (eqs 24 and 25 from TAW: best fit, not for design)
-    output = DIMENSIONLESS mean overtopping discharge (q/sqrt(g*Hm0^3))
+    For more details see TAW (2002), available here (in Dutch):
+    https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
 
     Parameters
     ----------
@@ -214,12 +220,14 @@ def calculate_dimensionless_overtopping_discharge_q(
     sigma: float | npt.NDArray[np.float64] = 0,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
-    """_summary_
+    """Calculate the dimensionless mean wave overtopping discharge q with the TAW (2002) formula.
 
-    TODO: fill out properly
+    The dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-) is calculated using the TAW (2002) formulas.
+    Here eqs. 22 and 23 from TAW (2002) are implemented for design calculations and eqs. 24 and 25 for best fit
+    calculations (using the option best_fit=True).
 
-    TAW (2002) formula for MEAN through data (eqs 24 and 25 from TAW: best fit, not for design)
-    output = DIMENSIONLESS mean overtopping discharge (q/sqrt(g*Hm0^3))
+    For more details see TAW (2002), available here (in Dutch):
+    https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
 
     Parameters
     ----------
@@ -345,37 +353,42 @@ def calculate_dimensionless_overtopping_discharge_q(
 
 def calculate_influence_oblique_waves_gamma_beta(
     beta: float | npt.NDArray[np.float64],
+    c_gamma_beta: float = 0.0033,
+    max_angle: float = 80.0,
 ) -> float | npt.NDArray[np.float64]:
-    """_summary_
+    """Calculate the influence factor for oblique wave incidence gamma_beta
 
-    TODO: fill out properly
-    TAW eq 9
+    The influence factor for oblique wave incidence gamma_beta (-) on wave overtopping is calculated using
+    eq. 9 from TAW (2002). Note that this uses the implementation for wave runup, but changes the coefficient
+    to the value used for wave overtopping
 
     Parameters
     ----------
     beta : float | npt.NDArray[np.float64]
         Angle of wave incidence (degrees)
+    c_gamma_beta : float, optional
+        Coefficient for wave overtopping, by default 0.0033
+    max_angle : float, optional
+        Maximum angle of wave incidence, by default 80.0
 
     Returns
     -------
     float | npt.NDArray[np.float64]
         The influence factor for oblique wave incidence gamma_beta (-)
     """
+    gamma_beta = wave_runup_taw2002.calculate_influence_oblique_waves_gamma_beta(
+        beta=beta, c_gamma_beta=c_gamma_beta, max_angle=max_angle
+    )
 
-    beta_calc = np.where(beta < 0, np.abs(beta), beta)
-    beta_calc = np.where(beta_calc > 80, 80, beta_calc)
-
-    gamma_beta = 1 - 0.0033 * beta_calc
     return gamma_beta
 
 
-def calculate_influence_vertical_wall_gamma_v(
+def calculate_influence_wave_wall_gamma_v(
     alpha_wall_deg: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
-    """_summary_
+    """Calculate the influence factor for wave walls gamma_v
 
-    TODO: fill out properly
-    TAW eq 16 (alpha_wall_deg in degrees!)
+    The influence factor for wave walls gamma_v (-) on wave overtopping is calculated using eq. 16 from TAW (2002).
 
     Parameters
     ----------
@@ -388,5 +401,6 @@ def calculate_influence_vertical_wall_gamma_v(
         The influence factor for a wave wall gamma_v (-)
     """
 
-    gamma_v = np.where(alpha_wall_deg < 45, 1.0, 1.35 - 0.0078 * alpha_wall_deg)
+    gamma_v = np.where(alpha_wall_deg <= 45, 1.0, 1.35 - 0.0078 * alpha_wall_deg)
+
     return gamma_v
