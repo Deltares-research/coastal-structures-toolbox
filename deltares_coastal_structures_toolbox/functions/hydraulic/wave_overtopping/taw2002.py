@@ -285,16 +285,6 @@ def calculate_dimensionless_overtopping_discharge_q(
                 )
             )
 
-    # cot_alpha_average = wave_runup_taw2002.determine_average_slope_hand(
-    #     Hm0=Hm0,
-    #     Tmm10=Tmm10,
-    #     beta=beta,
-    #     cot_alpha_down=cot_alpha_down,
-    #     cot_alpha_up=cot_alpha_up,
-    #     B_berm=B_berm,
-    #     db=db,
-    #     gamma_f=gamma_f,
-    # )
     z2p_for_slope = wave_runup_taw2002.iteration_procedure_z2p(
         Hm0=Hm0,
         Tmm10=Tmm10,
@@ -345,14 +335,14 @@ def calculate_dimensionless_overtopping_discharge_q(
         * ksi_mm10
         * gamma_b
         * np.exp(
-            -1
+            -1.0
             * (c1 + cor1)
             * (Rc / Hm0)
-            * (1 / (ksi_mm10 * gamma_b * gamma_f_adj * gamma_beta * gamma_v))
+            * (1.0 / (ksi_mm10 * gamma_b * gamma_f_adj * gamma_beta * gamma_v))
         )
     )
     q_diml_eq25 = 0.2 * np.exp(
-        -1 * (c2 + cor2) * (Rc / Hm0) * (1 / (gamma_f_adj * gamma_beta))
+        -1.0 * (c2 + cor2) * (Rc / Hm0) * (1.0 / (gamma_f_adj * gamma_beta))
     )
 
     q_diml_TAW = np.min([q_diml_eq24, q_diml_eq25], axis=0)
@@ -427,3 +417,128 @@ def calculate_influence_wave_wall_gamma_v(
     gamma_v = np.where(alpha_wall_deg <= 45, 1.0, 1.35 - 0.0078 * alpha_wall_deg)
 
     return gamma_v
+
+
+def calculate_dimensionless_crest_freeboard(
+    Hm0: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    beta: float | npt.NDArray[np.float64],
+    cot_alpha_down: float | npt.NDArray[np.float64],
+    cot_alpha_up: float | npt.NDArray[np.float64],
+    q: float | npt.NDArray[np.float64],
+    B_berm: float | npt.NDArray[np.float64],
+    db: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64] = 1.0,
+    gamma_v: float | npt.NDArray[np.float64] = 1.0,
+    sigma: float | npt.NDArray[np.float64] = 0,
+    use_best_fit: bool = False,
+) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+    """Calculate the dimensionless crest freeboard Rc/Hm0 with the TAW (2002) formula."""
+
+    if use_best_fit:
+        c1 = 4.75
+        c2 = 2.6
+    else:
+        c1 = 4.3
+        c2 = 2.3
+
+    if sigma == 0:
+        cor1 = 0
+        cor2 = 0
+    else:
+        if use_best_fit:
+            cor1 = 0.5 * sigma
+            cor2 = 0.35 * sigma
+        else:
+            warnings.warn(
+                (
+                    "Sigma is only applicable to the best fit coefficients! The design values of the coefficients "
+                    "alreaddy account for uncertainty with conservative coefficient values."
+                )
+            )
+
+    z2p_for_slope = wave_runup_taw2002.iteration_procedure_z2p(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        B_berm=B_berm,
+        db=db,
+        gamma_f=gamma_f,
+    )
+
+    cot_alpha_average = wave_runup_taw2002.determine_average_slope(
+        Hm0=Hm0,
+        z2p=z2p_for_slope,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        B_berm=B_berm,
+        db=db,
+    )
+
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        Hm0, Tmm10, cot_alpha_average
+    )
+
+    L_berm = wave_runup_taw2002.calculate_berm_length(
+        Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
+    )
+
+    gamma_b = wave_runup_taw2002.iteration_procedure_gamma_b(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha_average=cot_alpha_average,
+        B_berm=B_berm,
+        L_berm=L_berm,
+        db=db,
+        gamma_f=gamma_f,
+    )
+
+    gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta)
+
+    gamma_f_adj = wave_runup_taw2002.calculate_adjusted_influence_roughness_gamma_f(
+        gamma_f=gamma_f, gamma_b=gamma_b, ksi_mm10=ksi_mm10
+    )
+
+    Rc_diml_eq24 = (
+        np.log(
+            (1.0 / 0.067)
+            * (1.0 / gamma_b)
+            * (1.0 / ksi_mm10)
+            * q
+            / np.sqrt(9.81 * Hm0**3)
+        )
+        * (-1.0 / (c1 + cor1))
+        * ksi_mm10
+        * gamma_b
+        * gamma_f_adj
+        * gamma_beta
+        * gamma_v
+    )
+
+    Rc_diml_eq25 = (
+        np.log(5 * q / np.sqrt(9.81 * Hm0**3))
+        * (-1.0 / (c2 + cor2))
+        * gamma_f_adj
+        * gamma_beta
+    )
+
+    Rc_diml_TAW = np.min([Rc_diml_eq24, Rc_diml_eq25], axis=0)
+    max_reached = np.min([Rc_diml_eq24, Rc_diml_eq25], axis=0) == Rc_diml_eq25
+
+    check_validity_range(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha=cot_alpha_average,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        gamma_f=gamma_f,
+        gamma_b=gamma_b,
+        gamma_beta=gamma_beta,
+        gamma_v=gamma_v,
+    )
+
+    return Rc_diml_TAW, max_reached
