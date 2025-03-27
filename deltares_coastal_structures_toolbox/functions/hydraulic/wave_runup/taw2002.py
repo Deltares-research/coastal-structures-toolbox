@@ -109,8 +109,8 @@ def calculate_wave_runup_height_z2p(
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the wave runup height with a 2% probability of exceedance z2% with the TAW (2002) formula.
 
-    The 2% exceedance wave runup height z2% (m) is calculated using the TAW (2002) formulas. Here eq. 3a and 3b from
-    TAW (2002) are implemented for design calculations and eq. 5a and 5b for best fit calculations (using the option
+    The 2% exceedance wave runup height z2% (m) is calculated using the TAW (2002) formulas. Here eqs. 3a and 3b from
+    TAW (2002) are implemented for design calculations and eqs. 5a and 5b for best fit calculations (using the option
     best_fit=True).
 
     For more details see TAW (2002), available here (in Dutch):
@@ -185,7 +185,7 @@ def calculate_dimensionless_wave_runup_height_z2p(
     with the TAW (2002) formula.
 
     The dimensionless 2% exceedance wave runup height z2%/Hm0 (-) is calculated using the TAW (2002) formulas.
-    Here eq. 3a and 3b from TAW (2002) are implemented for design calculations and eq. 5a and 5b for best fit
+    Here eqs. 3a and 3b from TAW (2002) are implemented for design calculations and eqs. 5a and 5b for best fit
     calculations (using the option best_fit=True).
 
     For more details see TAW (2002), available here (in Dutch):
@@ -563,16 +563,23 @@ def calculate_influence_berm_gamma_b(
 
 def calculate_influence_oblique_waves_gamma_beta(
     beta: float | npt.NDArray[np.float64],
+    c_gamma_beta: float = 0.0022,
+    max_angle: float = 80.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the influence factor for oblique wave incidence gamma_beta
 
     The influence factor for oblique wave incidence gamma_beta (-) on wave runup is calculated using
-    eq. 8 from TAW (2002).
+    eq. 8 from TAW (2002). Note that this implementation can also be used for wave overtopping by
+    changing the c_gamma_beta to 0.0033
 
     Parameters
     ----------
     beta : float | npt.NDArray[np.float64]
         Angle of wave incidence (degrees)
+    c_gamma_beta : float, optional
+        Coefficient for wave runup, by default 0.0022
+    max_angle : float, optional
+        Maximum angle of wave incidence, by default 80.0
 
     Returns
     -------
@@ -581,9 +588,9 @@ def calculate_influence_oblique_waves_gamma_beta(
     """
 
     beta_calc = np.where(beta < 0, np.abs(beta), beta)
-    beta_calc = np.where(beta_calc > 80, 80, beta_calc)
+    beta_calc = np.where(beta_calc > max_angle, max_angle, beta_calc)
 
-    gamma_beta = 1 - 0.0022 * beta_calc
+    gamma_beta = 1 - c_gamma_beta * beta_calc
 
     return gamma_beta
 
