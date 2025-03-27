@@ -65,7 +65,12 @@ import numpy.typing as npt
 
 
 def ru_EuroTOP2(
-    Hm0, slope_tana, steepness_s0_mm10, gamma_b=1.0, gamma_f=1.0, gamma_beta=1.0
+    Hm0: float | npt.NDArray[np.float64],
+    slope_tana: float | npt.NDArray[np.float64],
+    steepness_s0_mm10: float | npt.NDArray[np.float64],
+    gamma_b: float = 1.0,
+    gamma_f: float = 1.0,
+    gamma_beta: float = 1.0,
 ):
     """
     ET2 eq 5.1, 5.2
