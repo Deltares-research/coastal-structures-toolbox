@@ -32,7 +32,7 @@ def test_z2p_backward(
     gamma_f,
     z2p_expected,
 ):
-    z2p_calculated = taw2002.calculate_wave_runup_height_z2p(
+    z2p_calculated, _ = taw2002.calculate_wave_runup_height_z2p(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,

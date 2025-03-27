@@ -429,7 +429,7 @@ def iteration_procedure_z2p(
             db=db,
         )
 
-        z2p_estimate_i1 = calculate_wave_runup_height_z2p(
+        z2p_estimate_i1, _ = calculate_wave_runup_height_z2p(
             Hm0=Hm0,
             Tmm10=Tmm10,
             beta=beta,
@@ -567,7 +567,7 @@ def iteration_procedure_gamma_b(
     if B_berm == 0.0 or L_berm == 0.0:
         gamma_b = 1.0
     else:
-        z2p_i1 = calculate_wave_runup_height_z2p(
+        z2p_i1, _ = calculate_wave_runup_height_z2p(
             Hm0=Hm0,
             Tmm10=Tmm10,
             beta=beta,
@@ -580,7 +580,7 @@ def iteration_procedure_gamma_b(
             Hm0=Hm0, z2p=z2p_i1, db=db, B_berm=B_berm, L_berm=L_berm
         )
 
-        z2p_i2 = calculate_wave_runup_height_z2p(
+        z2p_i2, _ = calculate_wave_runup_height_z2p(
             Hm0=Hm0,
             Tmm10=Tmm10,
             beta=beta,
