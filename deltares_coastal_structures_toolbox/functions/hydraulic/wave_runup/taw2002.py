@@ -236,16 +236,6 @@ def calculate_dimensionless_wave_runup_height_z2p(
     if check_composite_slope(
         cot_alpha=cot_alpha, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up
     ):
-        # cot_alpha = determine_average_slope_hand(
-        #     Hm0=Hm0,
-        #     Tmm10=Tmm10,
-        #     beta=beta,
-        #     cot_alpha_down=cot_alpha_down,
-        #     cot_alpha_up=cot_alpha_up,
-        #     B_berm=B_berm,
-        #     db=db,
-        #     gamma_f=gamma_f,
-        # )
         z2p_for_slope = iteration_procedure_z2p(
             Hm0=Hm0,
             Tmm10=Tmm10,
@@ -316,15 +306,13 @@ def calculate_dimensionless_wave_runup_height_z2p(
     return z2p_diml, max_reached
 
 
-def determine_average_slope_hand(
+def determine_average_slope(
     Hm0: float | npt.NDArray[np.float64],
-    Tmm10: float | npt.NDArray[np.float64],
-    beta: float | npt.NDArray[np.float64],
+    z2p: float | npt.NDArray[np.float64],
     cot_alpha_down: float | npt.NDArray[np.float64],
     cot_alpha_up: float | npt.NDArray[np.float64],
     B_berm: float | npt.NDArray[np.float64],
     db: float | npt.NDArray[np.float64],
-    gamma_f: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
     """Determine the average slope of the front-side of the structure in case of composite slopes
 
@@ -336,10 +324,8 @@ def determine_average_slope_hand(
     ----------
     Hm0 : float | npt.NDArray[np.float64]
         Spectral significant wave height (m)
-    Tmm10 : float | npt.NDArray[np.float64]
-        Spectral wave period Tm-1,0 (s)
-    beta : float | npt.NDArray[np.float64]
-        Angle of wave incidence (degrees)
+    z2p : float | npt.NDArray[np.float64]
+        The 2% exceedance wave runup height z2% (m)
     cot_alpha_down : float | npt.NDArray[np.float64]
         Cotangent of the lower part of the front-side slope of the structure (-)
     cot_alpha_up : float | npt.NDArray[np.float64]
@@ -348,53 +334,12 @@ def determine_average_slope_hand(
         Berm width of the structure (m)
     db : float | npt.NDArray[np.float64]
         Berm height of the structure (m)
-    gamma_f : float | npt.NDArray[np.float64]
-        Influence factor for surface roughness (-)
 
     Returns
     -------
     float | npt.NDArray[np.float64]
         Average cotangent of the front-side slope of the structure cot_alpha_average (-)
     """
-
-    # This is the procedure as described in section 5.3.4 of the EurOtop (2007) manual
-
-    L_slope_iter1 = (
-        (1.5 * Hm0 - db) * cot_alpha_down + B_berm + (1.5 * Hm0 + db) * cot_alpha_up
-    )
-    tan_alpha_average_iter1 = 3 * Hm0 / (L_slope_iter1 - B_berm)
-
-    # do not account for berm influence in wave runup
-    # TODO double check this
-    gamma_b = 1.0
-
-    z2p = calculate_wave_runup_height_z2p(
-        Hm0=Hm0,
-        Tmm10=Tmm10,
-        beta=beta,
-        cot_alpha=1.0 / tan_alpha_average_iter1,
-        gamma_b=gamma_b,
-        gamma_f=gamma_f,
-    )
-    # TODO the -db / +db terms come from BREAKWAT -> double check with sheet Alex
-    L_slope_iter2 = (
-        (1.5 * Hm0 - db) * cot_alpha_down + B_berm + (z2p + db) * cot_alpha_up
-    )
-    tan_alpha_average_iter2 = (1.5 * Hm0 + z2p) / (L_slope_iter2 - B_berm)
-
-    cot_alpha_average = 1.0 / tan_alpha_average_iter2
-
-    return cot_alpha_average
-
-
-def determine_average_slope(
-    Hm0: float | npt.NDArray[np.float64],
-    z2p: float | npt.NDArray[np.float64],
-    cot_alpha_down: float | npt.NDArray[np.float64],
-    cot_alpha_up: float | npt.NDArray[np.float64],
-    B_berm: float | npt.NDArray[np.float64],
-    db: float | npt.NDArray[np.float64],
-) -> float | npt.NDArray[np.float64]:
 
     L_slope = (1.5 * Hm0 - db) * cot_alpha_down + B_berm + (z2p + db) * cot_alpha_up
     tan_alpha_average = (1.5 * Hm0 + z2p) / (L_slope - B_berm)
@@ -415,7 +360,41 @@ def iteration_procedure_z2p(
     gamma_f: float | npt.NDArray[np.float64],
     tolerance: float = 1e-4,
     max_iter: int = 1000,
-):
+) -> float | npt.NDArray[np.float64]:
+    """Iterative procedure to determine the 2% exceedance wave runup height z2%
+
+    This iterative procedure to determine the 2% exceedance wave runup height z2% (m) is used in the determination
+    of the average slope of the front-side of the structure in case of composite slopes.
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    cot_alpha_down : float | npt.NDArray[np.float64]
+        Cotangent of the lower part of the front-side slope of the structure (-)
+    cot_alpha_up : float | npt.NDArray[np.float64]
+        Cotangent of the upper part of the front-side slope of the structure (-)
+    B_berm : float | npt.NDArray[np.float64]
+        Berm width of the structure (m)
+    db : float | npt.NDArray[np.float64]
+        Berm height of the structure (m)
+    gamma_f : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness (-)
+    tolerance : float, optional
+        Maximum allowable tolerance for the z2% iterative procedure, by default 1e-4
+    max_iter : int, optional
+        Maximum number of iterations in the z2% iterative procedure, by default 1000
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The 2% exceedance wave runup height z2% (m)
+    """
+
     n_iter = 0
     z2p_estimate_i1 = 1.5 * Hm0
     z2p_estimate_i0 = z2p_estimate_i1 + 2 * tolerance
