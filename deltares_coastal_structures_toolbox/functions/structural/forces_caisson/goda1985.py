@@ -2,8 +2,8 @@
 import numpy as np
 import numpy.typing as npt
 
-import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
-import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
+# import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
+# import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 import deltares_wave_toolbox.cores.core_dispersion as dispersion
 
 
@@ -48,7 +48,7 @@ def calculate_forces(
 
     # pressures
     p1 = 0.5 * (1 + cos_beta) * (alpha_1 + alpha_2 * cos_beta**2) * rho_water * g * HD
-    p2 = p1 / (np.cosh(2 * np.pi * h_s / L))
+    # p2 = p1 / (np.cosh(2 * np.pi * h_s / L))
     p3 = alpha_3 * p1
     if etastar > Rc:
         p4 = p1 * (1 - (Rc / etastar))
