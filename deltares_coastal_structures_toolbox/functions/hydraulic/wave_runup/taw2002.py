@@ -12,7 +12,6 @@ def check_validity_range(
     gamma_f: float | npt.NDArray[np.float64] = np.nan,
     gamma_b: float | npt.NDArray[np.float64] = np.nan,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
-    gamma_v: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
 ) -> None:
     """Check the parameter values vs the validity range of the TAW (2002) wave runup formula
@@ -67,15 +66,6 @@ def check_validity_range(
             1.0,
         )
 
-    if not np.any(np.isnan(gamma_v)):
-        core_utility.check_variable_validity_range(
-            "The influence factor for a wave wall gamma_v",
-            "TAW (2002)",
-            gamma_v,
-            0.65,
-            1.0,
-        )
-
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
         core_utility.check_variable_validity_range(
@@ -100,7 +90,8 @@ def check_validity_range(
 def calculate_wave_runup_height_z2p(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
-    beta: float | npt.NDArray[np.float64],
+    beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_b: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
     B_berm: float | npt.NDArray[np.float64] = 0.0,
@@ -108,6 +99,10 @@ def calculate_wave_runup_height_z2p(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
+    c1: float = 1.75,
+    c2: float = 4.3,
+    c3: float = 1.6,
+    c4: float = 1.0,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the wave runup height with a 2% probability of exceedance z2% with the TAW (2002) formula.
@@ -128,10 +123,12 @@ def calculate_wave_runup_height_z2p(
         Spectral significant wave height (m)
     Tmm10 : float | npt.NDArray[np.float64]
         Spectral wave period Tm-1,0 (s)
-    beta : float | npt.NDArray[np.float64]
-        Angle of wave incidence (degrees)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
     gamma_b : float | npt.NDArray[np.float64], optional
-        Influence factor for a berm, by default np.nan
+        Influence factor for a berm (-), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional
@@ -164,7 +161,12 @@ def calculate_wave_runup_height_z2p(
         cot_alpha_down=cot_alpha_down,
         cot_alpha_up=cot_alpha_up,
         gamma_b=gamma_b,
+        gamma_beta=gamma_beta,
         gamma_f=gamma_f,
+        c1=c1,
+        c2=c2,
+        c3=c3,
+        c4=c4,
         use_best_fit=use_best_fit,
     )
 
@@ -176,7 +178,8 @@ def calculate_wave_runup_height_z2p(
 def calculate_dimensionless_wave_runup_height_z2p(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
-    beta: float | npt.NDArray[np.float64],
+    beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_b: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
     B_berm: float | npt.NDArray[np.float64] = 0.0,
@@ -184,6 +187,10 @@ def calculate_dimensionless_wave_runup_height_z2p(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
+    c1: float = 1.75,
+    c2: float = 4.3,
+    c3: float = 1.6,
+    c4: float = 1.0,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the dimensionless wave runup height with a 2% probability of exceedance z2%/Hm0
@@ -205,10 +212,12 @@ def calculate_dimensionless_wave_runup_height_z2p(
         Spectral significant wave height (m)
     Tmm10 : float | npt.NDArray[np.float64]
         Spectral wave period Tm-1,0 (s)
-    beta : float | npt.NDArray[np.float64]
-        Angle of wave incidence (degrees)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
     gamma_b : float | npt.NDArray[np.float64], optional
-        Influence factor for a berm, by default np.nan
+        Influence factor for a berm (-), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional
@@ -235,10 +244,10 @@ def calculate_dimensionless_wave_runup_height_z2p(
         c1 = 1.65
         c2 = 4.0
         c3 = 1.5
-    else:
-        c1 = 1.75
-        c2 = 4.3
-        c3 = 1.6
+        c4 = 1.0
+
+    if check_calculate_gamma_beta(beta=beta, gamma_beta=gamma_beta):
+        gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta=beta)
 
     if check_composite_slope(
         cot_alpha=cot_alpha, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up
@@ -246,12 +255,12 @@ def calculate_dimensionless_wave_runup_height_z2p(
         z2p_for_slope = iteration_procedure_z2p(
             Hm0=Hm0,
             Tmm10=Tmm10,
-            beta=beta,
             cot_alpha_down=cot_alpha_down,
             cot_alpha_up=cot_alpha_up,
             B_berm=B_berm,
             db=db,
             gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
         )
 
         cot_alpha = determine_average_slope(
@@ -278,22 +287,20 @@ def calculate_dimensionless_wave_runup_height_z2p(
         gamma_b = iteration_procedure_gamma_b(
             Hm0=Hm0,
             Tmm10=Tmm10,
-            beta=beta,
             cot_alpha_average=cot_alpha,
             B_berm=B_berm,
             L_berm=L_berm,
             db=db,
             gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
         )
-
-    gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta=beta)
 
     gamma_f_adj = calculate_adjusted_influence_roughness_gamma_f(
         gamma_f=gamma_f, gamma_b=gamma_b, ksi_mm10=ksi_mm10
     )
 
     z2p_diml_eq3a = c1 * gamma_b * gamma_f_adj * gamma_beta * ksi_mm10
-    z2p_diml_eq3b = 1.0 * gamma_f_adj * gamma_beta * (c2 - c3 / np.sqrt(ksi_mm10))
+    z2p_diml_eq3b = c4 * gamma_f_adj * gamma_beta * (c2 - c3 / np.sqrt(ksi_mm10))
 
     z2p_diml = np.min([z2p_diml_eq3a, z2p_diml_eq3b], axis=0)
     max_reached = np.min([z2p_diml_eq3a, z2p_diml_eq3b], axis=0) == z2p_diml_eq3b
@@ -304,7 +311,6 @@ def calculate_dimensionless_wave_runup_height_z2p(
         gamma_f=gamma_f,
         gamma_b=gamma_b,
         gamma_beta=gamma_beta,
-        gamma_v=1.0,
         cot_alpha=cot_alpha,
     )
 
@@ -357,12 +363,12 @@ def determine_average_slope(
 def iteration_procedure_z2p(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
-    beta: float | npt.NDArray[np.float64],
     cot_alpha_down: float | npt.NDArray[np.float64],
     cot_alpha_up: float | npt.NDArray[np.float64],
     B_berm: float | npt.NDArray[np.float64],
     db: float | npt.NDArray[np.float64],
     gamma_f: float | npt.NDArray[np.float64],
+    gamma_beta: float | npt.NDArray[np.float64],
     tolerance: float = 1e-4,
     max_iter: int = 1000,
 ) -> float | npt.NDArray[np.float64]:
@@ -377,8 +383,6 @@ def iteration_procedure_z2p(
         Spectral significant wave height (m)
     Tmm10 : float | npt.NDArray[np.float64]
         Spectral wave period Tm-1,0 (s)
-    beta : float | npt.NDArray[np.float64]
-        Angle of wave incidence (degrees)
     cot_alpha_down : float | npt.NDArray[np.float64]
         Cotangent of the lower part of the front-side slope of the structure (-)
     cot_alpha_up : float | npt.NDArray[np.float64]
@@ -389,6 +393,8 @@ def iteration_procedure_z2p(
         Berm height of the structure (m)
     gamma_f : float | npt.NDArray[np.float64]
         Influence factor for surface roughness (-)
+    gamma_beta : float | npt.NDArray[np.float64]
+        Influence factor for oblique wave incidence (-)
     tolerance : float, optional
         Maximum allowable tolerance for the z2% iterative procedure, by default 1e-4
     max_iter : int, optional
@@ -430,10 +436,10 @@ def iteration_procedure_z2p(
         z2p_estimate_i1, _ = calculate_wave_runup_height_z2p(
             Hm0=Hm0,
             Tmm10=Tmm10,
-            beta=beta,
             cot_alpha=cot_alpha_average,
             gamma_b=gamma_b,
             gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
         )
 
         n_iter += 1
@@ -519,17 +525,60 @@ def check_composite_slope(
         is_composite_slope = True
     else:
         is_composite_slope = False
+
     return is_composite_slope
+
+
+def check_calculate_gamma_beta(
+    beta: float | npt.NDArray[np.float64], gamma_beta: float | npt.NDArray[np.float64]
+) -> bool:
+    """Check whether the influence factor for oblique wave incidence gamma_beta should be calculated
+
+    If the angle of wave incidence (beta) is provided, the influence factor for oblique wave incidence
+    gamma_beta is calculated. If the influence factor for oblique wave incidence gamma_beta is provided
+    directly, that value is used. I neither of the two values is provided, an error is raised.
+
+    Parameters
+    ----------
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    gamma_beta : float | npt.NDArray[np.float64]
+        Influence factor for oblique wave incidence (-)
+
+    Returns
+    -------
+    bool
+        Indicates whether gamma_beta need to be calculated (True) or not (False)
+
+    Raises
+    ------
+    ValueError
+        Raise an error when neither beta nor gamma_beta is provided
+    """
+    if np.all(np.isnan(beta)) and np.all(np.isnan(gamma_beta)):
+        raise ValueError(
+            (
+                "Either a the angle of wave incidence (beta) or the influence factor for oblique wave incidence "
+                "(gamma_beta) should be provided"
+            )
+        )
+
+    if np.all(np.isnan(gamma_beta)):
+        calculate_gamma_beta = True
+    else:
+        calculate_gamma_beta = False
+
+    return calculate_gamma_beta
 
 
 def iteration_procedure_gamma_b(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
-    beta: float | npt.NDArray[np.float64],
     cot_alpha_average: float | npt.NDArray[np.float64],
     B_berm: float | npt.NDArray[np.float64],
     L_berm: float | npt.NDArray[np.float64],
     db: float | npt.NDArray[np.float64],
+    gamma_beta: float | npt.NDArray[np.float64],
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
 ) -> float | npt.NDArray[np.float64]:
     """Iterative procedure to determine the influence factor for a berm gamma_b
@@ -543,8 +592,6 @@ def iteration_procedure_gamma_b(
         Spectral significant wave height (m)
     Tmm10 : float | npt.NDArray[np.float64]
         Spectral wave period Tm-1,0 (s)
-    beta : float | npt.NDArray[np.float64]
-        Angle of wave incidence (degrees)
     cot_alpha_average : float | npt.NDArray[np.float64]
         Cotangent of the average front-side slope of the structure (-)
     B_berm : float | npt.NDArray[np.float64]
@@ -553,6 +600,8 @@ def iteration_procedure_gamma_b(
         Berm length of the structure (m)
     db : float | npt.NDArray[np.float64]
         Berm height of the structure (m)
+    gamma_beta : float | npt.NDArray[np.float64]
+        Influence factor for oblique wave incidence (-)
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
 
@@ -568,10 +617,10 @@ def iteration_procedure_gamma_b(
         z2p_i1, _ = calculate_wave_runup_height_z2p(
             Hm0=Hm0,
             Tmm10=Tmm10,
-            beta=beta,
             cot_alpha=cot_alpha_average,
             gamma_b=1.0,
             gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
         )
 
         gamma_b_runup = calculate_influence_berm_gamma_b(
@@ -581,10 +630,10 @@ def iteration_procedure_gamma_b(
         z2p_i2, _ = calculate_wave_runup_height_z2p(
             Hm0=Hm0,
             Tmm10=Tmm10,
-            beta=beta,
             cot_alpha=cot_alpha_average,
             gamma_b=gamma_b_runup,
             gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
         )
 
         gamma_b = calculate_influence_berm_gamma_b(
