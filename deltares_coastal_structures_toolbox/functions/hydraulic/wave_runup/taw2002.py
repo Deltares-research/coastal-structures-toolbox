@@ -141,6 +141,14 @@ def calculate_wave_runup_height_z2p(
         Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
     cot_alpha_up : float | npt.NDArray[np.float64], optional
         Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    c1 : float, optional
+        Coefficient in wave runup formula (-), by default 1.75
+    c2 : float, optional
+        Coefficient in wave runup formula (-), by default 4.3
+    c3 : float, optional
+        Coefficient in wave runup formula (-), by default 1.6
+    c4 : float, optional
+        Coefficient in wave runup formula (-), by default 1.0
     use_best_fit : bool, optional
         Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
 
@@ -230,6 +238,14 @@ def calculate_dimensionless_wave_runup_height_z2p(
         Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
     cot_alpha_up : float | npt.NDArray[np.float64], optional
         Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    c1 : float, optional
+        Coefficient in wave runup formula (-), by default 1.75
+    c2 : float, optional
+        Coefficient in wave runup formula (-), by default 4.3
+    c3 : float, optional
+        Coefficient in wave runup formula (-), by default 1.6
+    c4 : float, optional
+        Coefficient in wave runup formula (-), by default 1.0
     use_best_fit : bool, optional
         Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
 
@@ -261,6 +277,11 @@ def calculate_dimensionless_wave_runup_height_z2p(
             db=db,
             gamma_f=gamma_f,
             gamma_beta=gamma_beta,
+            c1=c1,
+            c2=c2,
+            c3=c3,
+            c4=c4,
+            use_best_fit=use_best_fit,
         )
 
         cot_alpha = determine_average_slope(
@@ -293,6 +314,11 @@ def calculate_dimensionless_wave_runup_height_z2p(
             db=db,
             gamma_f=gamma_f,
             gamma_beta=gamma_beta,
+            c1=c1,
+            c2=c2,
+            c3=c3,
+            c4=c4,
+            use_best_fit=use_best_fit,
         )
 
     gamma_f_adj = calculate_adjusted_influence_roughness_gamma_f(
@@ -369,6 +395,11 @@ def iteration_procedure_z2p(
     db: float | npt.NDArray[np.float64],
     gamma_f: float | npt.NDArray[np.float64],
     gamma_beta: float | npt.NDArray[np.float64],
+    c1: float = 1.75,
+    c2: float = 4.3,
+    c3: float = 1.6,
+    c4: float = 1.0,
+    use_best_fit: bool = False,
     tolerance: float = 1e-4,
     max_iter: int = 1000,
 ) -> float | npt.NDArray[np.float64]:
@@ -395,6 +426,16 @@ def iteration_procedure_z2p(
         Influence factor for surface roughness (-)
     gamma_beta : float | npt.NDArray[np.float64]
         Influence factor for oblique wave incidence (-)
+    c1 : float, optional
+        Coefficient in wave runup formula (-), by default 1.75
+    c2 : float, optional
+        Coefficient in wave runup formula (-), by default 4.3
+    c3 : float, optional
+        Coefficient in wave runup formula (-), by default 1.6
+    c4 : float, optional
+        Coefficient in wave runup formula (-), by default 1.0
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
     tolerance : float, optional
         Maximum allowable tolerance for the z2% iterative procedure, by default 1e-4
     max_iter : int, optional
@@ -440,6 +481,11 @@ def iteration_procedure_z2p(
             gamma_b=gamma_b,
             gamma_f=gamma_f,
             gamma_beta=gamma_beta,
+            c1=c1,
+            c2=c2,
+            c3=c3,
+            c4=c4,
+            use_best_fit=use_best_fit,
         )
 
         n_iter += 1
@@ -579,6 +625,11 @@ def iteration_procedure_gamma_b(
     L_berm: float | npt.NDArray[np.float64],
     db: float | npt.NDArray[np.float64],
     gamma_beta: float | npt.NDArray[np.float64],
+    c1: float = 1.75,
+    c2: float = 4.3,
+    c3: float = 1.6,
+    c4: float = 1.0,
+    use_best_fit: bool = False,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
 ) -> float | npt.NDArray[np.float64]:
     """Iterative procedure to determine the influence factor for a berm gamma_b
@@ -602,6 +653,16 @@ def iteration_procedure_gamma_b(
         Berm height of the structure (m)
     gamma_beta : float | npt.NDArray[np.float64]
         Influence factor for oblique wave incidence (-)
+    c1 : float, optional
+        Coefficient in wave runup formula (-), by default 1.75
+    c2 : float, optional
+        Coefficient in wave runup formula (-), by default 4.3
+    c3 : float, optional
+        Coefficient in wave runup formula (-), by default 1.6
+    c4 : float, optional
+        Coefficient in wave runup formula (-), by default 1.0
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
 
@@ -621,6 +682,11 @@ def iteration_procedure_gamma_b(
             gamma_b=1.0,
             gamma_f=gamma_f,
             gamma_beta=gamma_beta,
+            c1=c1,
+            c2=c2,
+            c3=c3,
+            c4=c4,
+            use_best_fit=use_best_fit,
         )
 
         gamma_b_runup = calculate_influence_berm_gamma_b(
@@ -634,6 +700,11 @@ def iteration_procedure_gamma_b(
             gamma_b=gamma_b_runup,
             gamma_f=gamma_f,
             gamma_beta=gamma_beta,
+            c1=c1,
+            c2=c2,
+            c3=c3,
+            c4=c4,
+            use_best_fit=use_best_fit,
         )
 
         gamma_b = calculate_influence_berm_gamma_b(
