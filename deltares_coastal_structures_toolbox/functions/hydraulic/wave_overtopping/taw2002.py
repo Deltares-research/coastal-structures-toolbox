@@ -318,7 +318,7 @@ def calculate_dimensionless_overtopping_discharge_q(
             gamma_beta=gamma_beta,
         )
 
-        cot_alpha_average = wave_runup_taw2002.determine_average_slope(
+        cot_alpha = wave_runup_taw2002.determine_average_slope(
             Hm0=Hm0,
             z2p=z2p_for_slope,
             cot_alpha_down=cot_alpha_down,
@@ -327,9 +327,7 @@ def calculate_dimensionless_overtopping_discharge_q(
             db=db,
         )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
-        Hm0, Tmm10, cot_alpha_average
-    )
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(Hm0, Tmm10, cot_alpha)
 
     L_berm = wave_runup_taw2002.calculate_berm_length(
         Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
@@ -338,7 +336,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     gamma_b = wave_runup_taw2002.iteration_procedure_gamma_b(
         Hm0=Hm0,
         Tmm10=Tmm10,
-        cot_alpha_average=cot_alpha_average,
+        cot_alpha_average=cot_alpha,
         B_berm=B_berm,
         L_berm=L_berm,
         db=db,
@@ -351,7 +349,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     )
 
     q_diml_eq24 = (
-        (0.067 / np.sqrt(1.0 / cot_alpha_average))
+        (0.067 / np.sqrt(1.0 / cot_alpha))
         * ksi_mm10
         * gamma_b
         * np.exp(
@@ -372,7 +370,7 @@ def calculate_dimensionless_overtopping_discharge_q(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
-        cot_alpha=cot_alpha_average,
+        cot_alpha=cot_alpha,
         cot_alpha_down=cot_alpha_down,
         cot_alpha_up=cot_alpha_up,
         gamma_f=gamma_f,
@@ -624,7 +622,7 @@ def calculate_dimensionless_crest_freeboard(
             gamma_beta=gamma_beta,
         )
 
-        cot_alpha_average = wave_runup_taw2002.determine_average_slope(
+        cot_alpha = wave_runup_taw2002.determine_average_slope(
             Hm0=Hm0,
             z2p=z2p_for_slope,
             cot_alpha_down=cot_alpha_down,
@@ -633,9 +631,7 @@ def calculate_dimensionless_crest_freeboard(
             db=db,
         )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
-        Hm0, Tmm10, cot_alpha_average
-    )
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(Hm0, Tmm10, cot_alpha)
 
     L_berm = wave_runup_taw2002.calculate_berm_length(
         Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
@@ -644,7 +640,7 @@ def calculate_dimensionless_crest_freeboard(
     gamma_b = wave_runup_taw2002.iteration_procedure_gamma_b(
         Hm0=Hm0,
         Tmm10=Tmm10,
-        cot_alpha_average=cot_alpha_average,
+        cot_alpha_average=cot_alpha,
         B_berm=B_berm,
         L_berm=L_berm,
         db=db,
@@ -659,7 +655,7 @@ def calculate_dimensionless_crest_freeboard(
     Rc_diml_eq24 = (
         np.log(
             (1.0 / 0.067)
-            * np.sqrt(1.0 / cot_alpha_average)
+            * np.sqrt(1.0 / cot_alpha)
             * (1.0 / gamma_b)
             * (1.0 / ksi_mm10)
             * q
@@ -687,7 +683,7 @@ def calculate_dimensionless_crest_freeboard(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
-        cot_alpha=cot_alpha_average,
+        cot_alpha=cot_alpha,
         cot_alpha_down=cot_alpha_down,
         cot_alpha_up=cot_alpha_up,
         gamma_f=gamma_f,
