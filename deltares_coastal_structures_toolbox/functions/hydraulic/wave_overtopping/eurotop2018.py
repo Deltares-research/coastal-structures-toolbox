@@ -3,8 +3,8 @@ import numpy as np
 import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
-import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.eurotop2018 as eurotop2018
-import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as taw2002
+import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.eurotop2018 as wave_runup_eurotop2018
+import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as wave_runup_taw2002
 
 
 def calculate_overtopping_discharge_q(
@@ -143,25 +143,6 @@ def calculate_dimensionless_overtopping_discharge_q(
     return q_ET2_diml, max_reached
 
 
-def calculate_influence_oblique_waves_gamma_beta(
-    beta: float | npt.NDArray[np.float64], gamma_f: float | npt.NDArray[np.float64]
-) -> float | npt.NDArray[np.float64]:
-    """
-    ET2 eq 5.29 and 6.9
-    """
-
-    beta_calc = np.where(beta < 0, np.abs(beta), beta)
-    beta_calc = np.where(beta_calc > 80, 80, beta_calc)
-
-    gamma_beta = np.where(
-        gamma_f > 0.60,
-        1 - 0.0033 * beta_calc,
-        1 - 0.0063 * beta_calc,
-    )
-
-    return gamma_beta
-
-
 def calculate_influence_berm_gamma_b(Bberm, Lberm, db, Hm0, Ru2p):
     """
     ET2 eq 5.40, 5.41, 5.42
@@ -220,12 +201,12 @@ def determine_average_slope(
 
     Lberm = 1.0 * Hm0 * cotad + Bberm + 1.0 * Hm0 * cotau
 
-    ru_gamma_beta = eurotop2018.ru_ET2_gamma_oblique_waves(beta, gamma_f)
+    ru_gamma_beta = wave_runup_eurotop2018.ru_ET2_gamma_oblique_waves(beta, gamma_f)
     # Invloed berm niet meenemen in run-up
     # ru_gamma_b = ot_ET2_gamma_berm(Bberm, Lberm, db, Hm0, Ru2p=2 * Hm0)
     ru_gamma_b = 1.0
 
-    z2p = taw2002.calculate_wave_runup_height_z2p(
+    z2p = wave_runup_taw2002.calculate_wave_runup_height_z2p(
         Hm0,
         tana_iter1,
         steepness_s0_mm10,
@@ -238,3 +219,49 @@ def determine_average_slope(
 
     slope_tana = tana_iter2
     return slope_tana, z2p, Lberm
+
+
+def calculate_influence_oblique_waves_gamma_beta(
+    beta: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    gamma_f_crit: float = 0.6,
+    c_gamma_beta_smooth: float = 0.0033,
+    c_gamma_beta_rough: float = 0.0063,
+    max_angle: float = 80.0,
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the influence factor for oblique wave incidence gamma_beta
+
+    The influence factor gamma_beta is determined using the EurOtop (2018) eq. 5.29 for smooth slopes and eq. 6.9
+    for rough slopes.
+
+    Parameters
+    ----------
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    gamma_f : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness (-)
+    gamma_f_crit : float, optional
+        Critical value for the influence factor dividing smooth (higher) and rough (lower) slopes, by default 0.6
+    c_gamma_beta_smooth : float, optional
+        Coefficient for wave runup on smooth slopes, by default 0.0022
+    c_gamma_beta_rough : float, optional
+        Coefficient for wave runup on rough slopes, by default 0.0063
+    max_angle : float, optional
+        Maximum angle of wave incidence, by default 80.0
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The influence factor for oblique wave incidence gamma_beta (-)
+    """
+
+    gamma_beta = wave_runup_eurotop2018.calculate_influence_oblique_waves_gamma_beta(
+        beta=beta,
+        gamma_f=gamma_f,
+        gamma_f_crit=gamma_f_crit,
+        c_gamma_beta_smooth=c_gamma_beta_smooth,
+        c_gamma_beta_rough=c_gamma_beta_rough,
+        max_angle=max_angle,
+    )
+
+    return gamma_beta

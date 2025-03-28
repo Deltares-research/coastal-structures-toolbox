@@ -2,6 +2,7 @@
 import numpy as np
 import numpy.typing as npt
 
+import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as wave_runup_taw2002
 
 # def calculate_wave_runup_height_z2p(
 #     Hm0: float | npt.NDArray[np.float64],
@@ -114,4 +115,54 @@ def ru_ET2_gamma_oblique_waves(beta, gamma_f):
         gamma_beta = 1 - 0.0022 * beta
     else:
         gamma_beta = 1 - 0.0063 * beta
+    return gamma_beta
+
+
+def calculate_influence_oblique_waves_gamma_beta(
+    beta: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    gamma_f_crit: float = 0.6,
+    c_gamma_beta_smooth: float = 0.0022,
+    c_gamma_beta_rough: float = 0.0063,
+    max_angle: float = 80.0,
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the influence factor for oblique wave incidence gamma_beta
+
+    The influence factor gamma_beta is determined using the EurOtop (2018) eq. 5.28 for smooth slopes and eq. 6.9
+    for rough slopes.
+
+    Parameters
+    ----------
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    gamma_f : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness (-)
+    gamma_f_crit : float, optional
+        Critical value for the influence factor dividing smooth (higher) and rough (lower) slopes, by default 0.6
+    c_gamma_beta_smooth : float, optional
+        Coefficient for wave runup on smooth slopes, by default 0.0022
+    c_gamma_beta_rough : float, optional
+        Coefficient for wave runup on rough slopes, by default 0.0063
+    max_angle : float, optional
+        Maximum angle of wave incidence, by default 80.0
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The influence factor for oblique wave incidence gamma_beta (-)
+    """
+
+    if gamma_f > gamma_f_crit:
+        # Structure slope is smooth
+        c_gamma_beta = c_gamma_beta_smooth
+    else:
+        # Structure slope is rough
+        c_gamma_beta = c_gamma_beta_rough
+
+    gamma_beta = wave_runup_taw2002.calculate_influence_oblique_waves_gamma_beta(
+        beta=beta,
+        c_gamma_beta=c_gamma_beta,
+        max_angle=max_angle,
+    )
+
     return gamma_beta
