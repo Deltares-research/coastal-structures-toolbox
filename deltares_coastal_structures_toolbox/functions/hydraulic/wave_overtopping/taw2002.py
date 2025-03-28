@@ -195,7 +195,7 @@ def calculate_overtopping_discharge_q(
         whether the maximum value formula was used
     """
 
-    q_TAW_diml, max_reached = calculate_dimensionless_overtopping_discharge_q(
+    q_diml, max_reached = calculate_dimensionless_overtopping_discharge_q(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -211,9 +211,9 @@ def calculate_overtopping_discharge_q(
         sigma=sigma,
         use_best_fit=use_best_fit,
     )
-    q_TAW = q_TAW_diml * np.sqrt(9.81 * Hm0**3)
+    q = q_diml * np.sqrt(9.81 * Hm0**3)
 
-    return q_TAW, max_reached
+    return q, max_reached
 
 
 def calculate_dimensionless_overtopping_discharge_q(
@@ -365,7 +365,7 @@ def calculate_dimensionless_overtopping_discharge_q(
         -1.0 * (c2 + cor2) * (Rc / Hm0) * (1.0 / (gamma_f_adj * gamma_beta))
     )
 
-    q_diml_TAW = np.min([q_diml_eq24, q_diml_eq25], axis=0)
+    q_diml = np.min([q_diml_eq24, q_diml_eq25], axis=0)
     max_reached = np.min([q_diml_eq24, q_diml_eq25], axis=0) == q_diml_eq25
 
     check_validity_range(
@@ -381,7 +381,7 @@ def calculate_dimensionless_overtopping_discharge_q(
         gamma_v=gamma_v,
     )
 
-    return q_diml_TAW, max_reached
+    return q_diml, max_reached
 
 
 def calculate_influence_oblique_waves_gamma_beta(
@@ -501,7 +501,7 @@ def calculate_crest_freeboard_Rc(
         The crest freeboard of the structure Rc (m)
     """
 
-    Rc_diml_TAW, max_reached = calculate_dimensionless_crest_freeboard(
+    Rc_diml, max_reached = calculate_dimensionless_crest_freeboard(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -517,7 +517,7 @@ def calculate_crest_freeboard_Rc(
         use_best_fit=use_best_fit,
     )
 
-    Rc = Rc_diml_TAW * Hm0
+    Rc = Rc_diml * Hm0
 
     return Rc, max_reached
 
@@ -680,7 +680,7 @@ def calculate_dimensionless_crest_freeboard(
         * gamma_beta
     )
 
-    Rc_diml_TAW = np.min([Rc_diml_eq24, Rc_diml_eq25], axis=0)
+    Rc_diml = np.min([Rc_diml_eq24, Rc_diml_eq25], axis=0)
     max_reached = np.min([Rc_diml_eq24, Rc_diml_eq25], axis=0) == Rc_diml_eq25
 
     check_validity_range(
@@ -696,4 +696,4 @@ def calculate_dimensionless_crest_freeboard(
         gamma_v=gamma_v,
     )
 
-    return Rc_diml_TAW, max_reached
+    return Rc_diml, max_reached
