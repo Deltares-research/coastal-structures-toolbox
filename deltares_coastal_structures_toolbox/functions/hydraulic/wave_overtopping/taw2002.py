@@ -133,11 +133,12 @@ def check_validity_range(
 def calculate_overtopping_discharge_q(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
-    cot_alpha_down: float | npt.NDArray[np.float64],
-    cot_alpha_up: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
     B_berm: float | npt.NDArray[np.float64],
     db: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
@@ -162,16 +163,18 @@ def calculate_overtopping_discharge_q(
         Spectral wave period Tm-1,0 (s)
     beta : float | npt.NDArray[np.float64]
         Angle of wave incidence (degrees)
-    cot_alpha_down : float | npt.NDArray[np.float64]
-        Cotangent of the lower part of the front-side slope of the structure (-)
-    cot_alpha_up : float | npt.NDArray[np.float64]
-        Cotangent of the upper part of the front-side slope of the structure (-)
     Rc : float | npt.NDArray[np.float64]
         Crest freeboard of the structure (m)
     B_berm : float | npt.NDArray[np.float64]
         Berm width of the structure (m)
     db : float | npt.NDArray[np.float64]
         Berm height of the structure (m)
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
     gamma_beta : float | npt.NDArray[np.float64], optional
@@ -196,6 +199,7 @@ def calculate_overtopping_discharge_q(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
+        cot_alpha=cot_alpha,
         cot_alpha_down=cot_alpha_down,
         cot_alpha_up=cot_alpha_up,
         Rc=Rc,
@@ -215,11 +219,12 @@ def calculate_overtopping_discharge_q(
 def calculate_dimensionless_overtopping_discharge_q(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
-    cot_alpha_down: float | npt.NDArray[np.float64],
-    cot_alpha_up: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
     B_berm: float | npt.NDArray[np.float64],
     db: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
@@ -242,16 +247,18 @@ def calculate_dimensionless_overtopping_discharge_q(
         Spectral significant wave height (m)
     Tmm10 : float | npt.NDArray[np.float64]
         Spectral wave period Tm-1,0 (s)
-    cot_alpha_down : float | npt.NDArray[np.float64]
-        Cotangent of the lower part of the front-side slope of the structure (-)
-    cot_alpha_up : float | npt.NDArray[np.float64]
-        Cotangent of the upper part of the front-side slope of the structure (-)
     Rc : float | npt.NDArray[np.float64]
         Crest freeboard of the structure (m)
     B_berm : float | npt.NDArray[np.float64]
         Berm width of the structure (m)
     db : float | npt.NDArray[np.float64]
         Berm height of the structure (m)
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
     gamma_beta : float | npt.NDArray[np.float64], optional
@@ -297,25 +304,28 @@ def calculate_dimensionless_overtopping_discharge_q(
     if wave_runup_taw2002.check_calculate_gamma_beta(beta=beta, gamma_beta=gamma_beta):
         gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta=beta)
 
-    z2p_for_slope = wave_runup_taw2002.iteration_procedure_z2p(
-        Hm0=Hm0,
-        Tmm10=Tmm10,
-        cot_alpha_down=cot_alpha_down,
-        cot_alpha_up=cot_alpha_up,
-        B_berm=B_berm,
-        db=db,
-        gamma_f=gamma_f,
-        gamma_beta=gamma_beta,
-    )
+    if wave_runup_taw2002.check_composite_slope(
+        cot_alpha=cot_alpha, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up
+    ):
+        z2p_for_slope = wave_runup_taw2002.iteration_procedure_z2p(
+            Hm0=Hm0,
+            Tmm10=Tmm10,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+            db=db,
+            gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
+        )
 
-    cot_alpha_average = wave_runup_taw2002.determine_average_slope(
-        Hm0=Hm0,
-        z2p=z2p_for_slope,
-        cot_alpha_down=cot_alpha_down,
-        cot_alpha_up=cot_alpha_up,
-        B_berm=B_berm,
-        db=db,
-    )
+        cot_alpha_average = wave_runup_taw2002.determine_average_slope(
+            Hm0=Hm0,
+            z2p=z2p_for_slope,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+            db=db,
+        )
 
     ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
         Hm0, Tmm10, cot_alpha_average
@@ -432,11 +442,12 @@ def calculate_influence_wave_wall_gamma_v(
 def calculate_crest_freeboard_Rc(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
-    cot_alpha_down: float | npt.NDArray[np.float64],
-    cot_alpha_up: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
     B_berm: float | npt.NDArray[np.float64],
     db: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
@@ -459,16 +470,18 @@ def calculate_crest_freeboard_Rc(
         Spectral significant wave height (m)
     Tmm10 : float | npt.NDArray[np.float64]
         Spectral wave period Tm-1,0 (s)
-    cot_alpha_down : float | npt.NDArray[np.float64]
-        Cotangent of the lower part of the front-side slope of the structure (-)
-    cot_alpha_up : float | npt.NDArray[np.float64]
-        Cotangent of the upper part of the front-side slope of the structure (-)
     q : float | npt.NDArray[np.float64]
         Mean wave overtopping discharge (m^3/s/m)
     B_berm : float | npt.NDArray[np.float64]
         Berm width of the structure (m)
     db : float | npt.NDArray[np.float64]
         Berm height of the structure (m)
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
     gamma_beta : float | npt.NDArray[np.float64], optional
@@ -492,6 +505,7 @@ def calculate_crest_freeboard_Rc(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
+        cot_alpha=cot_alpha,
         cot_alpha_down=cot_alpha_down,
         cot_alpha_up=cot_alpha_up,
         q=q,
@@ -511,11 +525,12 @@ def calculate_crest_freeboard_Rc(
 def calculate_dimensionless_crest_freeboard(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
-    cot_alpha_down: float | npt.NDArray[np.float64],
-    cot_alpha_up: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
     B_berm: float | npt.NDArray[np.float64],
     db: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
@@ -539,16 +554,18 @@ def calculate_dimensionless_crest_freeboard(
         Spectral significant wave height (m)
     Tmm10 : float | npt.NDArray[np.float64]
         Spectral wave period Tm-1,0 (s)
-    cot_alpha_down : float | npt.NDArray[np.float64]
-        Cotangent of the lower part of the front-side slope of the structure (-)
-    cot_alpha_up : float | npt.NDArray[np.float64]
-        Cotangent of the upper part of the front-side slope of the structure (-)
     q : float | npt.NDArray[np.float64]
         Mean wave overtopping discharge (m^3/s/m)
     B_berm : float | npt.NDArray[np.float64]
         Berm width of the structure (m)
     db : float | npt.NDArray[np.float64]
         Berm height of the structure (m)
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
     gamma_beta : float | npt.NDArray[np.float64], optional
@@ -593,25 +610,28 @@ def calculate_dimensionless_crest_freeboard(
     if wave_runup_taw2002.check_calculate_gamma_beta(beta=beta, gamma_beta=gamma_beta):
         gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta=beta)
 
-    z2p_for_slope = wave_runup_taw2002.iteration_procedure_z2p(
-        Hm0=Hm0,
-        Tmm10=Tmm10,
-        cot_alpha_down=cot_alpha_down,
-        cot_alpha_up=cot_alpha_up,
-        B_berm=B_berm,
-        db=db,
-        gamma_f=gamma_f,
-        gamma_beta=gamma_beta,
-    )
+    if wave_runup_taw2002.check_composite_slope(
+        cot_alpha=cot_alpha, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up
+    ):
+        z2p_for_slope = wave_runup_taw2002.iteration_procedure_z2p(
+            Hm0=Hm0,
+            Tmm10=Tmm10,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+            db=db,
+            gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
+        )
 
-    cot_alpha_average = wave_runup_taw2002.determine_average_slope(
-        Hm0=Hm0,
-        z2p=z2p_for_slope,
-        cot_alpha_down=cot_alpha_down,
-        cot_alpha_up=cot_alpha_up,
-        B_berm=B_berm,
-        db=db,
-    )
+        cot_alpha_average = wave_runup_taw2002.determine_average_slope(
+            Hm0=Hm0,
+            z2p=z2p_for_slope,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+            db=db,
+        )
 
     ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
         Hm0, Tmm10, cot_alpha_average
