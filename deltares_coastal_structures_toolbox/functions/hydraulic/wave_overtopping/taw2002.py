@@ -327,7 +327,9 @@ def calculate_dimensionless_overtopping_discharge_q(
             db=db,
         )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(Hm0, Tmm10, cot_alpha)
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        H=Hm0, T=Tmm10, cot_alpha=cot_alpha
+    )
 
     L_berm = wave_runup_taw2002.calculate_berm_length(
         Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
@@ -631,7 +633,9 @@ def calculate_dimensionless_crest_freeboard(
             db=db,
         )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(Hm0, Tmm10, cot_alpha)
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        H=Hm0, T=Tmm10, cot_alpha=cot_alpha
+    )
 
     L_berm = wave_runup_taw2002.calculate_berm_length(
         Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
