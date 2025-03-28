@@ -505,6 +505,7 @@ def calculate_crest_freeboard_Rc(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
+        gamma_beta=gamma_beta,
         cot_alpha=cot_alpha,
         cot_alpha_down=cot_alpha_down,
         cot_alpha_up=cot_alpha_up,
