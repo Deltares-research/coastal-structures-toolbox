@@ -23,6 +23,59 @@ def calculate_wave_runup_height_z2p(
     c4: float = 1.07,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+    """Calculate the wave runup height with a 2% probability of exceedance z2% with the EurOtop (2018) formula.
+
+    The 2% exceedance wave runup height z2% (m) is calculated using the EurOtop (2018) formulas. Here eqs. 5.4
+    and 5.5 from EurOtop (2018) are implemented for design calculations and eqs. 5.1 and 5.2 for best fit
+    calculations (using the option best_fit=True). Note that an erratat has been published regarding eqs. 5.2
+    and 5.5.
+
+    For more details see EurOtop (2018) and the errata of November 2019, available here:
+    https://www.overtopping-manual.com/assets/downloads/EurOtop_II_2018_Final_version.pdf
+
+    https://www.overtopping-manual.com/assets/downloads/Errata_EurOtop_2018_Nov_2019.pdf
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_b : float | npt.NDArray[np.float64], optional
+        Influence factor for a berm (-), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    c1 : float, optional
+        Coefficient in wave runup formula (-), by default 1.75
+    c2 : float, optional
+        Coefficient in wave runup formula (-), by default 4.3
+    c3 : float, optional
+        Coefficient in wave runup formula (-), by default 1.5
+    c4 : float, optional
+        Coefficient in wave runup formula (-), by default 1.07
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False, by default False
+
+    Returns
+    -------
+    tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
+        The 2% exceedance wave runup height z2% (m) and a boolean indicating
+        whether the maximum value formula was used
+    """
 
     z2p_diml, max_reached = calculate_dimensionless_wave_runup_height_z2p(
         Hm0=Hm0,
@@ -66,6 +119,61 @@ def calculate_dimensionless_wave_runup_height_z2p(
     c4: float = 1.07,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+    """Calculate the dimensionless wave runup height with a 2% probability of exceedance z2%/Hm0 with the EurOtop (2018)
+    formula.
+
+    The dimensionless 2% exceedance wave runup height z2%/Hm0 (-) is calculated using the EurOtop (2018) formulas.
+    Here eqs. 5.4 and 5.5 from EurOtop (2018) are implemented for design calculations and eqs. 5.1 and 5.2 for best
+    fit calculations (using the option best_fit=True). Note that an erratat has been published regarding eqs. 5.2
+    and 5.5.
+
+    For more details see EurOtop (2018) and the errata of November 2019, available here:
+    https://www.overtopping-manual.com/assets/downloads/EurOtop_II_2018_Final_version.pdf
+
+    https://www.overtopping-manual.com/assets/downloads/Errata_EurOtop_2018_Nov_2019.pdf
+
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_b : float | npt.NDArray[np.float64], optional
+        Influence factor for a berm (-), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    c1 : float, optional
+        Coefficient in wave runup formula (-), by default 1.75
+    c2 : float, optional
+        Coefficient in wave runup formula (-), by default 4.3
+    c3 : float, optional
+        Coefficient in wave runup formula (-), by default 1.5
+    c4 : float, optional
+        Coefficient in wave runup formula (-), by default 1.07
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False, by default False
+
+    Returns
+    -------
+    tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
+        The 2% exceedance wave runup height z2% (m) and a boolean indicating
+        whether the maximum value formula was used
+    """
 
     if use_best_fit:
         c1 = 1.65
