@@ -5,6 +5,71 @@ import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.
 
 @pytest.mark.parametrize(
     (
+        "Hm0, Tmm10, beta, cot_alpha_down, cot_alpha_up, Rc, B_berm, dh, gamma_f, gamma_v"
+    ),
+    (
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 1.0]),
+        ([2.5, 5.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 1.0]),
+        ([2.0, 7.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 1.0]),
+        ([2.0, 5.00, 30.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.5, 3.0, 5.0, 0.0, 0.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 2.0, 5.0, 0.0, 0.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 4.5, 0.0, 0.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 1.0, 1.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 2.0, 1.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 1.0, 0.8, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 2.0, 0.0, 0.0, 0.45, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 0.8]),
+        ([2.0, 5.00, 0.0, 3.5, 3.0, 5.0, 2.0, 1.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 2.0, 5.0, 2.0, 1.0, 1.0, 1.0]),
+        ([2.0, 5.00, 30.0, 3.0, 3.0, 2.0, 0.0, 0.0, 0.45, 1.0]),
+    ),
+)
+def test_internal_consistency_q_Rc(
+    Hm0,
+    Tmm10,
+    beta,
+    cot_alpha_down,
+    cot_alpha_up,
+    Rc,
+    B_berm,
+    dh,
+    gamma_f,
+    gamma_v,
+):
+    q_calculated, _ = eurotop2018.calculate_overtopping_discharge_q(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        Rc=Rc,
+        B_berm=B_berm,
+        db=dh,
+        gamma_f=gamma_f,
+        gamma_v=gamma_v,
+        use_best_fit=False,
+    )
+
+    Rc_calculated, _ = eurotop2018.calculate_crest_freeboard_Rc(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        q=q_calculated,
+        B_berm=B_berm,
+        db=dh,
+        gamma_f=gamma_f,
+        gamma_v=gamma_v,
+        use_best_fit=False,
+    )
+
+    assert Rc_calculated == pytest.approx(Rc, abs=1e-2)
+
+
+@pytest.mark.parametrize(
+    (
         "Hm0, Tmm10, beta, cot_alpha_down, cot_alpha_up, Rc, B_berm, dh, gamma_f, gamma_v, q_expected"
     ),
     (
