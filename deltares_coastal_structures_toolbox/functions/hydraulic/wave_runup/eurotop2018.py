@@ -68,7 +68,7 @@ def calculate_wave_runup_height_z2p(
     c4 : float, optional
         Coefficient in wave runup formula (-), by default 1.07
     use_best_fit : bool, optional
-        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False, by default False
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
 
     Returns
     -------
@@ -166,7 +166,7 @@ def calculate_dimensionless_wave_runup_height_z2p(
     c4 : float, optional
         Coefficient in wave runup formula (-), by default 1.07
     use_best_fit : bool, optional
-        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False, by default False
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
 
     Returns
     -------
