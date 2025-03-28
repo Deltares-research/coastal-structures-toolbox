@@ -134,13 +134,14 @@ def calculate_overtopping_discharge_q(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
-    B_berm: float | npt.NDArray[np.float64],
-    db: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
+    B_berm: float | npt.NDArray[np.float64] = 0.0,
+    db: float | npt.NDArray[np.float64] = 0.0,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_b: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
     gamma_v: float | npt.NDArray[np.float64] = 1.0,
     sigma: float | npt.NDArray[np.float64] = 0,
@@ -161,14 +162,8 @@ def calculate_overtopping_discharge_q(
         Spectral significant wave height (m)
     Tmm10 : float | npt.NDArray[np.float64]
         Spectral wave period Tm-1,0 (s)
-    beta : float | npt.NDArray[np.float64]
-        Angle of wave incidence (degrees)
     Rc : float | npt.NDArray[np.float64]
         Crest freeboard of the structure (m)
-    B_berm : float | npt.NDArray[np.float64]
-        Berm width of the structure (m)
-    db : float | npt.NDArray[np.float64]
-        Berm height of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
         Cotangent of the front-side slope of the structure (-), by default np.nan
     cot_alpha_down : float | npt.NDArray[np.float64], optional
@@ -177,8 +172,14 @@ def calculate_overtopping_discharge_q(
         Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
     gamma_beta : float | npt.NDArray[np.float64], optional
         Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_b : float | npt.NDArray[np.float64], optional
+        Influence factor for a berm gamma_b (-), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
@@ -206,6 +207,7 @@ def calculate_overtopping_discharge_q(
         B_berm=B_berm,
         db=db,
         gamma_beta=gamma_beta,
+        gamma_b=gamma_b,
         gamma_f=gamma_f,
         gamma_v=gamma_v,
         sigma=sigma,
@@ -220,13 +222,14 @@ def calculate_dimensionless_overtopping_discharge_q(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
-    B_berm: float | npt.NDArray[np.float64],
-    db: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
+    B_berm: float | npt.NDArray[np.float64] = 0.0,
+    db: float | npt.NDArray[np.float64] = 0.0,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_b: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
     gamma_v: float | npt.NDArray[np.float64] = 1.0,
     sigma: float | npt.NDArray[np.float64] = 0,
@@ -249,10 +252,6 @@ def calculate_dimensionless_overtopping_discharge_q(
         Spectral wave period Tm-1,0 (s)
     Rc : float | npt.NDArray[np.float64]
         Crest freeboard of the structure (m)
-    B_berm : float | npt.NDArray[np.float64]
-        Berm width of the structure (m)
-    db : float | npt.NDArray[np.float64]
-        Berm height of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
         Cotangent of the front-side slope of the structure (-), by default np.nan
     cot_alpha_down : float | npt.NDArray[np.float64], optional
@@ -261,8 +260,14 @@ def calculate_dimensionless_overtopping_discharge_q(
         Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
     gamma_beta : float | npt.NDArray[np.float64], optional
         Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_b : float | npt.NDArray[np.float64], optional
+        Influence factor for a berm gamma_b (-), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
@@ -331,20 +336,24 @@ def calculate_dimensionless_overtopping_discharge_q(
         H=Hm0, T=Tmm10, cot_alpha=cot_alpha
     )
 
-    L_berm = wave_runup_taw2002.calculate_berm_length(
-        Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
-    )
+    if np.isnan(gamma_b):
+        L_berm = wave_runup_taw2002.calculate_berm_length(
+            Hm0=Hm0,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+        )
 
-    gamma_b = wave_runup_taw2002.iteration_procedure_gamma_b(
-        Hm0=Hm0,
-        Tmm10=Tmm10,
-        cot_alpha_average=cot_alpha,
-        B_berm=B_berm,
-        L_berm=L_berm,
-        db=db,
-        gamma_f=gamma_f,
-        gamma_beta=gamma_beta,
-    )
+        gamma_b = wave_runup_taw2002.iteration_procedure_gamma_b(
+            Hm0=Hm0,
+            Tmm10=Tmm10,
+            cot_alpha_average=cot_alpha,
+            B_berm=B_berm,
+            L_berm=L_berm,
+            db=db,
+            gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
+        )
 
     gamma_f_adj = wave_runup_taw2002.calculate_adjusted_influence_roughness_gamma_f(
         gamma_f=gamma_f, gamma_b=gamma_b, ksi_mm10=ksi_mm10
@@ -443,13 +452,14 @@ def calculate_crest_freeboard_Rc(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
-    B_berm: float | npt.NDArray[np.float64],
-    db: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
+    B_berm: float | npt.NDArray[np.float64] = 0.0,
+    db: float | npt.NDArray[np.float64] = 0.0,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_b: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
     gamma_v: float | npt.NDArray[np.float64] = 1.0,
     sigma: float | npt.NDArray[np.float64] = 0,
@@ -472,10 +482,6 @@ def calculate_crest_freeboard_Rc(
         Spectral wave period Tm-1,0 (s)
     q : float | npt.NDArray[np.float64]
         Mean wave overtopping discharge (m^3/s/m)
-    B_berm : float | npt.NDArray[np.float64]
-        Berm width of the structure (m)
-    db : float | npt.NDArray[np.float64]
-        Berm height of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
         Cotangent of the front-side slope of the structure (-), by default np.nan
     cot_alpha_down : float | npt.NDArray[np.float64], optional
@@ -484,8 +490,14 @@ def calculate_crest_freeboard_Rc(
         Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
     gamma_beta : float | npt.NDArray[np.float64], optional
         Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_b : float | npt.NDArray[np.float64], optional
+        Influence factor for a berm gamma_b (-), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
@@ -527,13 +539,14 @@ def calculate_dimensionless_crest_freeboard(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
-    B_berm: float | npt.NDArray[np.float64],
-    db: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
+    B_berm: float | npt.NDArray[np.float64] = 0.0,
+    db: float | npt.NDArray[np.float64] = 0.0,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_b: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
     gamma_v: float | npt.NDArray[np.float64] = 1.0,
     sigma: float | npt.NDArray[np.float64] = 0,
@@ -548,7 +561,6 @@ def calculate_dimensionless_crest_freeboard(
     For more details see TAW (2002), available here (in Dutch):
     https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
 
-
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
@@ -557,10 +569,6 @@ def calculate_dimensionless_crest_freeboard(
         Spectral wave period Tm-1,0 (s)
     q : float | npt.NDArray[np.float64]
         Mean wave overtopping discharge (m^3/s/m)
-    B_berm : float | npt.NDArray[np.float64]
-        Berm width of the structure (m)
-    db : float | npt.NDArray[np.float64]
-        Berm height of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
         Cotangent of the front-side slope of the structure (-), by default np.nan
     cot_alpha_down : float | npt.NDArray[np.float64], optional
@@ -569,8 +577,14 @@ def calculate_dimensionless_crest_freeboard(
         Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
     gamma_beta : float | npt.NDArray[np.float64], optional
         Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_b : float | npt.NDArray[np.float64], optional
+        Influence factor for a berm gamma_b (-), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
@@ -638,20 +652,24 @@ def calculate_dimensionless_crest_freeboard(
         H=Hm0, T=Tmm10, cot_alpha=cot_alpha
     )
 
-    L_berm = wave_runup_taw2002.calculate_berm_length(
-        Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
-    )
+    if np.isnan(gamma_b):
+        L_berm = wave_runup_taw2002.calculate_berm_length(
+            Hm0=Hm0,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+        )
 
-    gamma_b = wave_runup_taw2002.iteration_procedure_gamma_b(
-        Hm0=Hm0,
-        Tmm10=Tmm10,
-        cot_alpha_average=cot_alpha,
-        B_berm=B_berm,
-        L_berm=L_berm,
-        db=db,
-        gamma_f=gamma_f,
-        gamma_beta=gamma_beta,
-    )
+        gamma_b = wave_runup_taw2002.iteration_procedure_gamma_b(
+            Hm0=Hm0,
+            Tmm10=Tmm10,
+            cot_alpha_average=cot_alpha,
+            B_berm=B_berm,
+            L_berm=L_berm,
+            db=db,
+            gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
+        )
 
     gamma_f_adj = wave_runup_taw2002.calculate_adjusted_influence_roughness_gamma_f(
         gamma_f=gamma_f, gamma_b=gamma_b, ksi_mm10=ksi_mm10
