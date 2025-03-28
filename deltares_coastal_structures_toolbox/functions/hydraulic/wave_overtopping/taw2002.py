@@ -145,6 +145,7 @@ def calculate_overtopping_discharge_q(
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
     gamma_v: float | npt.NDArray[np.float64] = 1.0,
     sigma: float | npt.NDArray[np.float64] = 0,
+    g: float = 9.81,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the mean wave overtopping discharge q with the TAW (2002) formula.
@@ -186,6 +187,8 @@ def calculate_overtopping_discharge_q(
         Influence factor for a wave wall (-), by default 1.0
     sigma : float | npt.NDArray[np.float64], optional
         Apply sigma standard deviations to the best fit coefficients, by default 0
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
     use_best_fit : bool, optional
         Use the coefficients of the best fit instead of the more conservative design variant, by default False
 
@@ -213,7 +216,7 @@ def calculate_overtopping_discharge_q(
         sigma=sigma,
         use_best_fit=use_best_fit,
     )
-    q = q_diml * np.sqrt(9.81 * Hm0**3)
+    q = q_diml * np.sqrt(g * Hm0**3)
 
     return q, max_reached
 
@@ -463,6 +466,7 @@ def calculate_crest_freeboard_Rc(
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
     gamma_v: float | npt.NDArray[np.float64] = 1.0,
     sigma: float | npt.NDArray[np.float64] = 0,
+    g: float = 9.81,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the crest freeboard Rc with the TAW (2002) formula.
@@ -504,6 +508,8 @@ def calculate_crest_freeboard_Rc(
         Influence factor for a wave wall (-), by default 1.0
     sigma : float | npt.NDArray[np.float64], optional
         Apply sigma standard deviations to the best fit coefficients, by default 0
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
     use_best_fit : bool, optional
         Use the coefficients of the best fit instead of the more conservative design variant, by default False
 
@@ -524,9 +530,11 @@ def calculate_crest_freeboard_Rc(
         q=q,
         B_berm=B_berm,
         db=db,
+        gamma_b=gamma_b,
         gamma_f=gamma_f,
         gamma_v=gamma_v,
         sigma=sigma,
+        g=g,
         use_best_fit=use_best_fit,
     )
 
@@ -550,6 +558,7 @@ def calculate_dimensionless_crest_freeboard(
     gamma_f: float | npt.NDArray[np.float64] = 1.0,
     gamma_v: float | npt.NDArray[np.float64] = 1.0,
     sigma: float | npt.NDArray[np.float64] = 0,
+    g: float = 9.81,
     use_best_fit: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the dimensionless crest freeboard Rc/Hm0 with the TAW (2002) formula.
@@ -591,6 +600,8 @@ def calculate_dimensionless_crest_freeboard(
         Influence factor for a wave wall (-), by default 1.0
     sigma : float | npt.NDArray[np.float64], optional
         Apply sigma standard deviations to the best fit coefficients, by default 0
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
     use_best_fit : bool, optional
         Use the coefficients of the best fit instead of the more conservative design variant, by default False
 
@@ -682,7 +693,7 @@ def calculate_dimensionless_crest_freeboard(
             * (1.0 / gamma_b)
             * (1.0 / ksi_mm10)
             * q
-            / np.sqrt(9.81 * Hm0**3)
+            / np.sqrt(g * Hm0**3)
         )
         * (-1.0 / (c1 + cor1))
         * ksi_mm10
@@ -693,7 +704,7 @@ def calculate_dimensionless_crest_freeboard(
     )
 
     Rc_diml_eq25 = (
-        np.log(5 * q / np.sqrt(9.81 * Hm0**3))
+        np.log(5 * q / np.sqrt(g * Hm0**3))
         * (-1.0 / (c2 + cor2))
         * gamma_f_adj
         * gamma_beta
