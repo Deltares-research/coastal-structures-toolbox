@@ -4,118 +4,100 @@ import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as wave_runup_taw2002
 
-# def calculate_wave_runup_height_z2p(
-#     Hm0: float | npt.NDArray[np.float64],
-#     Tmm10: float | npt.NDArray[np.float64],
-#     beta: float | npt.NDArray[np.float64],
-#     gamma_b: float | npt.NDArray[np.float64] = np.nan,
-#     gamma_f: float | npt.NDArray[np.float64] = 1.0,
-#     B_berm: float | npt.NDArray[np.float64] = 0.0,
-#     db: float | npt.NDArray[np.float64] = 0.0,
-#     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
-#     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
-#     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
-#     use_best_fit: bool = False,
-# ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
 
-#     z2p_diml, _ = calculate_dimensionless_wave_runup_height_z2p(
-#         Hm0=Hm0,
-#         Tmm10=Tmm10,
-#         beta=beta,
-#         B_berm=B_berm,
-#         db=db,
-#         cot_alpha=cot_alpha,
-#         cot_alpha_down=cot_alpha_down,
-#         cot_alpha_up=cot_alpha_up,
-#         gamma_b=gamma_b,
-#         gamma_f=gamma_f,
-#         use_best_fit=use_best_fit,
-#     )
-
-#     z2p = z2p_diml * Hm0
-
-#     return z2p
-
-
-# def calculate_dimensionless_wave_runup_height_z2p(
-#     Hm0: float | npt.NDArray[np.float64],
-#     Tmm10: float | npt.NDArray[np.float64],
-#     beta: float | npt.NDArray[np.float64],
-#     gamma_b: float | npt.NDArray[np.float64] = np.nan,
-#     gamma_f: float | npt.NDArray[np.float64] = 1.0,
-#     B_berm: float | npt.NDArray[np.float64] = 0.0,
-#     db: float | npt.NDArray[np.float64] = 0.0,
-#     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
-#     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
-#     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
-#     use_best_fit: bool = False,
-# ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
-
-#     if use_best_fit:
-#         c1 = 1.65
-#         c2 = 4.0
-#         c3 = 1.5
-#         c4 = 1.0
-#     else:
-#         c1 = 1.75
-#         c2 = 4.3
-#         c3 = 1.5
-#         c4 = 1.07
-
-#     return
-
-
-def ru_EuroTOP2(
+def calculate_wave_runup_height_z2p(
     Hm0: float | npt.NDArray[np.float64],
-    slope_tana: float | npt.NDArray[np.float64],
-    steepness_s0_mm10: float | npt.NDArray[np.float64],
-    gamma_b: float = 1.0,
-    gamma_f: float = 1.0,
-    gamma_beta: float = 1.0,
-):
-    """
-    ET2 eq 5.1, 5.2
-    """
+    Tmm10: float | npt.NDArray[np.float64],
+    beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_b: float | npt.NDArray[np.float64] = np.nan,
+    gamma_f: float | npt.NDArray[np.float64] = 1.0,
+    B_berm: float | npt.NDArray[np.float64] = 0.0,
+    db: float | npt.NDArray[np.float64] = 0.0,
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
+    c1: float = 1.75,
+    c2: float = 4.3,
+    c3: float = 1.5,
+    c4: float = 1.07,
+    use_best_fit: bool = False,
+) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
 
-    ksi_mm10 = slope_tana / np.sqrt(steepness_s0_mm10)
-
-    Ru2p_diml_eq51 = 1.65 * gamma_b * gamma_f * gamma_beta * ksi_mm10
-    Ru2p_diml_eq52 = (
-        1.0 * gamma_f * gamma_beta * (4 - 1.5 / (np.sqrt(gamma_b * ksi_mm10)))
+    z2p_diml, max_reached = calculate_dimensionless_wave_runup_height_z2p(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        B_berm=B_berm,
+        db=db,
+        cot_alpha=cot_alpha,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        gamma_beta=gamma_beta,
+        gamma_b=gamma_b,
+        gamma_f=gamma_f,
+        c1=c1,
+        c2=c2,
+        c3=c3,
+        c4=c4,
+        use_best_fit=use_best_fit,
     )
 
-    Ru2p = np.min([Ru2p_diml_eq51, Ru2p_diml_eq52], axis=0) * Hm0
+    z2p = z2p_diml * Hm0
 
-    return Ru2p
+    return z2p, max_reached
 
 
-def ru_ET2_gamma_oblique_waves(beta, gamma_f):
-    """
-    ET2 eq 5.29 and 6.9
-    """
+def calculate_dimensionless_wave_runup_height_z2p(
+    Hm0: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_b: float | npt.NDArray[np.float64] = np.nan,
+    gamma_f: float | npt.NDArray[np.float64] = 1.0,
+    B_berm: float | npt.NDArray[np.float64] = 0.0,
+    db: float | npt.NDArray[np.float64] = 0.0,
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
+    c1: float = 1.75,
+    c2: float = 4.3,
+    c3: float = 1.5,
+    c4: float = 1.07,
+    use_best_fit: bool = False,
+) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
 
-    beta[beta < 0] = np.abs(beta[beta < 0])
+    if use_best_fit:
+        c1 = 1.65
+        c2 = 4.0
+        c3 = 1.5
+        c4 = 1.0
 
-    gamma_beta = beta.copy()
-    gamma_beta[beta > 80] = 80
+    gamma_beta = calculate_influence_oblique_waves_gamma_beta(
+        beta=beta,
+        gamma_f=gamma_f,
+    )
 
-    # Dikes
-    gamma_beta[gamma_f > 0.60] = 1 - 0.0022 * gamma_beta[gamma_f > 0.60]
+    z2p_diml, max_reached = (
+        wave_runup_taw2002.calculate_dimensionless_wave_runup_height_z2p(
+            Hm0=Hm0,
+            Tmm10=Tmm10,
+            gamma_beta=gamma_beta,
+            gamma_b=gamma_b,
+            gamma_f=gamma_f,
+            B_berm=B_berm,
+            db=db,
+            cot_alpha=cot_alpha,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            c1=c1,
+            c2=c2,
+            c3=c3,
+            c4=c4,
+        )
+    )
 
-    # Rubble mound structures
-    gamma_beta[gamma_f <= 0.60] = 1 - 0.0063 * gamma_beta[gamma_f <= 0.60]
-
-    if beta < 0:
-        beta = np.abs(beta)
-
-    if beta > 80:
-        beta = 80
-
-    if gamma_f > 0.6:
-        gamma_beta = 1 - 0.0022 * beta
-    else:
-        gamma_beta = 1 - 0.0063 * beta
-    return gamma_beta
+    return z2p_diml, max_reached
 
 
 def calculate_influence_oblique_waves_gamma_beta(
