@@ -22,7 +22,12 @@ def calculate_overtopping_discharge_q(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
+    c1: float = 2.5,
+    c2: float = 0.1035,
+    c3: float = 1.35,
+    c4: float = 0.026,
     use_best_fit: bool = False,
+    g: float = 9.81,
 ):
 
     q_diml, max_reached = calculate_dimensionless_overtopping_discharge_q(
@@ -40,9 +45,13 @@ def calculate_overtopping_discharge_q(
         gamma_f=gamma_f,
         gamma_v=gamma_v,
         gamma_star=gamma_star,
+        c1=c1,
+        c2=c2,
+        c3=c3,
+        c4=c4,
         use_best_fit=use_best_fit,
     )
-    q = q_diml * np.sqrt(9.81 * Hm0**3)
+    q = q_diml * np.sqrt(g * Hm0**3)
 
     return q, max_reached
 
@@ -62,6 +71,10 @@ def calculate_dimensionless_overtopping_discharge_q(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
+    c1: float = 2.5,
+    c2: float = 0.1035,
+    c3: float = 1.35,
+    c4: float = 0.026,
     use_best_fit: bool = False,
 ):
     """
@@ -69,16 +82,9 @@ def calculate_dimensionless_overtopping_discharge_q(
     eq 5.10, 5.11
     """
 
-    if use_best_fit:
-        c1 = 2.7
-        c2 = 0.09
-        c3 = 1.5
-        c4 = 0.023
-    else:
-        c1 = 2.5
-        c2 = 0.1035
-        c3 = 1.35
-        c4 = 0.026
+    c1, c2, c3, c4 = check_best_fit(
+        c1=c1, c2=c2, c3=c3, c4=c4, use_best_fit=use_best_fit
+    )
 
     if wave_runup_taw2002.check_calculate_gamma_beta(beta=beta, gamma_beta=gamma_beta):
         gamma_beta = calculate_influence_oblique_waves_gamma_beta(
@@ -160,6 +166,40 @@ def calculate_dimensionless_overtopping_discharge_q(
     return q_diml, max_reached
 
 
+def check_best_fit(
+    c1: float, c2: float, c3: float, c4: float, use_best_fit: bool
+) -> tuple[float, float, float, float]:
+    """Check whether best fit coefficients need to be used
+
+    If so, return the best fit coefficients, otherwise return the input coefficients
+
+    Parameters
+    ----------
+    c1 : float
+        Coefficient in wave overtopping formula (-)
+    c2 : float
+        Coefficient in wave overtopping formula (-)
+    c3 : float
+        Coefficient in wave overtopping formula (-)
+    c4 : float
+        Coefficient in wave overtopping formula (-)
+    use_best_fit : bool
+        Switch to either use best fit values for the coefficients (true) or the design values (false)
+
+    Returns
+    -------
+    tuple[float, float, float, float]
+        Coefficients c1, c2, c3 and c4 in the wave runup formula (-)
+    """
+    if use_best_fit:
+        c1 = 2.7
+        c2 = 0.09
+        c3 = 1.5
+        c4 = 0.023
+
+    return c1, c2, c3, c4
+
+
 def calculate_influence_oblique_waves_gamma_beta(
     beta: float | npt.NDArray[np.float64],
     gamma_f: float | npt.NDArray[np.float64],
@@ -204,3 +244,164 @@ def calculate_influence_oblique_waves_gamma_beta(
     )
 
     return gamma_beta
+
+
+def calculate_crest_freeboard_Rc(
+    Hm0: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    q: float | npt.NDArray[np.float64],
+    beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_b: float | npt.NDArray[np.float64] = np.nan,
+    gamma_f: float | npt.NDArray[np.float64] = 1.0,
+    gamma_v: float | npt.NDArray[np.float64] = 1.0,
+    gamma_star: float | npt.NDArray[np.float64] = 1.0,
+    B_berm: float | npt.NDArray[np.float64] = 0.0,
+    db: float | npt.NDArray[np.float64] = 0.0,
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
+    c1: float = 2.5,
+    c2: float = 0.1035,
+    c3: float = 1.35,
+    c4: float = 0.026,
+    use_best_fit: bool = False,
+    g: float = 9.81,
+) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+
+    Rc_diml, max_reached = calculate_dimensionless_crest_freeboard(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        gamma_beta=gamma_beta,
+        cot_alpha=cot_alpha,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        q=q,
+        B_berm=B_berm,
+        db=db,
+        gamma_b=gamma_b,
+        gamma_f=gamma_f,
+        gamma_v=gamma_v,
+        gamma_star=gamma_star,
+        c1=c1,
+        c2=c2,
+        c3=c3,
+        c4=c4,
+        use_best_fit=use_best_fit,
+        g=g,
+    )
+
+    Rc = Rc_diml * Hm0
+
+    return Rc, max_reached
+
+
+def calculate_dimensionless_crest_freeboard(
+    Hm0: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    q: float | npt.NDArray[np.float64],
+    beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_b: float | npt.NDArray[np.float64] = np.nan,
+    gamma_f: float | npt.NDArray[np.float64] = 1.0,
+    gamma_v: float | npt.NDArray[np.float64] = 1.0,
+    gamma_star: float | npt.NDArray[np.float64] = 1.0,
+    B_berm: float | npt.NDArray[np.float64] = 0.0,
+    db: float | npt.NDArray[np.float64] = 0.0,
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
+    c1: float = 2.5,
+    c2: float = 0.1035,
+    c3: float = 1.35,
+    c4: float = 0.026,
+    use_best_fit: bool = False,
+    g: float = 9.81,
+) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+
+    c1, c2, c3, c4 = check_best_fit(
+        c1=c1, c2=c2, c3=c3, c4=c4, use_best_fit=use_best_fit
+    )
+
+    if wave_runup_taw2002.check_calculate_gamma_beta(beta=beta, gamma_beta=gamma_beta):
+        gamma_beta = calculate_influence_oblique_waves_gamma_beta(
+            beta=beta, gamma_f=gamma_f
+        )
+
+    if wave_runup_taw2002.check_composite_slope(
+        cot_alpha=cot_alpha, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up
+    ):
+        z2p_for_slope = wave_runup_eurotop2018.iteration_procedure_z2p(
+            Hm0=Hm0,
+            Tmm10=Tmm10,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+            db=db,
+            gamma_f=gamma_f,
+            gamma_beta=gamma_beta,
+        )
+
+        cot_alpha = wave_runup_taw2002.determine_average_slope(
+            Hm0=Hm0,
+            z2p=z2p_for_slope,
+            cot_alpha_down=cot_alpha_down,
+            cot_alpha_up=cot_alpha_up,
+            B_berm=B_berm,
+            db=db,
+        )
+
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        H=Hm0, T=Tmm10, cot_alpha=cot_alpha
+    )
+
+    L_berm = wave_runup_taw2002.calculate_berm_length(
+        Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
+    )
+
+    gamma_b = wave_runup_eurotop2018.iteration_procedure_gamma_b(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        cot_alpha_average=cot_alpha,
+        B_berm=B_berm,
+        L_berm=L_berm,
+        db=db,
+        gamma_f=gamma_f,
+        gamma_beta=gamma_beta,
+    )
+
+    gamma_f_adj = wave_runup_taw2002.calculate_adjusted_influence_roughness_gamma_f(
+        gamma_f=gamma_f, gamma_b=gamma_b, ksi_mm10=ksi_mm10
+    )
+
+    Rc_diml_eq510 = (
+        np.power(
+            -np.log(
+                (q / np.sqrt(g * np.power(Hm0, 3)))
+                * np.sqrt(1.0 / cot_alpha)
+                * (1.0 / c4)
+                * (1.0 / (gamma_b * ksi_mm10))
+            ),
+            1.0 / 1.3,
+        )
+        * (1.0 / c1)
+        * ksi_mm10
+        * gamma_b
+        * gamma_f_adj
+        * gamma_beta
+        * gamma_v
+    )
+
+    Rc_diml_eq511 = (
+        np.power(-np.log((q / np.sqrt(g * np.power(Hm0, 3))) * (1.0 / c2)), 1.0 / 1.3)
+        * (1.0 / c3)
+        * gamma_f_adj
+        * gamma_beta
+        * gamma_star
+    )
+
+    Rc_diml = np.min([Rc_diml_eq510, Rc_diml_eq511], axis=0)
+    max_reached = np.min([Rc_diml_eq510, Rc_diml_eq511], axis=0) == Rc_diml_eq511
+
+    return Rc_diml, max_reached
