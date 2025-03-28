@@ -293,9 +293,7 @@ def calculate_dimensionless_wave_runup_height_z2p(
     )
 
     z2p_diml_eq3a = c1 * gamma_b * gamma_f_adj * gamma_beta * ksi_mm10
-    z2p_diml_eq3b = (
-        1.0 * gamma_f_adj * gamma_beta * (c2 - c3 / np.sqrt(ksi_mm10))
-    )  # TODO check difference TAW/ET1!
+    z2p_diml_eq3b = 1.0 * gamma_f_adj * gamma_beta * (c2 - c3 / np.sqrt(ksi_mm10))
 
     z2p_diml = np.min([z2p_diml_eq3a, z2p_diml_eq3b], axis=0)
     max_reached = np.min([z2p_diml_eq3a, z2p_diml_eq3b], axis=0) == z2p_diml_eq3b
@@ -700,9 +698,7 @@ def calculate_adjusted_influence_roughness_gamma_f(
 
     gamma_f_adj = np.where(
         (gamma_b * ksi_mm10 >= 1.8) & (gamma_b * ksi_mm10 <= 10.0),
-        ((1 - gamma_f) / (10.0 - 1.8)) * ksi_mm10
-        + gamma_f
-        + (gamma_f - 1.0) * (1.8 / (10.0 - 1.8)),
+        ((ksi_mm10 - 1.8) * (1 - gamma_f) / (10.0 - 1.8)) + gamma_f,
         gamma_f,
     )
 
