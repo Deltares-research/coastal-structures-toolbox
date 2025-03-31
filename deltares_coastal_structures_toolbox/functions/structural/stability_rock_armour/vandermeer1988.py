@@ -172,28 +172,32 @@ def calculate_damage_number_S(
         * np.sqrt(N_waves)
     )
 
-    # Very gentle slopes
-    ksi_mcc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, 3.5
-    )
+    # TODO check: it seems that the very gentle slopes (cot_alpha > 3.5) are not implemented in BREAKWAT
+    # TODO => what should we do?
+    # # Very gentle slopes
+    # ksi_mcc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+    #     c_pl, c_s, P, 3.5
+    # )
 
-    S_s_cot_alpha_3p5 = (
-        np.power(
-            Ns
-            * (H2p / Hs)
-            * (1 / c_pl)
-            * np.power(P, -0.18)
-            * np.power(ksi_mcc, 0.5)
-            * np.power(ksi_mcc / ksi_0m, P),  # * np.power(ksi_mcc / ksi_0m, 0.5),
-            5,
-        )
-        * (1 / gamma_N)
-        * np.sqrt(N_waves)
-    )
+    # S_s_cot_alpha_3p5 = (
+    #     np.power(
+    #         Ns
+    #         * (H2p / Hs)
+    #         * (1 / c_pl)
+    #         * np.power(P, -0.18)
+    #         * np.power(ksi_mcc, 0.5)
+    #         * np.power(ksi_mcc / ksi_0m, P),  # * np.power(ksi_mcc / ksi_0m, 0.5),
+    #         5,
+    #     )
+    #     * (1 / gamma_N)
+    #     * np.sqrt(N_waves)
+    # )
 
-    S_s_combined = np.where(cot_alpha > 3.5, S_s_cot_alpha_3p5, S_s)
+    # S_s_combined = np.where(cot_alpha > 3.5, S_s_cot_alpha_3p5, S_s)
 
-    S = np.where(ksi_0m < ksi_mc, S_pl, S_s_combined)
+    # S = np.where(ksi_0m < ksi_mc, S_pl, S_s_combined)
+
+    S = np.where(ksi_0m < ksi_mc, S_pl, S_s)
 
     check_validity_range(
         P=P,
@@ -286,24 +290,27 @@ def calculate_nominal_rock_diameter_Dn50(
         * np.power(ksi_0m, -P)
     )
 
-    # Very gentle slopes
-    ksi_mcc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, 3.5
-    )
+    # TODO check: it seems that the very gentle slopes (cot_alpha > 3.5) are not implemented in BREAKWAT
+    # TODO => what should we do?
+    # # Very gentle slopes
+    # ksi_mcc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+    #     c_pl, c_s, P, 3.5
+    # )
 
-    Dn50_s_cot_alpha_3p5 = (
-        (Hs / Delta)
-        * (H2p / Hs)
-        * (1 / c_pl)
-        * np.power(P, -0.18)
-        * np.power(gamma_N * S / np.sqrt(N_waves), -0.2)
-        * np.power(ksi_mcc, 0.5)
-        * np.power(ksi_mcc / ksi_0m, 0.5)
-    )
+    # Dn50_s_cot_alpha_3p5 = (
+    #     (Hs / Delta)
+    #     * (H2p / Hs)
+    #     * (1 / c_pl)
+    #     * np.power(P, -0.18)
+    #     * np.power(gamma_N * S / np.sqrt(N_waves), -0.2)
+    #     * np.power(ksi_mcc, 0.5)
+    #     * np.power(ksi_mcc / ksi_0m, 0.5)
+    # )
 
-    Dn50_s_combined = np.where(cot_alpha > 3.5, Dn50_s_cot_alpha_3p5, Dn50_s)
+    # Dn50_s_combined = np.where(cot_alpha > 3.5, Dn50_s_cot_alpha_3p5, Dn50_s)
 
-    Dn50 = np.where(ksi_0m < ksi_mc, Dn50_pl, Dn50_s_combined)
+    # Dn50 = np.where(ksi_0m < ksi_mc, Dn50_pl, Dn50_s_combined)
+    Dn50 = np.where(ksi_0m < ksi_mc, Dn50_pl, Dn50_s)
 
     check_validity_range(
         P=P,
@@ -327,7 +334,7 @@ def calculate_significant_wave_height_Hs(
     S: float | npt.NDArray[np.float64],
     Dn50: float | npt.NDArray[np.float64] = np.nan,
     M50: float | npt.NDArray[np.float64] = np.nan,
-    c_pl: float = 8.7,  # TODO revert to 8.7, change input for test cases
+    c_pl: float = 8.7,
     c_s: float = 1.4,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
@@ -409,31 +416,35 @@ def calculate_significant_wave_height_Hs(
         1.0 / (1.0 + 0.5 * P),
     )
 
-    # Very gentle slopes
-    ksi_mcc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, 3.5
-    )
+    # TODO check: it seems that the very gentle slopes (cot_alpha > 3.5) are not implemented in BREAKWAT
+    # TODO => what should we do?
+    # # Very gentle slopes
+    # ksi_mcc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+    #     c_pl, c_s, P, 3.5
+    # )
 
-    Hs_s_cot_alpha_3p5 = np.power(
-        c_pl
-        * np.power(P, 0.18)
-        * np.power(gamma_N * S / np.sqrt(N_waves), 0.2)
-        * np.power(ksi_mcc, -1.0)
-        * np.power(1.0 / cot_alpha, 0.5)
-        * np.power((2 * np.pi / g) * (1.0 / np.power(Tm, 2)), -0.25)
-        * Delta
-        * Dn50
-        * (1 / ratio_H2p_Hs),
-        1.0 / 1.25,
-    )
+    # Hs_s_cot_alpha_3p5 = np.power(
+    #     c_pl
+    #     * np.power(P, 0.18)
+    #     * np.power(gamma_N * S / np.sqrt(N_waves), 0.2)
+    #     * np.power(ksi_mcc, -1.0)
+    #     * np.power(1.0 / cot_alpha, 0.5)
+    #     * np.power((2 * np.pi / g) * (1.0 / np.power(Tm, 2)), -0.25)
+    #     * Delta
+    #     * Dn50
+    #     * (1 / ratio_H2p_Hs),
+    #     1.0 / 1.25,
+    # )
 
     ksi_0m_pl = core_physics.calculate_Irribarren_number_ksi(Hs_pl, Tm, cot_alpha)
 
     ksi_0m_s = core_physics.calculate_Irribarren_number_ksi(Hs_s, Tm, cot_alpha)
 
-    Hs_s_combined = np.where(cot_alpha > 3.5, Hs_s_cot_alpha_3p5, Hs_s)
+    # Hs_s_combined = np.where(cot_alpha > 3.5, Hs_s_cot_alpha_3p5, Hs_s)
 
-    Hs = np.where((ksi_0m_pl < ksi_mc) & (ksi_0m_s < ksi_mc), Hs_pl, Hs_s_combined)
+    # Hs = np.where((ksi_0m_pl < ksi_mc) & (ksi_0m_s < ksi_mc), Hs_pl, Hs_s_combined)
+
+    Hs = np.where((ksi_0m_pl < ksi_mc) & (ksi_0m_s < ksi_mc), Hs_pl, Hs_s)
 
     check_validity_range(
         Hs=Hs,
