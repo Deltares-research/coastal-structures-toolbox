@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-import warnings
+# import warnings
 
 import numpy as np
 import numpy.typing as npt
@@ -372,15 +372,15 @@ def calculate_nominal_rock_diameter_Dn50(
 #             cot_alpha=cot_alpha,
 #         )
 
-#         # Hs_iter = Rc2_front / (
-#         #     (np.sqrt(N_waves) / S)
-#         #     * 0.00025
-#         #     * np.power(cot_phi, 1.25)
-#         #     * np.power((z1p_iter - Rc) / Dn50, 2)
-#         #     * np.power(Rc / Dn50, 0.5)
-#         #     * (1 + 5 * Rc2_rear / (Rc - Rc2_rear))
-#         #     - 1
-#         # )
+#         Hs_iter2 = Rc2_front / (
+#             (np.sqrt(N_waves) / S)
+#             * 0.00025
+#             * np.power(cot_phi, 1.25)
+#             * np.power((z1p_iter - Rc) / Dn50, 2)
+#             * np.power(Rc / Dn50, 0.5)
+#             * (1 + 5 * Rc2_rear / (Rc - Rc2_rear))
+#             - 1
+#         )
 #         if np.abs(Hs_iter - Hs_iter_m1) < Hs_tolerance:
 #             check_validity_range(
 #                 S=S,
