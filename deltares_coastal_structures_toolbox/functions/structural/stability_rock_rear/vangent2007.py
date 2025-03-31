@@ -1,4 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
+import warnings
+
 import numpy as np
 import numpy.typing as npt
 
@@ -298,26 +300,24 @@ def calculate_nominal_rock_diameter_Dn50(
 
 
 # def calculate_maximum_Hs(
-#     cot_alpha: float,
-#     cot_phi: float,
-#     gamma: float,
-#     S: float,
-#     Tmm10: float,
-#     Dn50: float,
-#     Rc: float,
-#     Rc2_front: float,
-#     Rc2_rear: float,
-#     N_waves: int,
+#     cot_alpha: float | npt.NDArray[np.float64],
+#     cot_phi: float | npt.NDArray[np.float64],
+#     gamma: float | npt.NDArray[np.float64],
+#     S: float | npt.NDArray[np.float64],
+#     Tmm10: float | npt.NDArray[np.float64],
+#     Dn50: float | npt.NDArray[np.float64],
+#     Rc: float | npt.NDArray[np.float64],
+#     Rc2_front: float | npt.NDArray[np.float64],
+#     Rc2_rear: float | npt.NDArray[np.float64],
+#     N_waves: int | npt.NDArray[np.int32],
 #     smm10_init: float = 0.04,
 #     Hs_tolerance: float = 0.01,
 #     max_iterations: int = 100,
 #     g: float = 9.81,
-# ) -> (
-#     float
-# ):  # TODO - naar kijken, want moet iteratief worden opgelost (z1% hangt af van Hs)
+# ) -> float | npt.NDArray[np.float64]:
+#     # TODO - naar kijken, want moet iteratief worden opgelost (z1% hangt af van Hs)
 
-#     Hs_iter_m1 = smm10_init * np.power(Tmm10, 2) / (2 * np.pi / g)
-#     Hs_iter_m1 = 10.5
+#     # Hs_iter_m1 = smm10_init * np.power(Tmm10, 2) / (2 * np.pi / g)
 
 #     # z1p_iter = Rc + 0.2 * Hs_iter_m1
 
@@ -357,22 +357,32 @@ def calculate_nominal_rock_diameter_Dn50(
 #     #             "Maximum number of iterations reached, convergence not achieved"
 #     #         )
 
+#     Hs_iter_m1 = Rc2_front
+
 #     for iteration in range(max_iterations):
-#         z1p_iter = wave_runup_vangent2001.calculate_wave_runup_height_z1p(
+#         z1p_iter = vangent2001.calculate_wave_runup_height_z1p(
 #             Tmm10, gamma, cot_alpha, Hs=Hs_iter_m1
 #         )
 
-#         Hs_iter = Rc2_front / (
-#             (np.sqrt(N_waves) / S)
-#             * 0.00025
-#             * np.power(cot_phi, 1.25)
-#             * np.power((z1p_iter - Rc) / Dn50, 2)
-#             * np.power(Rc / Dn50, 0.5)
-#             * (1 + 5 * Rc2_rear / (Rc - Rc2_rear))
-#             - 1
+#         Hs_iter = vangent2001.iterate_significant_wave_height_Hs(
+#             H_init=Hs_iter_m1,
+#             Tmm10=Tmm10,
+#             z1p=z1p_iter,
+#             gamma=gamma,
+#             cot_alpha=cot_alpha,
 #         )
+
+#         # Hs_iter = Rc2_front / (
+#         #     (np.sqrt(N_waves) / S)
+#         #     * 0.00025
+#         #     * np.power(cot_phi, 1.25)
+#         #     * np.power((z1p_iter - Rc) / Dn50, 2)
+#         #     * np.power(Rc / Dn50, 0.5)
+#         #     * (1 + 5 * Rc2_rear / (Rc - Rc2_rear))
+#         #     - 1
+#         # )
 #         if np.abs(Hs_iter - Hs_iter_m1) < Hs_tolerance:
-#             check_validity_range_vangent2007(
+#             check_validity_range(
 #                 S=S,
 #                 Hs=Hs_iter,
 #                 Rc=Rc,
