@@ -24,7 +24,7 @@ def check_validity_range_Hudson1959():
     pass
 
 
-def calculate_unit_mass_M_Hudson1959(
+def calculate_unit_mass_M(
     Hs: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -76,7 +76,7 @@ def calculate_unit_mass_M_Hudson1959(
     return M
 
 
-def calculate_significant_wave_height_Hs_Hudson1959(
+def calculate_significant_wave_height_Hs(
     M: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],

@@ -24,7 +24,7 @@ def test_M_nodamage_backward(
     alpha_Hs,
     M_expected,
 ):
-    M_calculated = cubes_hudson.calculate_unit_mass_M_Hudson1959(
+    M_calculated = cubes_hudson.calculate_unit_mass_M(
         Hs=Hs,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -56,7 +56,7 @@ def test_M_nodamage_backward(
     alpha_Hs,
     Hs_expected,
 ):
-    Hs_calculated = cubes_hudson.calculate_significant_wave_height_Hs_Hudson1959(
+    Hs_calculated = cubes_hudson.calculate_significant_wave_height_Hs(
         M=M,
         rho_water=rho_water,
         rho_armour=rho_armour,
