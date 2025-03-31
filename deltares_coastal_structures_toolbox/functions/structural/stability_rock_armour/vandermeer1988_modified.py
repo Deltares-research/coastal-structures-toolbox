@@ -304,23 +304,27 @@ def calculate_nominal_rock_diameter_Dn50(
         * np.power(ksi_mm10, -P)
     )
 
+    # TODO check: it seems that the very gentle slopes (cot_alpha > 3.5) are not implemented in BREAKWAT
+    # TODO => what should we do?
     # Very gentle slopes
-    ksi_mcc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, 3.5
-    )
+    # ksi_mcc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+    #     c_pl, c_s, P, 3.5
+    # )
 
-    Dn50_s_cot_alpha_3p5 = (
-        (Hs / Delta)
-        * (H2p / Hs)
-        * (1 / c_pl)
-        * np.power(P, -0.18)
-        * np.power(S / np.sqrt(N_waves), -0.2)
-        * np.power(ksi_mcc, 0.5)
-        * np.power(ksi_mcc / ksi_mm10, 0.5)
-    )
-    Dn50_s_combined = np.where(cot_alpha > 3.5, Dn50_s_cot_alpha_3p5, Dn50_s)
+    # Dn50_s_cot_alpha_3p5 = (
+    #     (Hs / Delta)
+    #     * (H2p / Hs)
+    #     * (1 / c_pl)
+    #     * np.power(P, -0.18)
+    #     * np.power(S / np.sqrt(N_waves), -0.2)
+    #     * np.power(ksi_mcc, 0.5)
+    #     * np.power(ksi_mcc / ksi_mm10, 0.5)
+    # )
+    # Dn50_s_combined = np.where(cot_alpha > 3.5, Dn50_s_cot_alpha_3p5, Dn50_s)
 
-    Dn50 = np.where(ksi_mm10 < ksi_mc, Dn50_pl, Dn50_s_combined)
+    # Dn50 = np.where(ksi_mm10 < ksi_mc, Dn50_pl, Dn50_s_combined)
+
+    Dn50 = np.where(ksi_mm10 < ksi_mc, Dn50_pl, Dn50_s)
 
     check_validity_range(
         Hs=Hs,
