@@ -1,10 +1,44 @@
 import numpy as np
 
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.taw2002 as wave_overtopping_taw2002
+import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.eurotop2018 as wave_overtopping_eurotop2018
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as wave_runup_taw2002
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988 as stability_rock_vandermeer1988
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988_modified as stability_rock_vandermeer1988_modified
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_rear.vangent2007 as stability_rear_with_crest_vangent2007
+
+
+cot_alpha = 2.5
+B_berm = 3.0
+db = 0.5
+Rc_var = np.linspace(2.0, 6.0, 1000)
+q_max = 10e-3
+Hm0 = 2.0
+Tmm10 = 5.0
+Tp = 1.1 * Tmm10
+beta = 30.0
+
+
+q_taw2002, _ = wave_overtopping_taw2002.calculate_overtopping_discharge_q(
+    Hm0=Hm0,
+    Tmm10=Tmm10,
+    beta=beta,
+    Rc=Rc_var,
+    cot_alpha=cot_alpha,
+    B_berm=B_berm,
+    db=db,
+)
+
+q_eurotop2018, _ = wave_overtopping_eurotop2018.calculate_overtopping_discharge_q(
+    Hm0=Hm0,
+    Tmm10=Tmm10,
+    beta=beta,
+    Rc=Rc_var,
+    cot_alpha=cot_alpha,
+    B_berm=B_berm,
+    db=db,
+)
+
 
 # q_calculated = wave_overtopping_taw2002.calculate_overtopping_discharge_q(
 #     Hm0=2.0,
