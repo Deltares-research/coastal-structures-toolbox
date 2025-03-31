@@ -497,9 +497,10 @@ def iteration_procedure_z2p(
 
 def calculate_berm_length(
     Hm0: float | npt.NDArray[np.float64],
-    cot_alpha_down: float | npt.NDArray[np.float64],
-    cot_alpha_up: float | npt.NDArray[np.float64],
     B_berm: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
+    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the berm length of the structure
 
@@ -510,18 +511,26 @@ def calculate_berm_length(
     ----------
     Hm0 : float | npt.NDArray[np.float64]
         Spectral significant wave height (m)
-    cot_alpha_down : float | npt.NDArray[np.float64]
-        Cotangent of the lower part of the front-side slope of the structure (-)
-    cot_alpha_up : float | npt.NDArray[np.float64]
-        Cotangent of the upper part of the front-side slope of the structure (-)
     B_berm : float | npt.NDArray[np.float64]
         Berm width of the structure (m)
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
 
     Returns
     -------
     float | npt.NDArray[np.float64]
         Berm length of the structure L_berm (m)
     """
+
+    if not check_composite_slope(
+        cot_alpha=cot_alpha, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up
+    ):
+        cot_alpha_down = cot_alpha
+        cot_alpha_up = cot_alpha
 
     L_berm = 1.0 * Hm0 * cot_alpha_down + B_berm + 1.0 * Hm0 * cot_alpha_up
 

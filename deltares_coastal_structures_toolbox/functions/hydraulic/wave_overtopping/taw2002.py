@@ -342,6 +342,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     if np.isnan(gamma_b):
         L_berm = wave_runup_taw2002.calculate_berm_length(
             Hm0=Hm0,
+            cot_alpha=cot_alpha,
             cot_alpha_down=cot_alpha_down,
             cot_alpha_up=cot_alpha_up,
             B_berm=B_berm,
@@ -666,6 +667,7 @@ def calculate_dimensionless_crest_freeboard(
     if np.isnan(gamma_b):
         L_berm = wave_runup_taw2002.calculate_berm_length(
             Hm0=Hm0,
+            cot_alpha=cot_alpha,
             cot_alpha_down=cot_alpha_down,
             cot_alpha_up=cot_alpha_up,
             B_berm=B_berm,

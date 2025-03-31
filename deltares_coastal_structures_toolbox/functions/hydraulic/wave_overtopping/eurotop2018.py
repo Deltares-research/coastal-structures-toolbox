@@ -234,7 +234,11 @@ def calculate_dimensionless_overtopping_discharge_q(
     )
 
     L_berm = wave_runup_taw2002.calculate_berm_length(
-        Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
+        Hm0=Hm0,
+        cot_alpha=cot_alpha,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        B_berm=B_berm,
     )
 
     gamma_b = wave_runup_eurotop2018.iteration_procedure_gamma_b(
@@ -589,7 +593,11 @@ def calculate_dimensionless_crest_freeboard(
     )
 
     L_berm = wave_runup_taw2002.calculate_berm_length(
-        Hm0=Hm0, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up, B_berm=B_berm
+        Hm0=Hm0,
+        cot_alpha=cot_alpha,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        B_berm=B_berm,
     )
 
     gamma_b = wave_runup_eurotop2018.iteration_procedure_gamma_b(
