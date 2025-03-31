@@ -572,11 +572,7 @@ def check_composite_slope(
             "Either a single (cot_alpha) or composite (cot_alpha_down & cot_alpha_up) slope should be provided"
         )
 
-    if (
-        np.all(np.isnan(cot_alpha))
-        and not np.all(np.isnan(cot_alpha_down))
-        and not np.all(np.isnan(cot_alpha_up))
-    ):
+    if not np.all(np.isnan(cot_alpha_down)) and not np.all(np.isnan(cot_alpha_up)):
         is_composite_slope = True
     else:
         is_composite_slope = False
