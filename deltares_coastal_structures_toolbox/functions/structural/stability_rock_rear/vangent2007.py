@@ -194,7 +194,9 @@ def calculate_damage_number_S(
     ValueError
         Raises an error when neither Dn50 nor M50 is provided
     """
-    z1p = vangent2001.calculate_wave_runup_height_z1p(Tmm10, gamma, cot_alpha, Hs=Hs)
+    z1p = vangent2001.calculate_wave_runup_height_z1p(
+        Hs=Hs, Tmm10=Tmm10, gamma=gamma, cot_alpha=cot_alpha
+    )
 
     # TODO ? replace Rc2_front with Ac and calculate Rc2_front = Rc - Ac
 
@@ -272,7 +274,9 @@ def calculate_nominal_rock_diameter_Dn50(
         The median nominal rock diameter Dn50 (m)
     """
 
-    z1p = vangent2001.calculate_wave_runup_height_z1p(Tmm10, gamma, cot_alpha, Hs=Hs)
+    z1p = vangent2001.calculate_wave_runup_height_z1p(
+        Hs=Hs, Tmm10=Tmm10, gamma=gamma, cot_alpha=cot_alpha
+    )
 
     # TODO ? replace Rc2_front with Ac and calculate Rc2_front = Rc - Ac
 
