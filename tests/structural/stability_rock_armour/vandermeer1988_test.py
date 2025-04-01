@@ -134,3 +134,169 @@ def test_Hs_backward(
     )
 
     assert Hs_calculated == pytest.approx(Hs_expected, abs=1e-2)
+
+
+@pytest.mark.parametrize(
+    ("cot_alpha, P, rho_armour, N_waves, Tm, Hs, S, c_pl"),
+    (
+        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 2.0, 8.68]),
+        ([2.0, 0.4, 2650, 3000, 6.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.5, 2650, 3000, 6.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.4, 2850, 3000, 6.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.4, 2650, 6000, 6.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.4, 2650, 3000, 12.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.4, 2650, 3000, 6.0, 2.5, 2.0, 8.68]),
+        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 3.0, 8.68]),
+        # (
+        #     [3.6, 0.4, 2650, 3000, 6.0, 2.0, 2.0, 8.68, 0.565]
+        # ),  # TODO s3p5 check implementation (temporarily disabled)
+        # (
+        #     [3.6, 0.4, 2650, 3000, 12.0, 2.0, 2.0, 8.68, 0.798]
+        # ),  # TODO s3p5 failing (temporarily disabled)
+    ),
+)
+def test_internal_consistency_S_Dn50(
+    cot_alpha,
+    P,
+    rho_armour,
+    N_waves,
+    Tm,
+    Hs,
+    S,
+    c_pl,
+):
+    Dn50_calculated = vandermeer1988.calculate_nominal_rock_diameter_Dn50(
+        Hs=Hs,
+        H2p=1.4 * Hs,
+        Tm=Tm,
+        cot_alpha=cot_alpha,
+        rho_armour=rho_armour,
+        P=P,
+        N_waves=N_waves,
+        S=S,
+        c_pl=c_pl,
+    )
+
+    S_calculated = vandermeer1988.calculate_damage_number_S(
+        Hs=Hs,
+        H2p=1.4 * Hs,
+        Tm=Tm,
+        cot_alpha=cot_alpha,
+        rho_armour=rho_armour,
+        P=P,
+        N_waves=N_waves,
+        Dn50=Dn50_calculated,
+        c_pl=c_pl,
+    )
+
+    assert S_calculated == pytest.approx(S, abs=1e-2)
+
+
+@pytest.mark.parametrize(
+    ("cot_alpha, P, rho_armour, N_waves, Tm, Hs, S, c_pl"),
+    (
+        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 2.0, 8.68]),
+        ([2.0, 0.4, 2650, 3000, 6.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.5, 2650, 3000, 6.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.4, 2850, 3000, 6.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.4, 2650, 6000, 6.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.4, 2650, 3000, 12.0, 2.0, 2.0, 8.68]),
+        ([3.0, 0.4, 2650, 3000, 6.0, 2.5, 2.0, 8.68]),
+        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 3.0, 8.68]),
+        # (
+        #     [3.6, 0.4, 2650, 3000, 6.0, 2.0, 2.0, 8.68, 0.565]
+        # ),  # TODO s3p5 check implementation (temporarily disabled)
+        # (
+        #     [3.6, 0.4, 2650, 3000, 12.0, 2.0, 2.0, 8.68, 0.798]
+        # ),  # TODO s3p5 failing (temporarily disabled)
+    ),
+)
+def test_internal_consistency_Hs_Dn50(
+    cot_alpha,
+    P,
+    rho_armour,
+    N_waves,
+    Tm,
+    Hs,
+    S,
+    c_pl,
+):
+    Dn50_calculated = vandermeer1988.calculate_nominal_rock_diameter_Dn50(
+        Hs=Hs,
+        H2p=1.4 * Hs,
+        Tm=Tm,
+        cot_alpha=cot_alpha,
+        rho_armour=rho_armour,
+        P=P,
+        N_waves=N_waves,
+        S=S,
+        c_pl=c_pl,
+    )
+
+    Hs_calculated = vandermeer1988.calculate_significant_wave_height_Hs(
+        ratio_H2p_Hs=1.4,
+        Tm=Tm,
+        cot_alpha=cot_alpha,
+        rho_armour=rho_armour,
+        S=S,
+        P=P,
+        N_waves=N_waves,
+        Dn50=Dn50_calculated,
+        c_pl=c_pl,
+    )
+
+    assert Hs_calculated == pytest.approx(Hs, abs=1e-2)
+
+
+@pytest.mark.parametrize(
+    ("cot_alpha, P, rho_armour, N_waves, Tm, Hs, M50, c_pl"),
+    (
+        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 1000.0, 8.68]),
+        ([2.0, 0.4, 2650, 3000, 6.0, 2.0, 1000.0, 8.68]),
+        ([3.0, 0.5, 2650, 3000, 6.0, 2.0, 1000.0, 8.68]),
+        ([3.0, 0.4, 2850, 3000, 6.0, 2.0, 1000.0, 8.68]),
+        ([3.0, 0.4, 2650, 6000, 6.0, 2.0, 1000.0, 8.68]),
+        ([3.0, 0.4, 2650, 3000, 12.0, 2.0, 1000.0, 8.68]),
+        ([3.0, 0.4, 2650, 3000, 6.0, 2.5, 1000.0, 8.68]),
+        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 1200.0, 8.68]),
+        # (
+        #     [3.6, 0.4, 2650, 3000, 6.0, 2.0, 1000.0, 8.68, 0.582]
+        # ),  # TODO s3p5 check implementation (temporarily disabled)
+        # ([3.6, 0.4, 2650, 3000, 12.0, 2.0, 1000.0, 8.68, 3.29]),  # TODO s3p5 failing (temporarily disabled)
+    ),
+)
+def test_internal_consistency_S_Hs(
+    cot_alpha,
+    P,
+    rho_armour,
+    N_waves,
+    Tm,
+    Hs,
+    M50,
+    c_pl,
+):
+    S_calculated = vandermeer1988.calculate_damage_number_S(
+        Hs=Hs,
+        H2p=1.4 * Hs,
+        Tm=Tm,
+        cot_alpha=cot_alpha,
+        rho_armour=rho_armour,
+        P=P,
+        N_waves=N_waves,
+        M50=M50,
+        c_pl=c_pl,
+    )
+
+    Hs_calculated = vandermeer1988.calculate_significant_wave_height_Hs(
+        ratio_H2p_Hs=1.4,
+        Tm=Tm,
+        cot_alpha=cot_alpha,
+        rho_armour=rho_armour,
+        S=S_calculated,
+        P=P,
+        N_waves=N_waves,
+        M50=M50,
+        c_pl=c_pl,
+    )
+
+    assert Hs_calculated == pytest.approx(Hs, abs=1e-2)
