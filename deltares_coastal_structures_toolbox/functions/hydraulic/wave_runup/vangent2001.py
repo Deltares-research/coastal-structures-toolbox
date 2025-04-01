@@ -45,7 +45,9 @@ def calculate_wave_runup_height_z1p(
         The 1% exceedance wave runup height z1% (m)
     """
 
-    z1p = calculate_wave_runup_height_zXp(Hs, Tmm10, gamma, cot_alpha, c0, c1)
+    z1p = calculate_wave_runup_height_zXp(
+        H=Hs, Tmm10=Tmm10, gamma=gamma, cot_alpha=cot_alpha, c0=c0, c1=c1
+    )
 
     return z1p
 
@@ -110,7 +112,13 @@ def calculate_wave_runup_height_z2p(
         c0 = 1.45
         c1 = 3.8
 
-    z2p = calculate_wave_runup_height_zXp(Hs, Tmm10, gamma, cot_alpha, c0, c1)
+        H = Hm0
+    else:
+        H = Hs
+
+    z2p = calculate_wave_runup_height_zXp(
+        H=H, Tmm10=Tmm10, gamma=gamma, cot_alpha=cot_alpha, c0=c0, c1=c1
+    )
 
     return z2p
 
@@ -155,7 +163,9 @@ def calculate_wave_runup_height_z10p(
         The 10% exceedance wave runup height z10% (m)
     """
 
-    z10p = calculate_wave_runup_height_zXp(Hs, Tmm10, gamma, cot_alpha, c0, c1)
+    z10p = calculate_wave_runup_height_zXp(
+        H=Hs, Tmm10=Tmm10, gamma=gamma, cot_alpha=cot_alpha, c0=c0, c1=c1
+    )
 
     return z10p
 
@@ -200,7 +210,9 @@ def calculate_wave_runup_height_zXp(
         The wave runup height z (m)
     """
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(H, Tmm10, cot_alpha)
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        H=H, T=Tmm10, cot_alpha=cot_alpha
+    )
 
     p = 0.5 * c1 / c0
 
