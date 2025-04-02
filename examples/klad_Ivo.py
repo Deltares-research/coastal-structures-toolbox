@@ -5,7 +5,3 @@ import deltares_coastal_structures_toolbox.functions.core_physics as core_physic
 import deltares_coastal_structures_toolbox.functions.structural.forces_caisson.goda1985 as goda
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.eurotop2018 as eurotop
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as taw
-
-
-
- 4*(float | npt.NDArray[np.float64]) | dict
