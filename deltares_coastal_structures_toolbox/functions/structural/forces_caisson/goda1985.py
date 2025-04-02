@@ -151,7 +151,7 @@ def calculate_forces_and_reactions(
     rho_fill_below_SWL: float | npt.NDArray[np.float64] = 2100,
     offshore_wave_steepness: float | npt.NDArray[np.float64] = np.nan,
     muf: float | npt.NDArray[np.float64] = 0.6,
-    t_upoverB_up: float | npt.NDArray[np.float64] = 0.5,
+    tup_over_Bup: float | npt.NDArray[np.float64] = 0.5,
     g: float | npt.NDArray[np.float64] = 9.81,
     return_dict: bool = False,
 ) -> (
@@ -182,41 +182,41 @@ def calculate_forces_and_reactions(
     Parameters
     ----------
     HD : float | npt.NDArray[np.float64]
-        design wave height (Hmax)
+        design wave height (Hmax) (m)
     Hsi : float | npt.NDArray[np.float64]
-        incident wave height (Hs)
+        incident wave height (Hs) (m)
     Tmax : float | npt.NDArray[np.float64]
-        Maximum wave period
+        Maximum wave period (s)
     beta : float | npt.NDArray[np.float64]
-        Angle of wave incidence
+        Angle of wave incidence (degrees)
     h_s : float | npt.NDArray[np.float64]
-        water depth at site
+        water depth at site (m)
     d : float | npt.NDArray[np.float64]
-        water depth above toe berm
+        water depth above toe berm (m)
     B1 : float | npt.NDArray[np.float64]
-        Width of toe berm (top of toe berm)
+        Width of toe berm (top of toe berm) (m)
     cota_seabed : float | npt.NDArray[np.float64]
-        Slope of seabed approaching caisson
+        Slope of seabed approaching caisson (-)
     rho_water : float | npt.NDArray[np.float64]
-        Water density
+        Water density (kg/m^3)
     hacc : float | npt.NDArray[np.float64]
-        Distance between lowest part of caisson to water level
+        Distance between lowest part of caisson to water level (m)
     Rc : float | npt.NDArray[np.float64]
-        Crest freeboard
+        Crest freeboard (m)
     Bup : float | npt.NDArray[np.float64]
-        Width of upright section of caisson
+        Width of upright section of caisson (m)
     rho_fill_above_SWL
-        Density of fill material above water level, by default 2400 (example by Goda)
+        Density of fill material above water level, by default 2400 (example by Goda) (kg/m^3)
     rho_fill_below_SWL
-        Density of fill material above water level, by default 2100 (example by Goda)
+        Density of fill material above water level, by default 2100 (example by Goda) (kg/m^3)
     offshore_wave_steepness
-        Offshore wave steepness, used for impulse breaking check
+        Offshore wave steepness, used for impulse breaking check (-)
     muf
-        Friction factor of bottom caisson with rubble mound
-    t_upoverB_up
-        Ratio between width of caisson and centre of mass caisson, by default 0.5 (= caisson middle)
+        Friction factor of bottom caisson with rubble mound (-)
+    tup_over_Bup
+        Ratio between width of caisson and centre of mass caisson, by default 0.5 (= caisson middle) (-)
     g : float | npt.NDArray[np.float64]
-        Gravitational acceleration, by default 9.81
+        Gravitational acceleration, by default 9.81 (m/s^2)
     return_dict : bool
         Return a dictionary with all results
 
@@ -290,7 +290,7 @@ def calculate_forces_and_reactions(
     )
 
     # Bearing pressure
-    tup = t_upoverB_up * Bup
+    tup = tup_over_Bup * Bup
     Wup = calculate_Wup(
         hacc=hacc,
         Rc=Rc,
@@ -426,39 +426,38 @@ def calculate_pressures_and_forces(
     Parameters
     ----------
     HD : float | npt.NDArray[np.float64]
-        design wave height (Hmax)
+        design wave height (Hmax) (m)
     Hsi : float | npt.NDArray[np.float64]
-        incident wave height (Hs)
+        incident wave height (Hs) (m)
     Tmax : float | npt.NDArray[np.float64]
-        Maximum wave period
+        Maximum wave period (s)
     beta : float | npt.NDArray[np.float64]
-        Angle of wave incidence
+        Angle of wave incidence (degrees)
     h_s : float | npt.NDArray[np.float64]
-        water depth at site
+        water depth at site (m)
     d : float | npt.NDArray[np.float64]
-        water depth above toe berm
+        water depth above toe berm (m)
     B1 : float | npt.NDArray[np.float64]
-        Width of toe berm (top of toe berm)
+        Width of toe berm (top of toe berm) (m)
     cota_seabed : float | npt.NDArray[np.float64]
-        Slope of seabed approaching caisson
+        Slope of seabed approaching caisson (-)
     rho_water : float | npt.NDArray[np.float64]
-        Water density
+        Water density (kg/m^3)
     hacc : float | npt.NDArray[np.float64]
-        Distance between lowest part of caisson to water level
+        Distance between lowest part of caisson to water level (m)
     Rc : float | npt.NDArray[np.float64]
-        Crest freeboard
+        Crest freeboard (m)
     Bup : float | npt.NDArray[np.float64]
-        Width of upright section of caisson
+        Width of upright section of caisson (m)
     g : float | npt.NDArray[np.float64]
-        Gravitational acceleration, by default 9.81
+        Gravitational acceleration, by default 9.81 (m/s^2)
     return_dict : bool
         Return a dictionary with all results
 
     Returns
     -------
     Wup : float | npt.NDArray[np.float64]
-        Weight of upright section of caisson
-
+        Weight of upright section of caisson (N)
     FH : float | npt.NDArray[np.float64]
         Wave induced horizontal force (N/m1)
     FU : float | npt.NDArray[np.float64]
