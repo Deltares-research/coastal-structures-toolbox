@@ -27,6 +27,7 @@ def check_variable_validity_range(
     if isinstance(values, (int, float)):
         values = [values]
 
+    is_valid = []
     for value in values:
         if (value < min_value) or (value > max_value):
             warnings.warn(
@@ -35,5 +36,8 @@ def check_variable_validity_range(
                     f" for the {formula_name} formula."
                 )
             )
+            is_valid.append(False)
+        else:
+            is_valid.append(True)
 
-    return
+    return is_valid
