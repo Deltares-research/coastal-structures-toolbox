@@ -136,7 +136,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     c3: float = 1.35,
     c4: float = 0.026,
     use_best_fit: bool = False,
-):
+) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the dimensionless mean wave overtopping discharge q with the EurOtop (2018) formula.
 
     The mean wave overtopping discharge q/sqrt(g*Hm0^3) (-) is calculated using the EurOtop (2018) formulas.
