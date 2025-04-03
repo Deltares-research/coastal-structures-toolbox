@@ -45,7 +45,7 @@ def calculate_overtopping_discharge_q_rough_slope(
     return q, max_reached
 
 
-def calculate_dimensionless_overtopping_discharge_q(
+def calculate_dimensionless_overtopping_discharge_q_rough_slope(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
@@ -135,7 +135,7 @@ def check_best_fit(c1: float, c2: float, use_best_fit: bool) -> tuple[float, flo
     return c1, c2
 
 
-def calculate_crest_freeboard_Rc(
+def calculate_crest_freeboard_Rc_rough_slope(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
@@ -176,7 +176,7 @@ def calculate_crest_freeboard_Rc(
     return Rc
 
 
-def calculate_dimensionless_crest_freeboard(
+def calculate_dimensionless_crest_freeboard_rough_slope(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
