@@ -22,12 +22,16 @@ def check_validity(
 
     if not np.any(np.isnan(sop)):
         core_utility.check_variable_validity_range(
-            "Wave steepness sop", "D'Angremond et al. (1996)", sop, 0, 0.06
+            "Wave steepness sop (dataset limit)",
+            "D'Angremond et al. (1996)",
+            sop,
+            0,
+            0.06,
         )
 
     if not np.any(np.isnan(Hsi_over_h)):
         core_utility.check_variable_validity_range(
-            "Relative water depth Hsi/h",
+            "Relative water depth Hsi/h (dataset limit)",
             "D'Angremond et al. (1996)",
             Hsi_over_h,
             0,
@@ -36,7 +40,7 @@ def check_validity(
 
     if not np.any(np.isnan(Rc_over_Hsi)):
         core_utility.check_variable_validity_range(
-            "Relative crest level Rc/Hsi",
+            "Relative crest level Rc/Hsi (dataset limit)",
             "D'Angremond et al. (1996)",
             Rc_over_Hsi,
             -2.5,
@@ -52,6 +56,7 @@ def calculate_wave_transmission_Kt_permeable(
     B: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64],
     C1: float | npt.NDArray[np.float64] = 0.64,
+    do_validity_check: bool = True,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate wave transmission coefficient Kt using D'Angremond et al 1996
 
@@ -88,7 +93,8 @@ def calculate_wave_transmission_Kt_permeable(
 
     Kt = -0.4 * (Rc / Hsi) + ((B / Hsi) ** -0.31) * (1 - np.exp(-0.5 * ksi_op)) * C1
 
-    check_validity(Kt, sop=sop, Hsi_over_h=Hsi / h, Rc_over_Hsi=Rc / Hsi)
+    if do_validity_check:
+        check_validity(Kt, sop=sop, Hsi_over_h=Hsi / h, Rc_over_Hsi=Rc / Hsi)
 
     Kt = np.minimum(0.8, Kt)
     Kt = np.maximum(0.075, Kt)
