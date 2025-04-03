@@ -57,8 +57,8 @@ def calculate_wave_transmission_Kt_permeable(
 
     For permeable structures
 
-    Background: d’Angremond, K.; van der Meer, J.W.; de Jong, R.J.Wave Transmission at Low-Crested Structures. In Coastal Engineering 1996;
-        American Society of Civil Engineers: New York, NY, USA, 1997; pp. 2418–2427.
+    Background: d’Angremond, K.; van der Meer, J.W.; de Jong, R.J.Wave Transmission at Low-Crested Structures.
+        In Coastal Engineering 1996; American Society of Civil Engineers: New York, NY, USA, 1997; pp. 2418–2427.
     https://doi.org/10.9753/icce.v25.%p
 
     Parameters
@@ -109,8 +109,8 @@ def calculate_wave_transmission_Kt_impermeable(
 
     For impermeable structures
 
-    Background: d’Angremond, K.; van der Meer, J.W.; de Jong, R.J.Wave Transmission at Low-Crested Structures. In Coastal Engineering 1996;
-        American Society of Civil Engineers: New York, NY, USA, 1997; pp. 2418–2427.
+    Background: d’Angremond, K.; van der Meer, J.W.; de Jong, R.J.Wave Transmission at Low-Crested Structures.
+        In Coastal Engineering 1996; American Society of Civil Engineers: New York, NY, USA, 1997; pp. 2418–2427.
     https://doi.org/10.9753/icce.v25.%p
 
     Parameters
