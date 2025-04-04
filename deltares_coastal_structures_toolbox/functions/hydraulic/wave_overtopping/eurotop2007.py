@@ -18,8 +18,8 @@ def calculate_overtopping_discharge_q_rubble_mound(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
-    c1: float = 0.2,
-    c2: float = 2.3,
+    c2: float = 0.2,
+    c3: float = 2.3,
     use_best_fit: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
@@ -36,8 +36,8 @@ def calculate_overtopping_discharge_q_rubble_mound(
         B_berm=B_berm,
         db=db,
         gamma_f=gamma_f,
-        c1=c1,
         c2=c2,
+        c3=c3,
         use_best_fit=use_best_fit,
     )
     q = q_diml * np.sqrt(g * Hm0**3)
@@ -57,15 +57,15 @@ def calculate_dimensionless_overtopping_discharge_q_rubble_mound(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
-    c1: float = 0.2,
-    c2: float = 2.3,
+    c2: float = 0.2,
+    c3: float = 2.3,
     use_best_fit: bool = False,
 ) -> float | npt.NDArray[np.float64]:
 
     (
-        c1,
         c2,
-    ) = check_best_fit(c1=c1, c2=c2, use_best_fit=use_best_fit)
+        c3,
+    ) = check_best_fit(c2=c2, c3=c3, use_best_fit=use_best_fit)
 
     if wave_runup_taw2002.check_calculate_gamma_beta(beta=beta, gamma_beta=gamma_beta):
         gamma_beta = wave_runup_taw2002.calculate_influence_oblique_waves_gamma_beta(
@@ -104,12 +104,12 @@ def calculate_dimensionless_overtopping_discharge_q_rubble_mound(
         gamma_f=gamma_f, gamma_b=1.0, ksi_mm10=ksi_mm10
     )
 
-    q_diml = c1 * np.exp(-c2 * (Rc / (Hm0 * gamma_f_adj * gamma_beta)))
+    q_diml = c2 * np.exp(-c3 * (Rc / (Hm0 * gamma_f_adj * gamma_beta)))
 
     return q_diml
 
 
-def check_best_fit(c1: float, c2: float, use_best_fit: bool) -> tuple[float, float]:
+def check_best_fit(c2: float, c3: float, use_best_fit: bool) -> tuple[float, float]:
     """Check whether best fit coefficients need to be used
 
     If so, return the best fit coefficients, otherwise return the input coefficients
@@ -129,10 +129,10 @@ def check_best_fit(c1: float, c2: float, use_best_fit: bool) -> tuple[float, flo
         Coefficients c1 and c2 in the wave runup formula (-)
     """
     if use_best_fit:
-        c1 = 0.2
-        c2 = 2.6
+        c2 = 0.2
+        c3 = 2.6
 
-    return c1, c2
+    return c2, c3
 
 
 def calculate_crest_freeboard_Rc_rubble_mound(
@@ -147,8 +147,8 @@ def calculate_crest_freeboard_Rc_rubble_mound(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
-    c1: float = 0.2,
-    c2: float = 2.3,
+    c2: float = 0.2,
+    c3: float = 2.3,
     use_best_fit: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
@@ -165,8 +165,8 @@ def calculate_crest_freeboard_Rc_rubble_mound(
         B_berm=B_berm,
         db=db,
         gamma_f=gamma_f,
-        c1=c1,
         c2=c2,
+        c3=c3,
         use_best_fit=use_best_fit,
         g=g,
     )
@@ -188,16 +188,16 @@ def calculate_dimensionless_crest_freeboard_rubble_mound(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
-    c1: float = 0.2,
-    c2: float = 2.3,
+    c2: float = 0.2,
+    c3: float = 2.3,
     use_best_fit: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
 
     (
-        c1,
         c2,
-    ) = check_best_fit(c1=c1, c2=c2, use_best_fit=use_best_fit)
+        c3,
+    ) = check_best_fit(c2=c2, c3=c3, use_best_fit=use_best_fit)
 
     if wave_runup_taw2002.check_calculate_gamma_beta(beta=beta, gamma_beta=gamma_beta):
         gamma_beta = wave_runup_taw2002.calculate_influence_oblique_waves_gamma_beta(
@@ -237,8 +237,8 @@ def calculate_dimensionless_crest_freeboard_rubble_mound(
     )
 
     Rc_diml = (
-        -np.log((q / np.sqrt(g * np.power(Hm0, 3))) * (1.0 / c1))
-        * (1.0 / c2)
+        -np.log((q / np.sqrt(g * np.power(Hm0, 3))) * (1.0 / c2))
+        * (1.0 / c3)
         * gamma_f_adj
         * gamma_beta
     )
