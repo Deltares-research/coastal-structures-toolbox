@@ -146,7 +146,7 @@ def test_Nod_backward(
 ):
 
     Nod_calculated = vangent2014.calculate_damage_Nod(
-        Hs=Hs,
+        Hm0=Hs,
         Tmm10=Tmm10,
         ht=ht,
         Bt=Bt,
@@ -279,7 +279,7 @@ def test_Dn50_backward(
 ):
 
     Dn50_calculated = vangent2014.calculate_nominal_diameter_Dn50(
-        Hs=Hs,
+        Hm0=Hs,
         Tmm10=Tmm10,
         ht=ht,
         Bt=Bt,
