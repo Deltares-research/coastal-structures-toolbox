@@ -289,18 +289,18 @@ def calculate_dimensionless_overtopping_discharge_q(
 
     if use_best_fit:
         c1 = 4.75
-        c2 = 2.6
+        c3 = 2.6
     else:
         c1 = 4.3
-        c2 = 2.3
+        c3 = 2.3
 
     if sigma == 0:
         cor1 = 0
-        cor2 = 0
+        cor3 = 0
     else:
         if use_best_fit:
             cor1 = 0.5 * sigma
-            cor2 = 0.35 * sigma
+            cor3 = 0.35 * sigma
         else:
             warnings.warn(
                 (
@@ -374,12 +374,12 @@ def calculate_dimensionless_overtopping_discharge_q(
             * (1.0 / (ksi_mm10 * gamma_b * gamma_f_adj * gamma_beta * gamma_v))
         )
     )
-    q_diml_eq25 = 0.2 * np.exp(
-        -1.0 * (c2 + cor2) * (Rc / Hm0) * (1.0 / (gamma_f_adj * gamma_beta))
+    q_diml_max = q_diml_max_equation(
+        Hm0=Hm0, Rc=Rc, c3=c3, cor3=cor3, gamma_beta=gamma_beta, gamma_f=gamma_f_adj
     )
 
-    q_diml = np.min([q_diml_eq24, q_diml_eq25], axis=0)
-    max_reached = np.min([q_diml_eq24, q_diml_eq25], axis=0) == q_diml_eq25
+    q_diml = np.min([q_diml_eq24, q_diml_max], axis=0)
+    max_reached = np.min([q_diml_eq24, q_diml_max], axis=0) == q_diml_max
 
     check_validity_range(
         Hm0=Hm0,
@@ -395,6 +395,23 @@ def calculate_dimensionless_overtopping_discharge_q(
     )
 
     return q_diml, max_reached
+
+
+def q_diml_max_equation(
+    Hm0: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+    gamma_beta: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    c3: float,
+    cor3: float = 0.0,
+    c2: float = 0.2,
+):
+
+    q_diml_max = c2 * np.exp(
+        -1.0 * (c3 + cor3) * (Rc / Hm0) * (1.0 / (gamma_f * gamma_beta))
+    )
+
+    return q_diml_max
 
 
 def calculate_influence_oblique_waves_gamma_beta(
@@ -614,18 +631,18 @@ def calculate_dimensionless_crest_freeboard(
 
     if use_best_fit:
         c1 = 4.75
-        c2 = 2.6
+        c3 = 2.6
     else:
         c1 = 4.3
-        c2 = 2.3
+        c3 = 2.3
 
     if sigma == 0:
         cor1 = 0
-        cor2 = 0
+        cor3 = 0
     else:
         if use_best_fit:
             cor1 = 0.5 * sigma
-            cor2 = 0.35 * sigma
+            cor3 = 0.35 * sigma
         else:
             warnings.warn(
                 (
@@ -705,15 +722,12 @@ def calculate_dimensionless_crest_freeboard(
         * gamma_v
     )
 
-    Rc_diml_eq25 = (
-        np.log(5 * q / np.sqrt(g * Hm0**3))
-        * (-1.0 / (c2 + cor2))
-        * gamma_f_adj
-        * gamma_beta
+    Rc_diml_max = Rc_diml_max_equation(
+        Hm0=Hm0, q=q, c3=c3, cor3=cor3, gamma_beta=gamma_beta, gamma_f=gamma_f_adj
     )
 
-    Rc_diml = np.min([Rc_diml_eq24, Rc_diml_eq25], axis=0)
-    max_reached = np.min([Rc_diml_eq24, Rc_diml_eq25], axis=0) == Rc_diml_eq25
+    Rc_diml = np.min([Rc_diml_eq24, Rc_diml_max], axis=0)
+    max_reached = np.min([Rc_diml_eq24, Rc_diml_max], axis=0) == Rc_diml_max
 
     check_validity_range(
         Hm0=Hm0,
@@ -729,3 +743,24 @@ def calculate_dimensionless_crest_freeboard(
     )
 
     return Rc_diml, max_reached
+
+
+def Rc_diml_max_equation(
+    Hm0: float | npt.NDArray[np.float64],
+    q: float | npt.NDArray[np.float64],
+    gamma_beta: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    c3: float,
+    cor3: float = 0.0,
+    c2: float = 0.2,
+    g: float = 9.81,
+):
+
+    Rc_diml_max = (
+        np.log((1.0 / c2) * q / np.sqrt(g * Hm0**3))
+        * (-1.0 / (c3 + cor3))
+        * gamma_f
+        * gamma_beta
+    )
+
+    return Rc_diml_max

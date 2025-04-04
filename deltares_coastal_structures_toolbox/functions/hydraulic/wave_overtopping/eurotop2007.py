@@ -3,6 +3,7 @@ import numpy as np
 import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
+import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.taw2002 as wave_overtopping_taw2002
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as wave_runup_taw2002
 
 
@@ -104,7 +105,9 @@ def calculate_dimensionless_overtopping_discharge_q_rubble_mound(
         gamma_f=gamma_f, gamma_b=1.0, ksi_mm10=ksi_mm10
     )
 
-    q_diml = c2 * np.exp(-c3 * (Rc / (Hm0 * gamma_f_adj * gamma_beta)))
+    q_diml = wave_overtopping_taw2002.q_diml_max_equation(
+        Hm0=Hm0, Rc=Rc, c2=c2, c3=c3, gamma_beta=gamma_beta, gamma_f=gamma_f_adj
+    )
 
     return q_diml
 
@@ -236,11 +239,8 @@ def calculate_dimensionless_crest_freeboard_rubble_mound(
         gamma_f=gamma_f, gamma_b=1.0, ksi_mm10=ksi_mm10
     )
 
-    Rc_diml = (
-        -np.log((q / np.sqrt(g * np.power(Hm0, 3))) * (1.0 / c2))
-        * (1.0 / c3)
-        * gamma_f_adj
-        * gamma_beta
+    Rc_diml = wave_overtopping_taw2002.Rc_diml_max_equation(
+        Hm0=Hm0, q=q, c2=c2, c3=c3, gamma_beta=gamma_beta, gamma_f=gamma_f_adj
     )
 
     return Rc_diml
