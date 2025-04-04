@@ -24,7 +24,7 @@ def calculate_overtopping_discharge_q_rough_slope(
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
 
-    q_diml, max_reached = calculate_dimensionless_overtopping_discharge_q(
+    q_diml, max_reached = calculate_dimensionless_overtopping_discharge_q_rough_slope(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -153,7 +153,7 @@ def calculate_crest_freeboard_Rc_rough_slope(
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
 
-    Rc_diml = calculate_dimensionless_crest_freeboard(
+    Rc_diml = calculate_dimensionless_crest_freeboard_rough_slope(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
