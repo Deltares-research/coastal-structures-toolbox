@@ -288,17 +288,38 @@ def calculate_dimensionless_overtopping_discharge_q(
             )
         )
     )
-    q_diml_eq511 = c2 * np.exp(
-        -1.0
-        * np.power(
-            c3 * (Rc / Hm0) * (1.0 / (gamma_f_adj * gamma_beta * gamma_star)), 1.3
-        )
+    q_diml_max = q_diml_max_equation(
+        Hm0=Hm0,
+        Rc=Rc,
+        gamma_beta=gamma_beta,
+        gamma_f=gamma_f,
+        gamma_star=gamma_star,
+        c2=c2,
+        c3=c3,
     )
 
-    q_diml = np.min([q_diml_eq510, q_diml_eq511], axis=0)
-    max_reached = np.min([q_diml_eq510, q_diml_eq511], axis=0) == q_diml_eq511
+    q_diml = np.min([q_diml_eq510, q_diml_max], axis=0)
+    max_reached = np.min([q_diml_eq510, q_diml_max], axis=0) == q_diml_max
 
     return q_diml, max_reached
+
+
+def q_diml_max_equation(
+    Hm0: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_f: float | npt.NDArray[np.float64] = 1.0,
+    gamma_star: float | npt.NDArray[np.float64] = 1.0,
+    c2: float = 0.1035,
+    c3: float = 1.35,
+):
+
+    q_diml_max = c2 * np.exp(
+        -1.0
+        * np.power(c3 * (Rc / Hm0) * (1.0 / (gamma_f * gamma_beta * gamma_star)), 1.3)
+    )
+
+    return q_diml_max
 
 
 def check_best_fit(
@@ -650,18 +671,43 @@ def calculate_dimensionless_crest_freeboard(
         * gamma_v
     )
 
-    Rc_diml_eq511 = (
+    Rc_diml_max = Rc_diml_max_equation(
+        Hm0=Hm0,
+        q=q,
+        gamma_beta=gamma_beta,
+        gamma_f=gamma_f_adj,
+        gamma_star=gamma_star,
+        c2=c2,
+        c3=c3,
+        g=g,
+    )
+
+    Rc_diml = np.min([Rc_diml_eq510, Rc_diml_max], axis=0)
+    max_reached = np.min([Rc_diml_eq510, Rc_diml_max], axis=0) == Rc_diml_max
+
+    return Rc_diml, max_reached
+
+
+def Rc_diml_max_equation(
+    Hm0: float | npt.NDArray[np.float64],
+    q: float | npt.NDArray[np.float64],
+    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    gamma_f: float | npt.NDArray[np.float64] = 1.0,
+    gamma_star: float | npt.NDArray[np.float64] = 1.0,
+    c2: float = 0.1035,
+    c3: float = 1.35,
+    g: float = 9.81,
+):
+
+    Rc_diml_max = (
         np.power(-np.log((q / np.sqrt(g * np.power(Hm0, 3))) * (1.0 / c2)), 1.0 / 1.3)
         * (1.0 / c3)
-        * gamma_f_adj
+        * gamma_f
         * gamma_beta
         * gamma_star
     )
 
-    Rc_diml = np.min([Rc_diml_eq510, Rc_diml_eq511], axis=0)
-    max_reached = np.min([Rc_diml_eq510, Rc_diml_eq511], axis=0) == Rc_diml_eq511
-
-    return Rc_diml, max_reached
+    return Rc_diml_max
 
 
 def calculate_overtopping_discharge_q_rubble_mound(
@@ -761,8 +807,13 @@ def calculate_dimensionless_overtopping_discharge_q_rubble_mound(
         gamma_f=gamma_f, gamma_b=1.0, ksi_mm10=ksi_mm10
     )
 
-    q_diml = c2 * np.exp(
-        -1.0 * np.power(c3 * (Rc / Hm0) * (1.0 / (gamma_f_adj * gamma_beta)), 1.3)
+    q_diml = q_diml_max_equation(
+        Hm0=Hm0,
+        Rc=Rc,
+        gamma_beta=gamma_beta,
+        gamma_f=gamma_f_adj,
+        c2=c2,
+        c3=c3,
     )
 
     check_validity_range_rubble_mound(
@@ -871,11 +922,14 @@ def calculate_dimensionless_crest_freeboard_rubble_mound(
         gamma_f=gamma_f, gamma_b=1.0, ksi_mm10=ksi_mm10
     )
 
-    Rc_diml = (
-        np.power(-np.log((q / np.sqrt(g * np.power(Hm0, 3))) * (1.0 / c2)), 1.0 / 1.3)
-        * (1.0 / c3)
-        * gamma_f_adj
-        * gamma_beta
+    Rc_diml = Rc_diml_max_equation(
+        Hm0=Hm0,
+        q=q,
+        gamma_beta=gamma_beta,
+        gamma_f=gamma_f_adj,
+        c2=c2,
+        c3=c3,
+        g=g,
     )
 
     check_validity_range_rubble_mound(
