@@ -6,7 +6,7 @@ import deltares_coastal_structures_toolbox.functions.core_physics as core_physic
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as wave_runup_taw2002
 
 
-def calculate_overtopping_discharge_q_rough_slope(
+def calculate_overtopping_discharge_q_rubble_mound(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
@@ -24,7 +24,7 @@ def calculate_overtopping_discharge_q_rough_slope(
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
 
-    q_diml, max_reached = calculate_dimensionless_overtopping_discharge_q_rough_slope(
+    q_diml, max_reached = calculate_dimensionless_overtopping_discharge_q_rubble_mound(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -45,7 +45,7 @@ def calculate_overtopping_discharge_q_rough_slope(
     return q, max_reached
 
 
-def calculate_dimensionless_overtopping_discharge_q_rough_slope(
+def calculate_dimensionless_overtopping_discharge_q_rubble_mound(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
@@ -135,7 +135,7 @@ def check_best_fit(c1: float, c2: float, use_best_fit: bool) -> tuple[float, flo
     return c1, c2
 
 
-def calculate_crest_freeboard_Rc_rough_slope(
+def calculate_crest_freeboard_Rc_rubble_mound(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
@@ -153,7 +153,7 @@ def calculate_crest_freeboard_Rc_rough_slope(
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
 
-    Rc_diml = calculate_dimensionless_crest_freeboard_rough_slope(
+    Rc_diml = calculate_dimensionless_crest_freeboard_rubble_mound(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -176,7 +176,7 @@ def calculate_crest_freeboard_Rc_rough_slope(
     return Rc
 
 
-def calculate_dimensionless_crest_freeboard_rough_slope(
+def calculate_dimensionless_crest_freeboard_rubble_mound(
     Hm0: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
