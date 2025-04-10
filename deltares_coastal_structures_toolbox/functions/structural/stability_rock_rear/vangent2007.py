@@ -1,5 +1,4 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# import warnings
 
 import numpy as np
 import numpy.typing as npt
