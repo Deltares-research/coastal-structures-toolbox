@@ -4,7 +4,7 @@ import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 
-# import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
+import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 import deltares_wave_toolbox.cores.core_dispersion as dispersion
 
 
@@ -512,7 +512,7 @@ def calculate_pressures_and_forces(
 
     etastar = 0.75 * (1 + cos_beta) * HD
 
-    L = calculate_local_wavelength(T=Tmax, h=h_s, g=g)  # local wave length
+    L = core_physics.calculate_local_wavelength(T=Tmax, h=h_s, g=g)  # local wave length
 
     # alpha factors
     alpha_1 = (
@@ -777,42 +777,3 @@ def calculate_bearing_pressures(
         pe = (2 * We / Bup) * (2 - 3 * (te / Bup))
 
     return pe, Me, We, te
-
-
-def calculate_local_wavelength(
-    T: float | npt.NDArray[np.float64],
-    h: float | npt.NDArray[np.float64],
-    g: float | npt.NDArray[np.float64] = 9.81,
-) -> float | npt.NDArray[np.float64]:
-    """Calculate local wave length for wave with period T at depth h, using approximation of dispersion relation
-
-    Parameters
-    ----------
-    T : float | npt.NDArray[np.float64]
-        Wave period
-    h : float | npt.NDArray[np.float64]
-        Water depth
-    g : float | npt.NDArray[np.float64], optional
-        Gravitational acceleration, by default 9.81
-
-    Returns
-    -------
-    L : float | npt.NDArray[np.float64]
-        Wave length at local water depth
-    """
-
-    # implementation of disper handles arrays for T, but not for h, hence this implementation
-    if isinstance(h, float):
-        k = dispersion.disper(w=((2 * np.pi) / T), h=h, g=g)
-    elif len(h) > 1 and isinstance(T, float):
-        k = np.array([])
-        for hsub in h:
-            k = np.append(k, dispersion.disper(w=((2 * np.pi) / T), h=hsub, g=g))
-    elif len(h) > 1 and len(h) == len(T):
-        k = np.array([])
-        for hsub, Tsub in zip(h, T):
-            k = np.append(k, dispersion.disper(w=((2 * np.pi) / Tsub), h=hsub, g=g))
-
-    L = (2 * np.pi) / k
-
-    return L

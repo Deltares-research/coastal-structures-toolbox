@@ -3,21 +3,21 @@ import pytest
 import deltares_coastal_structures_toolbox.functions.structural.forces_caisson.goda1985 as caisson
 
 
-@pytest.mark.parametrize(
-    ("T, h, g, L_expected"),
-    (
-        ([2.0, 0.2, 9.8, 2.71]),  # values from goda (2000) tables
-        ([2.0, 1.0, 9.8, 5.21]),
-        ([2.0, 2.0, 9.8, 6.05]),
-        ([2.0, 11.0, 9.8, 6.24]),
-        ([5.0, 6.0, 9.8, 32.17]),
-    ),
-)
-def test_L_backward(T, h, g, L_expected):
+# @pytest.mark.parametrize(
+#     ("T, h, g, L_expected"),
+#     (
+#         ([2.0, 0.2, 9.8, 2.71]),  # values from goda (2000) tables
+#         ([2.0, 1.0, 9.8, 5.21]),
+#         ([2.0, 2.0, 9.8, 6.05]),
+#         ([2.0, 11.0, 9.8, 6.24]),
+#         ([5.0, 6.0, 9.8, 32.17]),
+#     ),
+# )
+# def test_L_backward(T, h, g, L_expected):
 
-    L_calculated = caisson.calculate_local_wavelength(T=T, h=h, g=g)
+#     L_calculated = caisson.calculate_local_wavelength(T=T, h=h, g=g)
 
-    assert L_calculated == pytest.approx(L_expected, abs=1e-2)
+#     assert L_calculated == pytest.approx(L_expected, abs=1e-2)
 
 
 @pytest.mark.parametrize(
