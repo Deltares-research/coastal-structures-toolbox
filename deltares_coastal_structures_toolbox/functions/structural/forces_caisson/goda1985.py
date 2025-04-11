@@ -3,9 +3,7 @@ import numpy as np
 import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
-
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
-import deltares_wave_toolbox.cores.core_dispersion as dispersion
 
 
 def check_validity_range(
