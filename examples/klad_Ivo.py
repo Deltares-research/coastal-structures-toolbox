@@ -36,3 +36,17 @@ else:
     print("arrays")
 
 print("Done")
+
+
+plt.plot(Hs_table_in, label="in")
+plt.plot(Hs_table_out, label="out")
+plt.show
+
+intersection = np.intersect1d(Hs_table_in, Hs_table_out)
+
+ind = np.argmin(np.abs(Hs_table_in - Hs_table_out))
+
+fromto = [
+    np.minimum(Hs_table_in[ind], Hs_table_out[ind]) - 0.1,
+    np.maximum(Hs_table_in[ind], Hs_table_out[ind]) + 0.1,
+]
