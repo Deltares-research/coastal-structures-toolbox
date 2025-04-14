@@ -410,11 +410,11 @@ def calculate_maximum_significant_wave_height_Hs(
 
     Hs_i1 = (Rc + 0.5) / (2.552 * gamma_f)  # (Rc + 0.01) / (2.552 * gamma_f)
     Hs_i0 = Hs_i1 + np.inf
-    n_iter = 0
+    iteration = 0
 
-    while n_iter <= max_iterations and np.abs(Hs_i1 - Hs_i0) > tolerance:
+    while iteration <= max_iterations and np.abs(Hs_i1 - Hs_i0) > tolerance:
 
-        n_iter += 1
+        iteration += 1
         Hs_i0 = Hs_i1
 
         # calculate u1% using inverted vGent&Pozueta (2004) formula
