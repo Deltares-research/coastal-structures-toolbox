@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
+import warnings
 
 import numpy as np
 import numpy.typing as npt
@@ -368,7 +369,7 @@ def calculate_maximum_significant_wave_height_Hs(
     Hs_i0 = Hs_i1 + np.inf
     iteration = 0
 
-    while iteration <= max_iterations and np.abs(Hs_i1 - Hs_i0) > tolerance:
+    while iteration < max_iterations and np.abs(Hs_i1 - Hs_i0) > tolerance:
 
         iteration += 1
         Hs_i0 = Hs_i1
@@ -389,6 +390,9 @@ def calculate_maximum_significant_wave_height_Hs(
         Hs_i1 = vangent2001._invert_for_Hs(
             Hs_i0=Hs_i0, z1p=z1p, Tmm10=Tmm10, gamma=gamma, cot_alpha=cot_alpha
         )
+
+    if iteration >= max_iterations:
+        warnings.warn("Maximum number of iterations reached, convergence not achieved")
 
     Hs = Hs_i1
 
