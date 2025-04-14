@@ -237,7 +237,7 @@ def calculate_nominal_rock_diameter_Dn50(
     Rc2_rear: float | npt.NDArray[np.float64],
     N_waves: int | npt.NDArray[np.int32],
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the damage number minimum Dn50 for armour at the rear side of a rubble mound structure with a crest
+    """Calculate the minimum Dn50 for armour at the rear side of a rubble mound structure with a crest
     element following Van Gent (2007).
 
     For more details see Van Gent (2007), available here https://doi.org/10.1142/9789814282024_0002 or here
