@@ -14,16 +14,53 @@ def check_validity_range(
     Rc_rear: float | npt.NDArray[np.float64] = np.nan,
     cot_phi: float | npt.NDArray[np.float64] = np.nan,
     gamma_f: float | npt.NDArray[np.float64] = np.nan,
-    Dn50_rear: float | npt.NDArray[np.float64] = np.nan,
+    Dn50: float | npt.NDArray[np.float64] = np.nan,
     rho_rock: float | npt.NDArray[np.float64] = np.nan,
     rho_water: float | npt.NDArray[np.float64] = np.nan,
-    B_c: float | npt.NDArray[np.float64] = np.nan,
+    Bc: float | npt.NDArray[np.float64] = np.nan,
     Hs: float | npt.NDArray[np.float64] = np.nan,
     Tmm10: float | npt.NDArray[np.float64] = np.nan,
     z1p: float | npt.NDArray[np.float64] = np.nan,
     S: float | npt.NDArray[np.float64] = np.nan,
     N_waves: int | npt.NDArray[np.int32] = np.nan,
 ) -> None:
+    """Check the parameter values vs the validity range as defined in Van Gent & Pozueta (2004).
+
+    For all parameters supplied, their values are checked versus the range of test conditions specified in Table 2
+    (Van Gent & Pozueta, 2004). When parameters are nan (by default), they are not checked.
+
+    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here
+    https://www.researchgate.net/publication/259260766_REAR-SIDE_STABILITY_OF_RUBBLE_MOUND_STRUCTURES
+
+    Parameters
+    ----------
+    Rc : float | npt.NDArray[np.float64], optional
+        Freeboard of the structure (m), by default np.nan
+    Rc_rear : float | npt.NDArray[np.float64], optional
+        Vertical distance between still-water level and the crest at the rear side (m), by default np.nan
+    cot_phi : float | npt.NDArray[np.float64], optional
+        Cotangent of the rear-side slope of the structure (-), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default np.nan
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Median nominal rock diameter (m), by default np.nan
+    rho_rock : float | npt.NDArray[np.float64], optional
+        Rock density (kg/m^3), by default np.nan
+    rho_water : float | npt.NDArray[np.float64], optional
+        Water density (kg/m^3), by default np.nan
+    Bc : float | npt.NDArray[np.float64], optional
+        Width of the crest of the structure (m), by default np.nan
+    Hs : float | npt.NDArray[np.float64], optional
+        Significant wave height (m), by default np.nan
+    Tmm10 : float | npt.NDArray[np.float64], optional
+        Spectral wave period Tm-1,0 (s), by default np.nan
+    z1p : float | npt.NDArray[np.float64], optional
+        _description_, by default np.nan
+    S : float | npt.NDArray[np.float64], optional
+        Damage number (-), by default np.nan
+    N_waves : int | npt.NDArray[np.int32], optional
+        Number of waves (-), by default np.nan
+    """
 
     if not np.any(np.isnan(Hs)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(Hs, Tmm10)
@@ -46,9 +83,9 @@ def check_validity_range(
             "Rc_rear/Hs", "Van Gent & Pozueta (2004)", Rc_rear / Hs, 0.3, 6.0
         )
 
-    if not np.any(np.isnan(B_c)) and not np.any(np.isnan(Hs)):
+    if not np.any(np.isnan(Bc)) and not np.any(np.isnan(Hs)):
         core_utility.check_variable_validity_range(
-            "B_c/Hs", "Van Gent & Pozueta (2004)", B_c / Hs, 1.3, 1.6
+            "B_c/Hs", "Van Gent & Pozueta (2004)", Bc / Hs, 1.3, 1.6
         )
 
     if (
@@ -67,12 +104,12 @@ def check_validity_range(
 
     if (
         not np.any(np.isnan(Hs))
-        and not np.any(np.isnan(Dn50_rear))
+        and not np.any(np.isnan(Dn50))
         and not np.any(np.isnan(rho_rock))
         and not np.any(np.isnan(rho_water))
     ):
         Ns = core_physics.calculate_stability_number_Ns(
-            H=Hs, D=Dn50_rear, rho_rock=rho_rock, rho_water=rho_water
+            H=Hs, D=Dn50, rho_rock=rho_rock, rho_water=rho_water
         )
 
         core_utility.check_variable_validity_range(
@@ -113,6 +150,50 @@ def calculate_damage_number_S(
     rho_water: float = 1025.0,
     cs: float = np.power(0.008, 6.0),
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the damage number S for rock at the rear side of a rubble mound structure following
+    Van Gent & Pozueta (2004).
+
+    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here
+    https://www.researchgate.net/publication/259260766_REAR-SIDE_STABILITY_OF_RUBBLE_MOUND_STRUCTURES
+
+    Parameters
+    ----------
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    cot_phi : float | npt.NDArray[np.float64]
+        Cotangent of the rear-side slope of the structure (-)
+    gamma_f : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness (-)
+    gamma_f_Crest : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness on the crest of the structure (-)
+    Hs : float | npt.NDArray[np.float64]
+        Significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Freeboard of the structure (m)
+    Rc_rear : float | npt.NDArray[np.float64]
+        Vertical distance between still-water level and the crest at the rear side (m)
+    Bc : float | npt.NDArray[np.float64]
+        Width of the crest of the structure (m)
+    N_waves : int | npt.NDArray[np.int32]
+        Number of waves (-)
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Median nominal rock diameter (m), by default np.nan
+    M50 : float | npt.NDArray[np.float64], optional
+        Median rock mass (kg), by default np.nan
+    rho_rock : float | npt.NDArray[np.float64], optional
+        Rock density (kg/m^3), by default np.nan
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
+    cs : float, optional
+        Coefficient, by default np.power(0.008, 6.0)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The damage number S (-)
+    """
 
     z1p = vangent2001.calculate_wave_runup_height_z1p(
         Hs=Hs, Tmm10=Tmm10, gamma=gamma_f, cot_alpha=cot_alpha
@@ -141,10 +222,10 @@ def calculate_damage_number_S(
         Rc_rear=Rc_rear,
         cot_phi=cot_phi,
         gamma_f=gamma_f,
-        Dn50_rear=Dn50,
+        Dn50=Dn50,
         rho_rock=rho_rock,
         rho_water=rho_water,
-        B_c=Bc,
+        Bc=Bc,
         Hs=Hs,
         Tmm10=Tmm10,
         z1p=z1p,
@@ -164,13 +245,55 @@ def calculate_nominal_rock_diameter_Dn50(
     Hs: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
-    Bc: float | npt.NDArray[np.float64],
     Rc_rear: float | npt.NDArray[np.float64],
+    Bc: float | npt.NDArray[np.float64],
     rho_rock: float | npt.NDArray[np.float64],
     N_waves: int | npt.NDArray[np.int32],
     rho_water: float = 1025.0,
     cs: float = np.power(0.008, 6.0),
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the minimum Dn50 for armour at the rear side of a rubble mound structure following
+    Van Gent & Pozueta (2004).
+
+    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here
+    https://www.researchgate.net/publication/259260766_REAR-SIDE_STABILITY_OF_RUBBLE_MOUND_STRUCTURES
+
+    Parameters
+    ----------
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    cot_phi : float | npt.NDArray[np.float64]
+        Cotangent of the rear-side slope of the structure (-)
+    gamma_f : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness (-)
+    gamma_f_Crest : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness on the crest of the structure (-)
+    S : float | npt.NDArray[np.float64]
+        Damage number (-)
+    Hs : float | npt.NDArray[np.float64]
+        Significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Freeboard of the structure (m)
+    Rc_rear : float | npt.NDArray[np.float64]
+        Vertical distance between still-water level and the crest at the rear side (m)
+    Bc : float | npt.NDArray[np.float64]
+        Width of the crest of the structure (m)
+    rho_rock : float | npt.NDArray[np.float64]
+        Rock density (kg/m^3)
+    N_waves : int | npt.NDArray[np.int32]
+        Number of waves (-)
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
+    cs : float, optional
+        Coefficient, by default np.power(0.008, 6.0)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The median nominal rock diameter Dn50 (m)
+    """
 
     z1p = vangent2001.calculate_wave_runup_height_z1p(
         Hs=Hs, Tmm10=Tmm10, gamma=gamma_f, cot_alpha=cot_alpha
@@ -197,10 +320,10 @@ def calculate_nominal_rock_diameter_Dn50(
         Rc_rear=Rc_rear,
         cot_phi=cot_phi,
         gamma_f=gamma_f,
-        Dn50_rear=Dn50,
+        Dn50=Dn50,
         rho_rock=rho_rock,
         rho_water=rho_water,
-        B_c=Bc,
+        Bc=Bc,
         Hs=Hs,
         Tmm10=Tmm10,
         z1p=z1p,
@@ -230,6 +353,54 @@ def calculate_maximum_significant_wave_height_Hs(
     tolerance: float = 1e-4,
     max_iter: int = 10000,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the maximum allowable Hs for armour at the rear side of a rubble mound structure following
+    Van Gent & Pozueta (2004).
+
+    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here
+    https://www.researchgate.net/publication/259260766_REAR-SIDE_STABILITY_OF_RUBBLE_MOUND_STRUCTURES
+
+    Parameters
+    ----------
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    cot_phi : float | npt.NDArray[np.float64]
+        Cotangent of the rear-side slope of the structure (-)
+    gamma_f : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness (-)
+    gamma_f_Crest : float | npt.NDArray[np.float64]
+        Influence factor for surface roughness on the crest of the structure (-)
+    S : float | npt.NDArray[np.float64]
+        Damage number (-)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Freeboard of the structure (m)
+    Rc_rear : float | npt.NDArray[np.float64]
+        Vertical distance between still-water level and the crest at the rear side (m)
+    Bc : float | npt.NDArray[np.float64]
+        Width of the crest of the structure (m)
+    N_waves : int | npt.NDArray[np.int32]
+        Number of waves (-)
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Median nominal rock diameter (m), by default np.nan
+    M50 : float | npt.NDArray[np.float64], optional
+        Median rock mass (kg), by default np.nan
+    rho_rock : float | npt.NDArray[np.float64], optional
+        Rock density (kg/m^3), by default np.nan
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
+    cs : float, optional
+        Coefficient, by default np.power(0.008, 6.0)
+    tolerance : float, optional
+        Tolerance in the iteration to Hs (m), by default 1e-4
+    max_iter : int, optional
+        Maximum number of iterations, by default 10000
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The maximum allowable significant wave height Hs (m)
+    """
 
     Delta = core_physics.calculate_buoyant_density_Delta(
         rho_rock=rho_rock, rho_water=rho_water
@@ -285,10 +456,10 @@ def calculate_maximum_significant_wave_height_Hs(
         Rc_rear=Rc_rear,
         cot_phi=cot_phi,
         gamma_f=gamma_f,
-        Dn50_rear=Dn50,
+        Dn50=Dn50,
         rho_rock=rho_rock,
         rho_water=rho_water,
-        B_c=Bc,
+        Bc=Bc,
         Hs=Hs,
         Tmm10=Tmm10,
         z1p=z1p,
