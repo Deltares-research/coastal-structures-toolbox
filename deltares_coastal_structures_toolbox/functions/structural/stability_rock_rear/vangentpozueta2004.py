@@ -129,7 +129,7 @@ def calculate_damage_number_S(
     Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_rock)
 
     S = (
-        np.power(0.008, 6.0)  # cs
+        cs
         * np.power((u1p * Tmm10 / (np.sqrt(Delta) * Dn50)), 6.0)
         * np.power(cot_phi, -2.5)
         * (1 + 10 * np.exp(-Rc_rear / Hs))
