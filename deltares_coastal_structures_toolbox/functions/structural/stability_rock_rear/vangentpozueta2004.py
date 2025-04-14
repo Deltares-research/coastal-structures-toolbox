@@ -351,7 +351,7 @@ def calculate_maximum_significant_wave_height_Hs(
     rho_water: float = 1025.0,
     cs: float = np.power(0.008, 6.0),
     tolerance: float = 1e-4,
-    max_iter: int = 10000,
+    max_iterations: int = 10000,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the maximum allowable Hs for armour at the rear side of a rubble mound structure following
     Van Gent & Pozueta (2004).
@@ -393,7 +393,7 @@ def calculate_maximum_significant_wave_height_Hs(
         Coefficient, by default np.power(0.008, 6.0)
     tolerance : float, optional
         Tolerance in the iteration to Hs (m), by default 1e-4
-    max_iter : int, optional
+    max_iterations : int, optional
         Maximum number of iterations, by default 10000
 
     Returns
@@ -412,7 +412,7 @@ def calculate_maximum_significant_wave_height_Hs(
     Hs_i0 = Hs_i1 + np.inf
     n_iter = 0
 
-    while n_iter <= max_iter and np.abs(Hs_i1 - Hs_i0) > tolerance:
+    while n_iter <= max_iterations and np.abs(Hs_i1 - Hs_i0) > tolerance:
 
         n_iter += 1
         Hs_i0 = Hs_i1
