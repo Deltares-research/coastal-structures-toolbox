@@ -302,106 +302,132 @@ def calculate_nominal_rock_diameter_Dn50(
     return Dn50
 
 
-# def calculate_maximum_Hs(
-#     cot_alpha: float | npt.NDArray[np.float64],
-#     cot_phi: float | npt.NDArray[np.float64],
-#     gamma: float | npt.NDArray[np.float64],
-#     S: float | npt.NDArray[np.float64],
-#     Tmm10: float | npt.NDArray[np.float64],
-#     Dn50: float | npt.NDArray[np.float64],
-#     Rc: float | npt.NDArray[np.float64],
-#     Rc2_front: float | npt.NDArray[np.float64],
-#     Rc2_rear: float | npt.NDArray[np.float64],
-#     N_waves: int | npt.NDArray[np.int32],
-#     smm10_init: float = 0.04,
-#     Hs_tolerance: float = 0.01,
-#     max_iterations: int = 100,
-#     g: float = 9.81,
-# ) -> float | npt.NDArray[np.float64]:
-#     # TODO - naar kijken, want moet iteratief worden opgelost (z1% hangt af van Hs)
+def calculate_maximum_significant_wave_height_Hs(
+    cot_alpha: float | npt.NDArray[np.float64],
+    cot_phi: float | npt.NDArray[np.float64],
+    gamma: float | npt.NDArray[np.float64],
+    S: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+    Rc2_front: float | npt.NDArray[np.float64],
+    Rc2_rear: float | npt.NDArray[np.float64],
+    N_waves: int | npt.NDArray[np.int32],
+    Dn50: float | npt.NDArray[np.float64] = np.nan,
+    M50: float | npt.NDArray[np.float64] = np.nan,
+    rho_rock: float | npt.NDArray[np.float64] = np.nan,
+    tolerance: float = 1e-4,
+    max_iterations: int = 10000,
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the maximum allowable Hs for armour at the rear side of a rubble mound structure following
+    Van Gent (2007).
 
-#     # Hs_iter_m1 = smm10_init * np.power(Tmm10, 2) / (2 * np.pi / g)
+    For more details see Van Gent (2007), available here https://doi.org/10.1142/9789814282024_0002 or here
+    https://www.researchgate.net/publication/259258925_REAR-SIDE_STABILITY_OF_RUBBLE_MOUND_STRUCTURES_WITH_CREST_ELEMENTS
 
-#     # z1p_iter = Rc + 0.2 * Hs_iter_m1
+    Parameters
+    ----------
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    cot_phi : float | npt.NDArray[np.float64]
+        Cotangent of the rear-side slope of the structure (-)
+    gamma : float | npt.NDArray[np.float64]
+        Reduction factor for the wave runup (-)
+    S : float | npt.NDArray[np.float64]
+        Damage number (-)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Freeboard of the structure (m)
+    Rc2_front : float | npt.NDArray[np.float64]
+        Vertical distance between top of rock material at the crest and the top of the crest element (m)
+    Rc2_rear : float | npt.NDArray[np.float64]
+        Vertical distance between still-water level and the lowest point of the crest element at the rear
+        side (m)
+    N_waves : int | npt.NDArray[np.int32]
+        Number of waves (-)
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Median nominal rock diameter (m), by default np.nan
+    M50 : float | npt.NDArray[np.float64], optional
+        Median rock mass (kg), by default np.nan
+    rho_rock : float | npt.NDArray[np.float64], optional
+        Rock density (kg/m^3), by default np.nan
+    tolerance : float, optional
+        Tolerance in the iteration to Hs (m), by default 1e-4
+    max_iterations : int, optional
+        Maximum number of iterations, by default 10000
 
-#     # for iteration in range(max_iterations):
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The maximum allowable significant wave height Hs (m)
+    """
 
-#     #     Hs_iter = Rc2_front / (
-#     #         (np.sqrt(N_waves) / S)
-#     #         * 0.00025
-#     #         * np.power(cot_phi, 1.25)
-#     #         * np.power((z1p_iter - Rc) / Dn50, 2)
-#     #         * np.power(Rc / Dn50, 0.5)
-#     #         * (1 + 5 * Rc2_rear / (Rc - Rc2_rear))
-#     #         - 1
-#     #     )
+    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_rock)
 
-#     #     z1p_iter = wave_runup_vangent2001.calculate_wave_runup_height_z1p(
-#     #         Tmm10, gamma, cot_alpha, Hs=Hs_iter
-#     #     )
+    Hs_i1 = Rc2_front
+    Hs_i0 = Hs_i1 + np.inf
+    iteration = 0
 
-#     #     if np.abs(Hs_iter - Hs_iter_m1) < Hs_tolerance:
-#     #         check_validity_range_vangent2007(
-#     #             S=S,
-#     #             Hs=Hs_iter,
-#     #             Rc=Rc,
-#     #             z1p=z1p_iter,
-#     #             Rc2_front=Rc2_front,
-#     #             Rc2_rear=Rc2_rear,
-#     #             N_waves=N_waves,
-#     #             Dn50=Dn50,
-#     #         )
-#     #         break
-#     #     else:
-#     #         Hs_iter_m1 = Hs_iter
+    while iteration <= max_iterations and np.abs(Hs_i1 - Hs_i0) > tolerance:
 
-#     #     if iteration == max_iterations - 1:
-#     #         warnings.warn(
-#     #             "Maximum number of iterations reached, convergence not achieved"
-#     #         )
+        iteration += 1
+        Hs_i0 = Hs_i1
 
-#     Hs_iter_m1 = Rc2_front
+        # calculate z1% using inverted vGent (2007) formula
+        z1p = _invert_for_z1p(
+            cot_phi=cot_phi,
+            S=S,
+            Dn50=Dn50,
+            Hs=Hs_i0,
+            Rc=Rc,
+            Rc2_front=Rc2_front,
+            Rc2_rear=Rc2_rear,
+            N_waves=N_waves,
+        )
 
-#     for iteration in range(max_iterations):
-#         z1p_iter = vangent2001.calculate_wave_runup_height_z1p(
-#             Tmm10, gamma, cot_alpha, Hs=Hs_iter_m1
-#         )
+        # calculate next Hs iteration using inverted z1% formula
+        Hs_i1 = vangent2001._invert_for_Hs(
+            Hs_i0=Hs_i0, z1p=z1p, Tmm10=Tmm10, gamma=gamma, cot_alpha=cot_alpha
+        )
 
-#         Hs_iter = vangent2001.iterate_significant_wave_height_Hs(
-#             H_init=Hs_iter_m1,
-#             Tmm10=Tmm10,
-#             z1p=z1p_iter,
-#             gamma=gamma,
-#             cot_alpha=cot_alpha,
-#         )
+    Hs = Hs_i1
 
-#         Hs_iter2 = Rc2_front / (
-#             (np.sqrt(N_waves) / S)
-#             * 0.00025
-#             * np.power(cot_phi, 1.25)
-#             * np.power((z1p_iter - Rc) / Dn50, 2)
-#             * np.power(Rc / Dn50, 0.5)
-#             * (1 + 5 * Rc2_rear / (Rc - Rc2_rear))
-#             - 1
-#         )
-#         if np.abs(Hs_iter - Hs_iter_m1) < Hs_tolerance:
-#             check_validity_range(
-#                 S=S,
-#                 Hs=Hs_iter,
-#                 Rc=Rc,
-#                 z1p=z1p_iter,
-#                 Rc2_front=Rc2_front,
-#                 Rc2_rear=Rc2_rear,
-#                 N_waves=N_waves,
-#                 Dn50=Dn50,
-#             )
-#             break
-#         else:
-#             Hs_iter_m1 = Hs_iter
+    check_validity_range(
+        S=S,
+        Hs=Hs,
+        Rc=Rc,
+        z1p=z1p,
+        Rc2_front=Rc2_front,
+        Rc2_rear=Rc2_rear,
+        N_waves=N_waves,
+        Dn50=Dn50,
+    )
 
-#         if iteration == max_iterations - 1:
-#             warnings.warn(
-#                 "Maximum number of iterations reached, convergence not achieved"
-#             )
+    return Hs
 
-#     return Hs_iter
+
+def _invert_for_z1p(
+    cot_phi: float | npt.NDArray[np.float64],
+    S: float | npt.NDArray[np.float64],
+    Dn50: float | npt.NDArray[np.float64],
+    Hs: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+    Rc2_front: float | npt.NDArray[np.float64],
+    Rc2_rear: float | npt.NDArray[np.float64],
+    N_waves: int | npt.NDArray[np.int32],
+):
+    z1p = (
+        Dn50
+        * np.power(
+            (S / np.sqrt(N_waves))
+            * (1.0 / 0.00025)
+            * np.power(cot_phi, -1.25)
+            * np.power(Rc / Dn50, -0.5)
+            * np.power(1 + 5 * Rc2_rear / (Rc - Rc2_rear), -1.0)
+            * (1 + Rc2_front / Hs),
+            0.5,
+        )
+        + Rc
+    )
+
+    return z1p
