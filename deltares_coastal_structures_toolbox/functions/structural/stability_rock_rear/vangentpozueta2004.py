@@ -111,7 +111,7 @@ def calculate_damage_number_S(
     M50: float | npt.NDArray[np.float64] = np.nan,
     rho_rock: float | npt.NDArray[np.float64] = np.nan,
     rho_water: float = 1025.0,
-    cs: float = np.nan,
+    cs: float = np.power(0.008, 6.0),
 ) -> float | npt.NDArray[np.float64]:
 
     z1p = vangent2001.calculate_wave_runup_height_z1p(
@@ -129,7 +129,7 @@ def calculate_damage_number_S(
     Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_rock)
 
     S = (
-        cs
+        np.power(0.008, 6.0)  # cs
         * np.power((u1p * Tmm10 / (np.sqrt(Delta) * Dn50)), 6.0)
         * np.power(cot_phi, -2.5)
         * (1 + 10 * np.exp(-Rc_rear / Hs))
