@@ -224,3 +224,37 @@ def calculate_wave_runup_height_zXp(
     zXp = np.where(ksi_mm10 < p, zXp_a, zXp_b)
 
     return zXp
+
+
+def invert_for_Hs(
+    Hs_i0: float | npt.NDArray[np.float64],
+    z1p: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    gamma: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64],
+    c0: float = 1.45,
+    c1: float = 5.1,
+) -> float | npt.NDArray[np.float64]:
+
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        H=Hs_i0, T=Tmm10, cot_alpha=cot_alpha
+    )
+
+    p = 0.5 * c1 / c0
+
+    # zXp_a = c0 * ksi_mm10 * gamma * H
+    H_a = z1p / (c0 * ksi_mm10 * gamma)
+    # ksi_mm10_a = core_physics.calculate_Irribarren_number_ksi(
+    #     H=H_a, T=Tmm10, cot_alpha=cot_alpha
+    # )
+
+    c2 = 0.25 * np.power(c1, 2) / c0
+    # zXp_b = (c1 - c2 / ksi_mm10) * gamma * H
+    H_b = z1p / ((c1 - c2 / ksi_mm10) * gamma)
+    # ksi_mm10_b = core_physics.calculate_Irribarren_number_ksi(
+    #     H=H_b, T=Tmm10, cot_alpha=cot_alpha
+    # )
+
+    Hs = np.where(ksi_mm10 < p, H_a, H_b)
+
+    return Hs

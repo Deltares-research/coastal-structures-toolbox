@@ -169,6 +169,7 @@ def calculate_nominal_rock_diameter_Dn50(
     rho_rock: float | npt.NDArray[np.float64],
     N_waves: int | npt.NDArray[np.int32],
     rho_water: float = 1025.0,
+    cs: float = np.power(0.008, 6.0),
 ) -> float | npt.NDArray[np.float64]:
 
     z1p = vangent2001.calculate_wave_runup_height_z1p(
@@ -184,7 +185,7 @@ def calculate_nominal_rock_diameter_Dn50(
     )
 
     Dn50 = (
-        0.008
+        np.power(cs, 1.0 / 6.0)
         * np.power(S / np.sqrt(N_waves), -(1.0 / 6.0))
         * (u1p * Tmm10 / np.sqrt(Delta))
         * np.power(cot_phi, -(2.5 / 6.0))
@@ -208,3 +209,119 @@ def calculate_nominal_rock_diameter_Dn50(
     )
 
     return Dn50
+
+
+def calculate_maximum_significant_wave_height_Hs(
+    cot_alpha: float | npt.NDArray[np.float64],
+    cot_phi: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    gamma_f_Crest: float | npt.NDArray[np.float64],
+    S: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+    Rc_rear: float | npt.NDArray[np.float64],
+    Bc: float | npt.NDArray[np.float64],
+    N_waves: int | npt.NDArray[np.int32],
+    Dn50: float | npt.NDArray[np.float64] = np.nan,
+    M50: float | npt.NDArray[np.float64] = np.nan,
+    rho_rock: float | npt.NDArray[np.float64] = np.nan,
+    rho_water: float = 1025.0,
+    cs: float = np.power(0.008, 6.0),
+    tolerance: float = 1e-4,
+    max_iter: int = 10000,
+) -> float | npt.NDArray[np.float64]:
+
+    Delta = core_physics.calculate_buoyant_density_Delta(
+        rho_rock=rho_rock, rho_water=rho_water
+    )
+
+    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_rock)
+
+    Hs_i1 = (Rc + 0.5) / (2.552 * gamma_f)  # (Rc + 0.01) / (2.552 * gamma_f)
+    Hs_i0 = Hs_i1 + np.inf
+    n_iter = 0
+
+    while n_iter <= max_iter and np.abs(Hs_i1 - Hs_i0) > tolerance:
+
+        n_iter += 1
+        Hs_i0 = Hs_i1
+
+        # calculate u1% using inverted vGent&Pozueta (2004) formula
+        u1p = invert_for_u1p(
+            cot_phi=cot_phi,
+            S=S,
+            Hs=Hs_i0,
+            Tmm10=Tmm10,
+            Rc_rear=Rc_rear,
+            N_waves=N_waves,
+            Dn50=Dn50,
+            Delta=Delta,
+            cs=cs,
+        )
+
+        # calculate z1% using inverted u1% formula
+        z1p = vangent2002.invert_for_zXp(
+            Hs=Hs_i0,
+            uXp=u1p,
+            Rc=Rc,
+            Bc=Bc,
+            gamma_f=gamma_f,
+            gamma_f_Crest=gamma_f_Crest,
+        )
+
+        # calculate next Hs iteration using inverted z1% formula
+        Hs_i1 = vangent2001.invert_for_Hs(
+            Hs_i0=Hs_i0,
+            z1p=z1p,
+            Tmm10=Tmm10,
+            gamma=gamma_f,
+            cot_alpha=cot_alpha,
+        )
+
+    Hs = Hs_i1
+
+    check_validity_range(
+        Rc=Rc,
+        Rc_rear=Rc_rear,
+        cot_phi=cot_phi,
+        gamma_f=gamma_f,
+        Dn50_rear=Dn50,
+        rho_rock=rho_rock,
+        rho_water=rho_water,
+        B_c=Bc,
+        Hs=Hs,
+        Tmm10=Tmm10,
+        z1p=z1p,
+        S=S,
+        N_waves=N_waves,
+    )
+
+    return Hs
+
+
+def invert_for_u1p(
+    cot_phi: float | npt.NDArray[np.float64],
+    S: float | npt.NDArray[np.float64],
+    Hs: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    Rc_rear: float | npt.NDArray[np.float64],
+    N_waves: int | npt.NDArray[np.int32],
+    Dn50: float | npt.NDArray[np.float64] = np.nan,
+    Delta: float | npt.NDArray[np.float64] = np.nan,
+    cs: float = np.power(0.008, 6.0),
+) -> float | npt.NDArray[np.float64]:
+
+    u1p = (
+        np.power(
+            (1.0 / cs)
+            * (S / np.sqrt(N_waves))
+            * np.power(cot_phi, 2.5)
+            * (1.0 / (1 + 10 * np.exp(-Rc_rear / Hs))),
+            1.0 / 6.0,
+        )
+        * np.sqrt(Delta)
+        * Dn50
+        / Tmm10
+    )
+
+    return u1p
