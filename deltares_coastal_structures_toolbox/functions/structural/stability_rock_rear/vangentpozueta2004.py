@@ -29,7 +29,7 @@ def check_validity_range(
     For all parameters supplied, their values are checked versus the range of test conditions specified in Table 2
     (Van Gent & Pozueta, 2004). When parameters are nan (by default), they are not checked.
 
-    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here
+    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here:
     https://www.researchgate.net/publication/259260766_REAR-SIDE_STABILITY_OF_RUBBLE_MOUND_STRUCTURES
 
     Parameters
@@ -153,7 +153,7 @@ def calculate_damage_number_S(
     """Calculate the damage number S for rock at the rear side of a rubble mound structure following
     Van Gent & Pozueta (2004).
 
-    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here
+    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here:
     https://www.researchgate.net/publication/259260766_REAR-SIDE_STABILITY_OF_RUBBLE_MOUND_STRUCTURES
 
     Parameters
@@ -255,7 +255,7 @@ def calculate_nominal_rock_diameter_Dn50(
     """Calculate the minimum Dn50 for armour at the rear side of a rubble mound structure following
     Van Gent & Pozueta (2004).
 
-    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here
+    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here:
     https://www.researchgate.net/publication/259260766_REAR-SIDE_STABILITY_OF_RUBBLE_MOUND_STRUCTURES
 
     Parameters
@@ -356,7 +356,7 @@ def calculate_maximum_significant_wave_height_Hs(
     """Calculate the maximum allowable Hs for armour at the rear side of a rubble mound structure following
     Van Gent & Pozueta (2004).
 
-    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here
+    For more details see Van Gent & Pozueta (2004), available here https://doi.org/10.1142/9789812701916_0281 or here:
     https://www.researchgate.net/publication/259260766_REAR-SIDE_STABILITY_OF_RUBBLE_MOUND_STRUCTURES
 
     Parameters
