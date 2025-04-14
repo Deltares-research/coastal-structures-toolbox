@@ -267,6 +267,530 @@ def test_internal_consistency_S_Dn50(
 
 @pytest.mark.parametrize(
     (
+        "cot_alpha, cot_phi, gamma_f, gamma_f_Crest, S, Hs, Tmm10, Rc, Rc_rear, Bc, N_waves, rho_rock"
+    ),
+    (
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                2.0,
+                5.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                2.5,
+                2.0,
+                0.47,
+                0.47,
+                2.0,
+                5.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                3.0,
+                0.47,
+                0.47,
+                2.0,
+                5.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.55,
+                0.47,
+                2.0,
+                5.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.55,
+                2.0,
+                5.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                4.0,
+                5.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                2.0,
+                6.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                2.0,
+                5.0,
+                12.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                2.0,
+                5.0,
+                10.0,
+                4.5,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                2.0,
+                5.0,
+                10.0,
+                5.0,
+                4.5,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                2.0,
+                5.0,
+                10.0,
+                5.0,
+                5.0,
+                6.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                2.0,
+                5.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                2000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                2.0,
+                5.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2850,
+            ]
+        ),
+    ),
+)
+def test_internal_consistency_Hs_Dn50(
+    cot_alpha,
+    cot_phi,
+    gamma_f,
+    gamma_f_Crest,
+    S,
+    Hs,
+    Tmm10,
+    Rc,
+    Rc_rear,
+    Bc,
+    N_waves,
+    rho_rock,
+):
+    Dn50_calculated = vangentpozueta2004.calculate_nominal_rock_diameter_Dn50(
+        cot_alpha=cot_alpha,
+        cot_phi=cot_phi,
+        gamma_f=gamma_f,
+        gamma_f_Crest=gamma_f_Crest,
+        S=S,
+        Hs=Hs,
+        Tmm10=Tmm10,
+        Rc=Rc,
+        Rc_rear=Rc_rear,
+        Bc=Bc,
+        rho_rock=rho_rock,
+        N_waves=N_waves,
+    )
+
+    Hs_calculated = vangentpozueta2004.calculate_maximum_significant_wave_height_Hs(
+        cot_alpha=cot_alpha,
+        cot_phi=cot_phi,
+        gamma_f=gamma_f,
+        gamma_f_Crest=gamma_f_Crest,
+        Dn50=Dn50_calculated,
+        S=S,
+        Tmm10=Tmm10,
+        Rc=Rc,
+        Rc_rear=Rc_rear,
+        Bc=Bc,
+        rho_rock=rho_rock,
+        N_waves=N_waves,
+    )
+
+    assert Hs_calculated == pytest.approx(Hs, abs=1e-2)
+
+
+@pytest.mark.parametrize(
+    (
+        "cot_alpha, cot_phi, gamma_f, gamma_f_Crest, M50, S, Tmm10, Rc, Rc_rear, Bc, N_waves, rho_rock"
+    ),
+    (
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                300.0,
+                2.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                2.5,
+                2.0,
+                0.47,
+                0.47,
+                300.0,
+                2.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                3.0,
+                0.47,
+                0.47,
+                300.0,
+                2.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.55,
+                0.47,
+                300.0,
+                2.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.55,
+                300.0,
+                2.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                400.0,
+                2.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                300.0,
+                6.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                300.0,
+                2.0,
+                12.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                300.0,
+                2.0,
+                10.0,
+                4.5,
+                5.0,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                300.0,
+                2.0,
+                10.0,
+                5.0,
+                4.5,
+                4.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                300.0,
+                2.0,
+                10.0,
+                5.0,
+                5.0,
+                6.0,
+                1000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                300.0,
+                2.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                2000,
+                2650,
+            ]
+        ),
+        (
+            [
+                3.0,
+                2.0,
+                0.47,
+                0.47,
+                300.0,
+                2.0,
+                10.0,
+                5.0,
+                5.0,
+                4.0,
+                1000,
+                2850,
+            ]
+        ),
+    ),
+)
+def test_internal_consistency_S_Hs(
+    cot_alpha,
+    cot_phi,
+    gamma_f,
+    gamma_f_Crest,
+    M50,
+    S,
+    Tmm10,
+    Rc,
+    Rc_rear,
+    Bc,
+    N_waves,
+    rho_rock,
+):
+    Hs_calculated = vangentpozueta2004.calculate_maximum_significant_wave_height_Hs(
+        cot_alpha=cot_alpha,
+        cot_phi=cot_phi,
+        gamma_f=gamma_f,
+        gamma_f_Crest=gamma_f_Crest,
+        M50=M50,
+        S=S,
+        Tmm10=Tmm10,
+        Rc=Rc,
+        Rc_rear=Rc_rear,
+        Bc=Bc,
+        rho_rock=rho_rock,
+        N_waves=N_waves,
+    )
+
+    S_calculated = vangentpozueta2004.calculate_damage_number_S(
+        cot_alpha=cot_alpha,
+        cot_phi=cot_phi,
+        gamma_f=gamma_f,
+        gamma_f_Crest=gamma_f_Crest,
+        M50=M50,
+        Hs=Hs_calculated,
+        Tmm10=Tmm10,
+        Rc=Rc,
+        Rc_rear=Rc_rear,
+        Bc=Bc,
+        rho_rock=rho_rock,
+        N_waves=N_waves,
+    )
+
+    assert S_calculated == pytest.approx(S, abs=1e-2)
+
+
+@pytest.mark.parametrize(
+    (
         "cot_alpha, cot_phi, gamma_f, gamma_f_Crest, S, Hs, Tmm10, Rc, Rc_rear, Bc, N_waves, rho_rock, Dn50_expected"
     ),
     (
@@ -959,7 +1483,7 @@ def test_S_backward(
                 4.0,
                 1000,
                 2650,
-                4.88,
+                4.58,
             ]
         ),
         (
@@ -976,7 +1500,7 @@ def test_S_backward(
                 6.0,
                 1000,
                 2650,
-                3.62,
+                4.71,
             ]
         ),
         (
@@ -993,7 +1517,7 @@ def test_S_backward(
                 4.0,
                 2000,
                 2650,
-                6.38,
+                4.48,
             ]
         ),
         (
@@ -1010,7 +1534,7 @@ def test_S_backward(
                 4.0,
                 1000,
                 2850,
-                3.68,
+                4.70,
             ]
         ),
     ),
