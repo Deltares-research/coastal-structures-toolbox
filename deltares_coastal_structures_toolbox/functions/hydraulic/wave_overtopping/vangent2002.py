@@ -26,7 +26,7 @@ def calculate_maximum_wave_overtopping_velocity_uXp(
     return uXp
 
 
-def invert_for_zXp(
+def _invert_for_zXp(
     Hs: float | npt.NDArray[np.float64],
     uXp: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],

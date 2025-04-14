@@ -226,7 +226,7 @@ def calculate_wave_runup_height_zXp(
     return zXp
 
 
-def invert_for_Hs(
+def _invert_for_Hs(
     Hs_i0: float | npt.NDArray[np.float64],
     z1p: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
@@ -242,18 +242,10 @@ def invert_for_Hs(
 
     p = 0.5 * c1 / c0
 
-    # zXp_a = c0 * ksi_mm10 * gamma * H
     H_a = z1p / (c0 * ksi_mm10 * gamma)
-    # ksi_mm10_a = core_physics.calculate_Irribarren_number_ksi(
-    #     H=H_a, T=Tmm10, cot_alpha=cot_alpha
-    # )
 
     c2 = 0.25 * np.power(c1, 2) / c0
-    # zXp_b = (c1 - c2 / ksi_mm10) * gamma * H
     H_b = z1p / ((c1 - c2 / ksi_mm10) * gamma)
-    # ksi_mm10_b = core_physics.calculate_Irribarren_number_ksi(
-    #     H=H_b, T=Tmm10, cot_alpha=cot_alpha
-    # )
 
     Hs = np.where(ksi_mm10 < p, H_a, H_b)
 

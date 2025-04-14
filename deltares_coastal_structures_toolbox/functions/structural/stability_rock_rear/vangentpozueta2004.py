@@ -247,7 +247,7 @@ def calculate_maximum_significant_wave_height_Hs(
         Hs_i0 = Hs_i1
 
         # calculate u1% using inverted vGent&Pozueta (2004) formula
-        u1p = invert_for_u1p(
+        u1p = _invert_for_u1p(
             cot_phi=cot_phi,
             S=S,
             Hs=Hs_i0,
@@ -260,7 +260,7 @@ def calculate_maximum_significant_wave_height_Hs(
         )
 
         # calculate z1% using inverted u1% formula
-        z1p = vangent2002.invert_for_zXp(
+        z1p = vangent2002._invert_for_zXp(
             Hs=Hs_i0,
             uXp=u1p,
             Rc=Rc,
@@ -270,7 +270,7 @@ def calculate_maximum_significant_wave_height_Hs(
         )
 
         # calculate next Hs iteration using inverted z1% formula
-        Hs_i1 = vangent2001.invert_for_Hs(
+        Hs_i1 = vangent2001._invert_for_Hs(
             Hs_i0=Hs_i0,
             z1p=z1p,
             Tmm10=Tmm10,
@@ -299,7 +299,7 @@ def calculate_maximum_significant_wave_height_Hs(
     return Hs
 
 
-def invert_for_u1p(
+def _invert_for_u1p(
     cot_phi: float | npt.NDArray[np.float64],
     S: float | npt.NDArray[np.float64],
     Hs: float | npt.NDArray[np.float64],
