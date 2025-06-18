@@ -55,7 +55,9 @@ def check_validity_range(
         )
 
     if not np.any(np.isnan(Hs)) and not np.any(np.isnan(Dn50)):
-        Ns = core_physics.calculate_stability_number_Ns(Hs, Dn50, rho_armour, 1025)
+        Ns = core_physics.calculate_stability_number_Ns(
+            H=Hs, D=Dn50, rho_rock=rho_armour, rho_water=1025
+        )
         core_utility.check_variable_validity_range(
             "Stability number Ns",
             "Modified Van der Meer (Van Gent et al., 2003)",
@@ -69,7 +71,9 @@ def check_validity_range(
         and not np.any(np.isnan(Tmm10))
         and not np.any(np.isnan(cot_alpha))
     ):
-        ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(Hs, Tmm10, cot_alpha)
+        ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+            H=Hs, T=Tmm10, cot_alpha=cot_alpha
+        )
         core_utility.check_variable_validity_range(
             "Irribarren number ksi_m-1,0",
             "Modified Van der Meer (Van Gent et al., 2003)",
