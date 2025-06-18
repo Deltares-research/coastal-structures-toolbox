@@ -166,12 +166,16 @@ def calculate_damage_number_S(
     """
     # TODO implement calculating H2% with Battjes-Groenendijk (see dwt, where it's already implemented)
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_armour)
+    Dn50 = core_physics.check_usage_Dn50_or_M50(
+        Dn50=Dn50, M50=M50, rho_armour=rho_armour
+    )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(Hs, Tmm10, cot_alpha)
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        H=Hs, T=Tmm10, cot_alpha=cot_alpha
+    )
 
     ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, cot_alpha
+        c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha
     )
 
     Ns = core_physics.calculate_stability_number_Ns(
@@ -261,10 +265,12 @@ def calculate_nominal_rock_diameter_Dn50(
         The nominal rock diameter Dn50 (m)
     """
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(Hs, Tmm10, cot_alpha)
+    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        H=Hs, T=Tmm10, cot_alpha=cot_alpha
+    )
 
     ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, cot_alpha
+        c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha
     )
 
     Delta = core_physics.calculate_buoyant_density_Delta(
@@ -364,10 +370,12 @@ def calculate_significant_wave_height_Hs(
         The significant wave height Hs (m)
     """
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_armour)
+    Dn50 = core_physics.check_usage_Dn50_or_M50(
+        Dn50=Dn50, M50=M50, rho_armour=rho_armour
+    )
 
     ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, cot_alpha
+        c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha
     )
 
     Delta = core_physics.calculate_buoyant_density_Delta(
@@ -401,9 +409,13 @@ def calculate_significant_wave_height_Hs(
         1.0 / (1.0 + 0.5 * P),
     )
 
-    ksi_mm10_pl = core_physics.calculate_Irribarren_number_ksi(Hs_pl, Tmm10, cot_alpha)
+    ksi_mm10_pl = core_physics.calculate_Irribarren_number_ksi(
+        H=Hs_pl, T=Tmm10, cot_alpha=cot_alpha
+    )
 
-    ksi_mm10_s = core_physics.calculate_Irribarren_number_ksi(Hs_s, Tmm10, cot_alpha)
+    ksi_mm10_s = core_physics.calculate_Irribarren_number_ksi(
+        H=Hs_s, T=Tmm10, cot_alpha=cot_alpha
+    )
 
     Hs = np.where(
         ((ksi_mm10_pl < ksi_mc) & (ksi_mm10_s < ksi_mc)) | (cot_alpha >= 4.0),

@@ -136,15 +136,19 @@ def calculate_damage_number_S(
         The damage number S (-)
     """
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_armour)
-
-    ksi_0m = core_physics.calculate_Irribarren_number_ksi(Hs, Tm, cot_alpha)
-
-    ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, cot_alpha
+    Dn50 = core_physics.check_usage_Dn50_or_M50(
+        Dn50=Dn50, M50=M50, rho_armour=rho_armour
     )
 
-    gamma_N = calculate_correction_term_gamma_N(N_waves)
+    ksi_0m = core_physics.calculate_Irribarren_number_ksi(
+        H=Hs, T=Tm, cot_alpha=cot_alpha
+    )
+
+    ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+        c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha
+    )
+
+    gamma_N = calculate_correction_term_gamma_N(N_waves=N_waves)
 
     Ns = core_physics.calculate_stability_number_Ns(
         H=Hs, D=Dn50, rho_rock=rho_armour, rho_water=1025
@@ -238,13 +242,15 @@ def calculate_nominal_rock_diameter_Dn50(
         The nominal rock diameter Dn50 (m)
     """
 
-    ksi_0m = core_physics.calculate_Irribarren_number_ksi(Hs, Tm, cot_alpha)
-
-    ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, cot_alpha
+    ksi_0m = core_physics.calculate_Irribarren_number_ksi(
+        H=Hs, T=Tm, cot_alpha=cot_alpha
     )
 
-    gamma_N = calculate_correction_term_gamma_N(N_waves)
+    ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+        c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha
+    )
+
+    gamma_N = calculate_correction_term_gamma_N(N_waves=N_waves)
 
     Delta = core_physics.calculate_buoyant_density_Delta(
         rho_rock=rho_armour, rho_water=1025
@@ -341,13 +347,15 @@ def calculate_significant_wave_height_Hs(
         The significant wave height Hs (m)
     """
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_armour)
-
-    ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
-        c_pl, c_s, P, cot_alpha
+    Dn50 = core_physics.check_usage_Dn50_or_M50(
+        Dn50=Dn50, M50=M50, rho_armour=rho_armour
     )
 
-    gamma_N = calculate_correction_term_gamma_N(N_waves)
+    ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+        c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha
+    )
+
+    gamma_N = calculate_correction_term_gamma_N(N_waves=N_waves)
 
     Delta = core_physics.calculate_buoyant_density_Delta(
         rho_rock=rho_armour, rho_water=1025
@@ -380,9 +388,13 @@ def calculate_significant_wave_height_Hs(
         1.0 / (1.0 + 0.5 * P),
     )
 
-    ksi_0m_pl = core_physics.calculate_Irribarren_number_ksi(Hs_pl, Tm, cot_alpha)
+    ksi_0m_pl = core_physics.calculate_Irribarren_number_ksi(
+        H=Hs_pl, T=Tm, cot_alpha=cot_alpha
+    )
 
-    ksi_0m_s = core_physics.calculate_Irribarren_number_ksi(Hs_s, Tm, cot_alpha)
+    ksi_0m_s = core_physics.calculate_Irribarren_number_ksi(
+        H=Hs_s, T=Tm, cot_alpha=cot_alpha
+    )
 
     Hs = np.where(
         ((ksi_0m_pl < ksi_mc) & (ksi_0m_s < ksi_mc)) | (cot_alpha >= 4.0), Hs_pl, Hs_s
