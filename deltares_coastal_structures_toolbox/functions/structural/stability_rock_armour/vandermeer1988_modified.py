@@ -71,7 +71,7 @@ def check_validity_range(
     ):
         ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(Hs, Tmm10, cot_alpha)
         core_utility.check_variable_validity_range(
-            "Stability number Ns",
+            "Irribarren number ksi_m-1,0",
             "Modified Van der Meer (Van Gent et al., 2003)",
             ksi_mm10,
             1.3,
