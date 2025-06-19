@@ -79,43 +79,42 @@ def test_Dn50_backward(
     assert Dn50_calculated == pytest.approx(Dn50_expected, abs=1e-2)
 
 
-# @pytest.mark.parametrize(
-#     ("cot_alpha, P, rho_armour, N_waves, Tmm10, S, M50, Hs_expected"),
-#     (
-#         ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 1000.0, 2.36]),
-#         ([2.0, 0.4, 2650, 3000, 6.0, 2.0, 1000.0, 1.80]),
-#         ([3.0, 0.5, 2650, 3000, 6.0, 2.0, 1000.0, 2.49]),
-#         ([3.0, 0.4, 2850, 3000, 6.0, 2.0, 1000.0, 2.66]),
-#         ([3.0, 0.4, 2650, 6000, 6.0, 2.0, 1000.0, 2.15]),
-#         ([3.0, 0.4, 2650, 3000, 14.0, 2.0, 1000.0, 1.91]),
-#         ([3.0, 0.4, 2650, 3000, 6.0, 3.0, 1000.0, 2.63]),
-#         ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 1200.0, 2.56]),
-#         ([4.0, 0.4, 2650, 3000, 6.0, 2.0, 1000.0, 2.85]),
-#         ([4.0, 0.4, 2650, 3000, 14.0, 2.0, 1000.0, 1.62]),
-#     ),
-# )
-# def test_Hs_backward(
-#     cot_alpha,
-#     P,
-#     rho_armour,
-#     N_waves,
-#     Tmm10,
-#     S,
-#     M50,
-#     Hs_expected,
-# ):
-#     Hs_calculated = vandermeer1988_modified.calculate_significant_wave_height_Hs(
-#         ratio_H2p_Hs=1.4,
-#         Tmm10=Tmm10,
-#         cot_alpha=cot_alpha,
-#         rho_armour=rho_armour,
-#         S=S,
-#         P=P,
-#         N_waves=N_waves,
-#         M50=M50,
-#     )
+@pytest.mark.parametrize(
+    ("cot_alpha, Dn50_core, rho_armour, N_waves, Tmm10, S, M50, Hm0_expected"),
+    (
+        ([2.0, 0.1, 2650, 3000, 6.0, 2.0, 500.0, 1.82]),
+        ([2.0, 0.15, 2650, 3000, 6.0, 2.0, 500.0, 1.98]),
+        ([2.0, 0.1, 2850, 3000, 6.0, 2.0, 500.0, 2.03]),
+        ([2.0, 0.1, 2650, 6000, 6.0, 2.0, 500.0, 1.69]),
+        ([2.0, 0.1, 2650, 3000, 14.0, 2.0, 500.0, 1.51]),
+        ([2.0, 0.1, 2650, 3000, 6.0, 3.0, 500.0, 2.00]),
+        ([2.0, 0.1, 2650, 3000, 6.0, 2.0, 600.0, 1.93]),
+        ([4.0, 0.1, 2650, 3000, 6.0, 2.0, 500.0, 2.68]),
+        ([4.0, 0.1, 2650, 3000, 14.0, 2.0, 500.0, 2.22]),
+    ),
+)
+def test_Hm0_backward(
+    cot_alpha,
+    Dn50_core,
+    rho_armour,
+    N_waves,
+    Tmm10,
+    S,
+    M50,
+    Hm0_expected,
+):
+    Hm0_calculated = scaravaglione2025.calculate_significant_wave_height_Hm0(
+        Tmm10=Tmm10,
+        cot_alpha=cot_alpha,
+        rho_armour=rho_armour,
+        rho_core=rho_armour,
+        Dn50_core=Dn50_core,
+        S=S,
+        N_waves=N_waves,
+        M50=M50,
+    )
 
-#     assert Hs_calculated == pytest.approx(Hs_expected, abs=1e-2)
+    assert Hm0_calculated == pytest.approx(Hm0_expected, abs=1e-2)
 
 
 @pytest.mark.parametrize(
