@@ -142,9 +142,7 @@ def calculate_damage_number_S(
         Dn50=Dn50_core, M50=M50_core, rho_armour=rho_core
     )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
-        H=Hm0, T=Tmm10, cot_alpha=cot_alpha
-    )
+    s_mm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
 
     Ns = core_physics.calculate_stability_number_Ns(
         H=Hm0, D=Dn50, rho_rock=rho_armour, rho_water=1025
@@ -152,7 +150,7 @@ def calculate_damage_number_S(
 
     S = np.power(
         (1 / c_VGnew)
-        * np.power(ksi_mm10, -0.1)
+        * np.power(s_mm10, -0.1)
         * np.sqrt(1 / cot_alpha)
         * Ns
         * (1.0 / (1 + Dn50_core / Dn50)),
@@ -189,9 +187,7 @@ def calculate_nominal_rock_diameter_Dn50(
         Dn50=Dn50_core, M50=M50_core, rho_armour=rho_core
     )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
-        H=Hm0, T=Tmm10, cot_alpha=cot_alpha
-    )
+    s_mm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
 
     Delta = core_physics.calculate_buoyant_density_Delta(
         rho_rock=rho_armour, rho_water=1025
@@ -199,7 +195,7 @@ def calculate_nominal_rock_diameter_Dn50(
 
     Dn50 = (Hm0 / Delta) * (1 / c_VGnew) * np.power(S / np.sqrt(N_waves), -0.2) * (
         1 / np.sqrt(cot_alpha)
-    ) * np.power(ksi_mm10, -0.1) - Dn50_core
+    ) * np.power(s_mm10, -0.1) - Dn50_core
 
     check_validity_range(
         Hm0=Hm0,
@@ -213,39 +209,49 @@ def calculate_nominal_rock_diameter_Dn50(
     return Dn50
 
 
-# def calculate_significant_wave_height_Hs(
-#     ratio_H2p_Hs: float | npt.NDArray[np.float64],
-#     Tmm10: float | npt.NDArray[np.float64],
-#     N_waves: float | npt.NDArray[np.float64],
-#     cot_alpha: float | npt.NDArray[np.float64],
-#     P: float | npt.NDArray[np.float64],
-#     rho_armour: float | npt.NDArray[np.float64],
-#     rho_core: float | npt.NDArray[np.float64],
-#     S: float | npt.NDArray[np.float64],
-#     Dn50: float | npt.NDArray[np.float64] = np.nan,
-#     Dn50_core: float | npt.NDArray[np.float64] = np.nan,
-#     M50: float | npt.NDArray[np.float64] = np.nan,
-#     M50_core: float | npt.NDArray[np.float64] = np.nan,
-#     c_VGnew: float = 3.3,
-#     g: float = 9.81,
-# ) -> float | npt.NDArray[np.float64]:
+def calculate_significant_wave_height_Hm0(
+    Tmm10: float | npt.NDArray[np.float64],
+    N_waves: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64],
+    rho_armour: float | npt.NDArray[np.float64],
+    rho_core: float | npt.NDArray[np.float64],
+    S: float | npt.NDArray[np.float64],
+    Dn50: float | npt.NDArray[np.float64] = np.nan,
+    Dn50_core: float | npt.NDArray[np.float64] = np.nan,
+    M50: float | npt.NDArray[np.float64] = np.nan,
+    M50_core: float | npt.NDArray[np.float64] = np.nan,
+    c_VGnew: float = 3.3,
+    g: float = 9.81,
+) -> float | npt.NDArray[np.float64]:
 
-#     Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_armour)
+    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_armour)
 
-#     Delta = core_physics.calculate_buoyant_density_Delta(
-#         rho_rock=rho_armour, rho_water=1025
-#     )
+    Dn50_core = core_physics.check_usage_Dn50_or_M50(
+        Dn50=Dn50_core, M50=M50_core, rho_armour=rho_core
+    )
 
-#     Hm0 = 0.0
+    Delta = core_physics.calculate_buoyant_density_Delta(
+        rho_rock=rho_armour, rho_water=1025
+    )
 
-#     check_validity_range(
-#         Hm0=Hm0,
-#         Tmm10=Tmm10,
-#         N_waves=N_waves,
-#         cot_alpha=cot_alpha,
-#         P=P,
-#         Dn50=Dn50,
-#         Dn50_core=Dn50_core,
-#         rho_armour=rho_armour,
-#     )
-#     return Hm0
+    Hm0 = np.power(
+        Delta
+        * Dn50
+        * c_VGnew
+        * np.sqrt(cot_alpha)
+        * (1 + Dn50_core / Dn50)
+        * np.power(2 * np.pi / (g * np.power(Tmm10, 2)), 0.1)
+        * np.power(S / np.sqrt(N_waves), 0.2),
+        1.0 / 0.9,
+    )
+
+    check_validity_range(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        N_waves=N_waves,
+        cot_alpha=cot_alpha,
+        Dn50=Dn50,
+        Dn50_core=Dn50_core,
+        rho_armour=rho_armour,
+    )
+    return Hm0
