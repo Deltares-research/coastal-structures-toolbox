@@ -4,24 +4,23 @@ import deltares_coastal_structures_toolbox.functions.structural.stability_rock_a
 
 
 @pytest.mark.parametrize(
-    ("cot_alpha, P, rho_armour, N_waves, Tmm10, Hm0, M50, S_expected"),
+    ("cot_alpha, rho_armour, Dn50_core, N_waves, Tmm10, Hm0, M50, S_expected"),
     (
-        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 1000.0, 1.08]),
-        ([2.0, 0.4, 2650, 3000, 6.0, 2.0, 1000.0, 2.98]),
-        ([3.0, 0.5, 2650, 3000, 6.0, 2.0, 1000.0, 0.885]),
-        ([3.0, 0.4, 2850, 3000, 6.0, 2.0, 1000.0, 0.683]),
-        ([3.0, 0.4, 2650, 6000, 6.0, 2.0, 1000.0, 1.53]),
-        ([3.0, 0.4, 2650, 3000, 14.0, 2.0, 1000.0, 2.68]),
-        ([3.0, 0.4, 2650, 3000, 6.0, 2.5, 1000.0, 2.50]),
-        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 1200.0, 0.798]),
-        ([4.0, 0.4, 2650, 3000, 6.0, 2.0, 1000.0, 0.527]),
-        ([4.0, 0.4, 2650, 3000, 14.0, 2.0, 1000.0, 4.38]),
+        ([2.0, 2650, 0.1, 3000, 6.0, 2.0, 150.0, 1.83]),
+        ([2.0, 2850, 0.1, 3000, 6.0, 2.0, 150.0, 1.13]),
+        ([2.0, 2650, 0.075, 3000, 6.0, 2.0, 150.0, 2.38]),
+        ([2.0, 2650, 0.1, 6000, 6.0, 2.0, 150.0, 2.59]),
+        ([2.0, 2650, 0.1, 3000, 14.0, 2.0, 150.0, 1.20]),
+        ([2.0, 2650, 0.1, 3000, 6.0, 2.5, 150.0, 5.90]),
+        ([2.0, 2650, 0.1, 3000, 6.0, 2.0, 100.0, 3.10]),
+        ([4.0, 2650, 0.1, 3000, 6.0, 2.0, 150.0, 0.457]),
+        ([4.0, 2650, 0.1, 3000, 14.0, 2.0, 150.0, 0.299]),
     ),
 )
 def test_S_backward(
     cot_alpha,
-    P,
     rho_armour,
+    Dn50_core,
     N_waves,
     Tmm10,
     Hm0,
@@ -34,38 +33,37 @@ def test_S_backward(
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
         rho_core=rho_armour,
-        P=P,
         N_waves=N_waves,
         M50=M50,
-        M50_core=0.25 * M50,
+        Dn50_core=Dn50_core,
     )
 
     assert S_calculated == pytest.approx(S_expected, abs=1e-2)
 
 
 @pytest.mark.parametrize(
-    ("cot_alpha, P, rho_armour, N_waves, Tmm10, Hm0, S, Dn50_expected"),
+    ("cot_alpha, rho_armour, N_waves, Tmm10, Hm0, S, Dn50_core, Dn50_expected"),
     (
-        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 2.0, 0.639]),
-        ([2.0, 0.4, 2650, 3000, 6.0, 2.0, 2.0, 0.783]),
-        ([3.0, 0.5, 2650, 3000, 6.0, 2.0, 2.0, 0.614]),
-        ([3.0, 0.4, 2850, 3000, 6.0, 2.0, 2.0, 0.569]),
-        ([3.0, 0.4, 2650, 6000, 6.0, 2.0, 2.0, 0.685]),
-        ([3.0, 0.4, 2650, 3000, 14.0, 2.0, 2.0, 0.766]),
-        ([3.0, 0.4, 2650, 3000, 6.0, 2.5, 2.0, 0.755]),
-        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 3.0, 0.589]),
-        ([4.0, 0.4, 2650, 3000, 6.0, 2.0, 2.0, 0.553]),
-        ([4.0, 0.4, 2650, 3000, 14.0, 2.0, 2.0, 0.845]),
+        ([3.0, 2650, 3000, 6.0, 2.0, 2.0, 0.2, 0.204]),
+        ([2.0, 2650, 3000, 6.0, 2.0, 2.0, 0.2, 0.275]),
+        ([3.0, 2850, 3000, 6.0, 2.0, 2.0, 0.2, 0.160]),
+        ([3.0, 2650, 6000, 6.0, 2.0, 2.0, 0.2, 0.233]),
+        ([3.0, 2650, 3000, 14.0, 2.0, 2.0, 0.2, 0.171]),
+        ([3.0, 2650, 3000, 6.0, 2.5, 2.0, 0.2, 0.311]),
+        ([3.0, 2650, 3000, 6.0, 2.0, 3.0, 0.2, 0.173]),
+        ([4.0, 2650, 3000, 6.0, 2.0, 2.0, 0.2, 0.160]),
+        ([4.0, 2650, 3000, 14.0, 2.0, 2.0, 0.2, 0.131]),
+        ([3.0, 2650, 3000, 6.0, 2.0, 2.0, 0.15, 0.254]),
     ),
 )
 def test_Dn50_backward(
     cot_alpha,
-    P,
     rho_armour,
     N_waves,
     Tmm10,
     Hm0,
     S,
+    Dn50_core,
     Dn50_expected,
 ):
     Dn50_calculated = scaravaglione2025.calculate_nominal_rock_diameter_Dn50(
@@ -74,10 +72,9 @@ def test_Dn50_backward(
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
         rho_core=rho_armour,
-        P=P,
         N_waves=N_waves,
         S=S,
-        M50_core=250.0,
+        Dn50_core=Dn50_core,
     )
 
     assert Dn50_calculated == pytest.approx(Dn50_expected, abs=1e-2)
@@ -123,27 +120,28 @@ def test_Dn50_backward(
 
 
 @pytest.mark.parametrize(
-    ("cot_alpha, P, rho_armour, N_waves, Tmm10, Hm0, S"),
+    ("cot_alpha, rho_armour, N_waves, Tmm10, Hm0, S, Dn50_core"),
     (
-        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 2.0]),
-        ([2.0, 0.4, 2650, 3000, 6.0, 2.0, 2.0]),
-        ([3.0, 0.5, 2650, 3000, 6.0, 2.0, 2.0]),
-        ([3.0, 0.4, 2850, 3000, 6.0, 2.0, 2.0]),
-        ([3.0, 0.4, 2650, 6000, 6.0, 2.0, 2.0]),
-        ([3.0, 0.4, 2650, 3000, 14.0, 2.0, 2.0]),
-        ([3.0, 0.4, 2650, 3000, 6.0, 2.5, 2.0]),
-        ([3.0, 0.4, 2650, 3000, 6.0, 2.0, 3.0]),
-        ([3.6, 0.4, 2650, 3000, 14.0, 2.0, 2.0]),
+        ([3.0, 2650, 3000, 6.0, 2.0, 2.0, 0.2]),
+        ([2.0, 2650, 3000, 6.0, 2.0, 2.0, 0.2]),
+        ([3.0, 2650, 3000, 6.0, 2.0, 2.0, 0.2]),
+        ([3.0, 2850, 3000, 6.0, 2.0, 2.0, 0.2]),
+        ([3.0, 2650, 6000, 6.0, 2.0, 2.0, 0.2]),
+        ([3.0, 2650, 3000, 14.0, 2.0, 2.0, 0.2]),
+        ([3.0, 2650, 3000, 6.0, 2.5, 2.0, 0.2]),
+        ([3.0, 2650, 3000, 6.0, 2.0, 3.0, 0.2]),
+        ([3.6, 2650, 3000, 14.0, 2.0, 2.0, 0.2]),
+        ([3.6, 2650, 3000, 14.0, 2.0, 2.0, 0.15]),
     ),
 )
 def test_internal_consistency_S_Dn50(
     cot_alpha,
-    P,
     rho_armour,
     N_waves,
     Tmm10,
     Hm0,
     S,
+    Dn50_core,
 ):
     Dn50_calculated = scaravaglione2025.calculate_nominal_rock_diameter_Dn50(
         Hm0=Hm0,
@@ -151,10 +149,9 @@ def test_internal_consistency_S_Dn50(
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
         rho_core=rho_armour,
-        P=P,
         N_waves=N_waves,
         S=S,
-        Dn50_core=0.2,
+        Dn50_core=Dn50_core,
     )
 
     S_calculated = scaravaglione2025.calculate_damage_number_S(
@@ -163,10 +160,9 @@ def test_internal_consistency_S_Dn50(
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
         rho_core=rho_armour,
-        P=P,
         N_waves=N_waves,
         Dn50=Dn50_calculated,
-        Dn50_core=0.2,
+        Dn50_core=Dn50_core,
     )
 
     assert S_calculated == pytest.approx(S, abs=1e-2)
