@@ -134,6 +134,41 @@ def calculate_damage_number_S(
     M50_core: float | npt.NDArray[np.float64] = np.nan,
     c_VGnew: float = 3.3,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the damage number S for rock armour layers in shallow water with
+    the Scaravaglione et al. (2025) formula.
+
+    For more details see Scaravaglione et al. (2025), available here https://doi.org/10.1016/j.coastaleng.2024.104657
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Significant spectral wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    N_waves : float | npt.NDArray[np.float64]
+        Number of waves (-)
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    rho_armour : float | npt.NDArray[np.float64]
+        Armour rock density (kg/m^3)
+    rho_core : float | npt.NDArray[np.float64]
+        Core rock density (kg/m^3)
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal (armour) rock diameter (m), by default np.nan
+    Dn50_core : float | npt.NDArray[np.float64], optional
+        Nominal core rock diameter (m), by default np.nan
+    M50 : float | npt.NDArray[np.float64], optional
+        Median (armour) rock mass (kg), by default np.nan
+    M50_core : float | npt.NDArray[np.float64], optional
+        Median core rock mass (kg), by default np.nan
+    c_VGnew : float, optional
+        Coefficient (-), by default 3.3
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The damage number S (-)
+    """
 
     Dn50 = core_physics.check_usage_Dn50_or_M50(
         Dn50=Dn50, M50=M50, rho_armour=rho_armour
@@ -182,6 +217,39 @@ def calculate_nominal_rock_diameter_Dn50(
     M50_core: float | npt.NDArray[np.float64] = np.nan,
     c_VGnew: float = 3.3,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the nominal rock diameter Dn50 for rock armour layers in shallow water
+    with the Scaravaglione et al. (2025) formula.
+
+    For more details see Scaravaglione et al. (2025), available here https://doi.org/10.1016/j.coastaleng.2024.104657
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Significant spectral wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    N_waves : float | npt.NDArray[np.float64]
+        Number of waves (-)
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    rho_armour : float | npt.NDArray[np.float64]
+        Armour rock density (kg/m^3)
+    rho_core : float | npt.NDArray[np.float64]
+        Core rock density (kg/m^3)
+    S : float | npt.NDArray[np.float64]
+        Damage number (-)
+    Dn50_core : float | npt.NDArray[np.float64], optional
+        Nominal core rock diameter (m), by default np.nan
+    M50_core : float | npt.NDArray[np.float64], optional
+        Median core rock mass (kg), by default np.nan
+    c_VGnew : float, optional
+        Coefficient (-), by default 3.3
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The nominal rock diameter Dn50 (m)
+    """
 
     Dn50_core = core_physics.check_usage_Dn50_or_M50(
         Dn50=Dn50_core, M50=M50_core, rho_armour=rho_core
@@ -223,6 +291,43 @@ def calculate_significant_wave_height_Hm0(
     c_VGnew: float = 3.3,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the maximum significant spectral wave height Hm0 for rock armour
+    layers in shallow water with the Scaravaglione et al. (2025) formula.
+
+    For more details see Scaravaglione et al. (2025), available here https://doi.org/10.1016/j.coastaleng.2024.104657
+
+    Parameters
+    ----------
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    N_waves : float | npt.NDArray[np.float64]
+        Number of waves (-)
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    rho_armour : float | npt.NDArray[np.float64]
+        Armour rock density (kg/m^3)
+    rho_core : float | npt.NDArray[np.float64]
+        Core rock density (kg/m^3)
+    S : float | npt.NDArray[np.float64]
+        Damage number (-)
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal (armour) rock diameter (m), by default np.nan
+    Dn50_core : float | npt.NDArray[np.float64], optional
+        Nominal core rock diameter (m), by default np.nan
+    M50 : float | npt.NDArray[np.float64], optional
+        Median (armour) rock mass (kg), by default np.nan
+    M50_core : float | npt.NDArray[np.float64], optional
+        Median core rock mass (kg), by default np.nan
+    c_VGnew : float, optional
+        Coefficient (-), by default 3.3
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The significant spectral wave height Hm0 (m)
+    """
 
     Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_armour)
 
