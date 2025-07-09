@@ -30,7 +30,6 @@ def test_S_backward(
 ):
     S_calculated = vandermeer2021.calculate_damage_number_S(
         Hs=Hs,
-        H2p=Hs,
         Tmm10=Tmm10,
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
@@ -69,7 +68,6 @@ def test_Dn50_backward(
 ):
     Dn50_calculated = vandermeer2021.calculate_nominal_rock_diameter_Dn50(
         Hs=Hs,
-        H2p=Hs,
         Tmm10=Tmm10,
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
@@ -144,7 +142,6 @@ def test_internal_consistency_S_Dn50(
 ):
     Dn50_calculated = vandermeer2021.calculate_nominal_rock_diameter_Dn50(
         Hs=Hs,
-        H2p=Hs,
         Tmm10=Tmm10,
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
@@ -155,7 +152,6 @@ def test_internal_consistency_S_Dn50(
 
     S_calculated = vandermeer2021.calculate_damage_number_S(
         Hs=Hs,
-        H2p=Hs,
         Tmm10=Tmm10,
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
@@ -192,7 +188,6 @@ def test_internal_consistency_Hs_Dn50(
 ):
     Dn50_calculated = vandermeer2021.calculate_nominal_rock_diameter_Dn50(
         Hs=Hs,
-        H2p=Hs,
         Tmm10=Tmm10,
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
@@ -239,7 +234,6 @@ def test_internal_consistency_S_Hs(
 ):
     S_calculated = vandermeer2021.calculate_damage_number_S(
         Hs=Hs,
-        H2p=Hs,
         Tmm10=Tmm10,
         cot_alpha=cot_alpha,
         rho_armour=rho_armour,
