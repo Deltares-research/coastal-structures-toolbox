@@ -1,6 +1,6 @@
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988 as vandermeer1988
+import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988 as vdm
 
 
 @pytest.mark.parametrize(
@@ -29,7 +29,7 @@ def test_S_backward(
     c_pl,
     S_expected,
 ):
-    S_calculated = vandermeer1988.calculate_damage_number_S(
+    S_calculated = vdm.calculate_damage_number_S(
         Hs=Hs,
         H2p=1.4 * Hs,
         Tm=Tm,
@@ -70,7 +70,7 @@ def test_Dn50_backward(
     c_pl,
     Dn50_expected,
 ):
-    Dn50_calculated = vandermeer1988.calculate_nominal_rock_diameter_Dn50(
+    Dn50_calculated = vdm.calculate_nominal_rock_diameter_Dn50(
         Hs=Hs,
         H2p=1.4 * Hs,
         Tm=Tm,
@@ -111,7 +111,7 @@ def test_Hs_backward(
     c_pl,
     Hs_expected,
 ):
-    Hs_calculated = vandermeer1988.calculate_significant_wave_height_Hs(
+    Hs_calculated = vdm.calculate_significant_wave_height_Hs(
         ratio_H2p_Hs=1.4,
         Tm=Tm,
         cot_alpha=cot_alpha,
@@ -151,7 +151,7 @@ def test_internal_consistency_S_Dn50(
     S,
     c_pl,
 ):
-    Dn50_calculated = vandermeer1988.calculate_nominal_rock_diameter_Dn50(
+    Dn50_calculated = vdm.calculate_nominal_rock_diameter_Dn50(
         Hs=Hs,
         H2p=1.4 * Hs,
         Tm=Tm,
@@ -163,7 +163,7 @@ def test_internal_consistency_S_Dn50(
         c_pl=c_pl,
     )
 
-    S_calculated = vandermeer1988.calculate_damage_number_S(
+    S_calculated = vdm.calculate_damage_number_S(
         Hs=Hs,
         H2p=1.4 * Hs,
         Tm=Tm,
@@ -203,7 +203,7 @@ def test_internal_consistency_Hs_Dn50(
     S,
     c_pl,
 ):
-    Dn50_calculated = vandermeer1988.calculate_nominal_rock_diameter_Dn50(
+    Dn50_calculated = vdm.calculate_nominal_rock_diameter_Dn50(
         Hs=Hs,
         H2p=1.4 * Hs,
         Tm=Tm,
@@ -215,7 +215,7 @@ def test_internal_consistency_Hs_Dn50(
         c_pl=c_pl,
     )
 
-    Hs_calculated = vandermeer1988.calculate_significant_wave_height_Hs(
+    Hs_calculated = vdm.calculate_significant_wave_height_Hs(
         ratio_H2p_Hs=1.4,
         Tm=Tm,
         cot_alpha=cot_alpha,
@@ -255,7 +255,7 @@ def test_internal_consistency_S_Hs(
     M50,
     c_pl,
 ):
-    S_calculated = vandermeer1988.calculate_damage_number_S(
+    S_calculated = vdm.calculate_damage_number_S(
         Hs=Hs,
         H2p=1.4 * Hs,
         Tm=Tm,
@@ -267,7 +267,7 @@ def test_internal_consistency_S_Hs(
         c_pl=c_pl,
     )
 
-    Hs_calculated = vandermeer1988.calculate_significant_wave_height_Hs(
+    Hs_calculated = vdm.calculate_significant_wave_height_Hs(
         ratio_H2p_Hs=1.4,
         Tm=Tm,
         cot_alpha=cot_alpha,
