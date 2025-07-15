@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.tetrapods_hudson1959 as tetrapods
+import deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.tetrapod_hudson1959 as tetrapods
 
 
 @pytest.mark.parametrize(
