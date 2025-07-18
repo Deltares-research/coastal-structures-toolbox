@@ -274,8 +274,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     )
 
     q_diml_eq510 = (
-        c4
-        / np.sqrt(1.0 / cot_alpha)
+        (c4 / np.sqrt(1.0 / cot_alpha))
         * ksi_mm10
         * gamma_b
         * np.exp(
