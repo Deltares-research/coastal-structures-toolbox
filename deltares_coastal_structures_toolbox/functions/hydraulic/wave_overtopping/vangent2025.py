@@ -311,9 +311,10 @@ def calculate_dimensionless_overtopping_discharge_q(
     )
 
     if np.isnan(gamma_b):
+        smm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
         gamma_b = calculate_influence_berm_gamma_b(
             Hm0=Hm0,
-            smm10=ksi_mm10,
+            smm10=smm10,
             Ac=Ac,
             B_berm=B_berm,
             BL=Ac - db,
@@ -322,7 +323,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     if np.isnan(gamma_f):
         if np.isnan(Dn50):
             raise ValueError("Either gamma_f or Dn50 should be provided")
-        smm10 = core_physics.calculate_wave_steepness_s(Hm0, Tmm10)
+        smm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
         gamma_f = calculate_influence_friction_gamma_f(Dn50=Dn50, Hm0=Hm0, smm10=smm10)
 
     q_diml_eqB1 = (
@@ -864,9 +865,10 @@ def calculate_dimensionless_crest_freeboard(
     )
 
     if np.isnan(gamma_b):
+        smm10 = core_physics.calculate_wave_steepness_s(Hm0, Tmm10)
         gamma_b = calculate_influence_berm_gamma_b(
             Hm0=Hm0,
-            smm10=ksi_mm10,
+            smm10=smm10,
             Ac=Ac,
             B_berm=B_berm,
             BL=Ac - db,
@@ -887,7 +889,7 @@ def calculate_dimensionless_crest_freeboard(
         * gamma_v
         * gamma_beta
         * ksi_mm10
-        - 0.4 * Hm0_swell / Hm0
+        + 0.4 * Hm0_swell / Hm0
     )
 
     Rc_diml_max = Rc_diml_max_equation(
@@ -988,7 +990,7 @@ def Rc_diml_max_equation(
         * gamma_v
         * gamma_beta
         * np.power(ksi_mm10, 0.24)
-        - 0.4 * Hm0_swell / Hm0
+        + 0.4 * Hm0_swell / Hm0
     )
 
     return Rc_diml_max
