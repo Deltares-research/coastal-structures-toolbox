@@ -20,6 +20,7 @@ def check_validity_range(
     gamma_v: float | npt.NDArray[np.float64] = np.nan,
 ) -> None:
 
+    # TODO adjust validity ranges to based on the paper
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(Hm0, Tmm10)
         core_utility.check_variable_validity_range(
@@ -125,48 +126,49 @@ def calculate_overtopping_discharge_q(
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     Hm0_swell : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m)
     Tmm10 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral wave period Tm-1,0 (s)
     Rc : float | npt.NDArray[np.float64]
-        _description_
+        Crest freeboard of the structure (m)
     Ac : float | npt.NDArray[np.float64]
-        _description_
+        Armour crest freeboard of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the front-side slope of the structure (-), by default np.nan
     cot_alpha_down : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
     cot_alpha_up : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Angle of wave incidence (degrees), by default np.nan
     B_berm : float | npt.NDArray[np.float64], optional
-        _description_, by default 0.0
+        Berm width of the structure (m), by default 0.0
     db : float | npt.NDArray[np.float64], optional
-        _description_, by default 0.0
+        Berm height of the structure (m), by default 0.0
     Dn50 : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Nominal rock diameter (m), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for surface roughness (-), by default np.nan
     gamma_b : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for a berm (-), by default np.nan
     gamma_v : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for a crest wall (-), by default np.nan
     gamma_beta : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for oblique wave incidence (-), by default np.nan
     g : float, optional
-        _description_, by default 9.81
+        Gravitational constant (m/s^2), by default 9.81
     design_calculation : bool, optional
-        _description_, by default True
+        Use the 95% confidence level for design calculations, by default True
     include_influence_wind : bool, optional
-        _description_, by default False
+        Include influence of wind on wave overtopping, by default False
 
     Returns
     -------
     tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
-        _description_
+        Mean wave overtopping discharge q (m^3/s/m) and a boolean indicating
+        whether the maximum value formula was used
     """
 
     q_diml, max_reached = calculate_dimensionless_overtopping_discharge_q(
@@ -223,51 +225,52 @@ def calculate_dimensionless_overtopping_discharge_q(
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     Hm0_swell : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m)
     Tmm10 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral wave period Tm-1,0 (s)
     Rc : float | npt.NDArray[np.float64]
-        _description_
+        Crest freeboard of the structure (m)
     Ac : float | npt.NDArray[np.float64]
-        _description_
+        Armour crest freeboard of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the front-side slope of the structure (-), by default np.nan
     cot_alpha_down : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
     cot_alpha_up : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Angle of wave incidence (degrees), by default np.nan
     B_berm : float | npt.NDArray[np.float64], optional
-        _description_, by default 0.0
+        Berm width of the structure (m), by default 0.0
     db : float | npt.NDArray[np.float64], optional
-        _description_, by default 0.0
+        Berm height of the structure (m), by default 0.0
     Dn50 : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Nominal rock diameter (m), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for surface roughness (-), by default np.nan
     gamma_b : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for a berm (-), by default np.nan
     gamma_v : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for a crest wall (-), by default np.nan
     gamma_beta : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for oblique wave incidence (-), by default np.nan
     design_calculation : bool, optional
-        _description_, by default True
+        Use the 95% confidence level for design calculations, by default True
     include_influence_wind : bool, optional
-        _description_, by default False
+        Include influence of wind on wave overtopping, by default False
 
     Returns
     -------
     tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
-        _description_
+        Dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-)
+        and a boolean indicating whether the maximum value formula was used
 
     Raises
     ------
     ValueError
-        _description_
+        Raise an error if gamma_f is not provided and Dn50 is not provided so it cannot be calculated.
     """
 
     if np.isnan(gamma_beta):
@@ -383,7 +386,7 @@ def q_diml_max_equation(
     gamma_beta: float | npt.NDArray[np.float64],
     c2: float = 0.8,
     c3: float = -2.5,
-):
+) -> float | npt.NDArray[np.float64]:
     """_summary_
 
     _extended_summary_
@@ -393,32 +396,32 @@ def q_diml_max_equation(
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     Hm0_swell : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m)
     ksi_mm10 : float | npt.NDArray[np.float64]
-        _description_
+        The Irribarren number based on the spectral wave period Tm-1,0 (-)
     cot_alpha : float | npt.NDArray[np.float64]
-        _description_
+        Cotangent of the front-side slope of the structure (-)
     Rc : float | npt.NDArray[np.float64]
-        _description_
+        Crest freeboard of the structure (m)
     gamma_f : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for surface roughness (-)
     gamma_b : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for a berm (-)
     gamma_v : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for a crest wall (-)
     gamma_beta : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for oblique wave incidence (-)
     c2 : float, optional
-        _description_, by default 0.8
+        Coefficient in wave overtopping formula (-), by default 0.8
     c3 : float, optional
-        _description_, by default -2.5
+        Coefficient in wave overtopping formula (-), by default -2.5
 
     Returns
     -------
-    _type_
-        _description_
+    float | npt.NDArray[np.float64]
+        Maximum value of the dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-)
     """
 
     q_diml_max = (
@@ -448,7 +451,7 @@ def calculate_influence_friction_gamma_f(
     c_f1: float = 0.70,
     c_f2: float = 0.05,  # TODO Check whether this should be 0.05 or 0.1, conflicting values in the paper
     smm10_lim: float = 0.012,
-):
+) -> float | npt.NDArray[np.float64]:
     """_summary_
 
     _extended_summary_
@@ -458,22 +461,22 @@ def calculate_influence_friction_gamma_f(
     Parameters
     ----------
     Dn50 : float | npt.NDArray[np.float64]
-        _description_
+        Nominal rock diameter (m)
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     smm10 : float | npt.NDArray[np.float64]
-        _description_
+        Deep water wave steepness based on the spectral wave period Tm-1,0 (-)
     c_f1 : float, optional
-        _description_, by default 0.70
+        Coefficient in the gamma_f formula, by default 0.70
     c_f2 : float, optional
-        _description_, by default 0.05
-    conflictingvaluesinthepapersmm10_lim : float, optional
-        _description_, by default 0.012
+        Coefficient in the gamma_f formula, by default 0.05
+    smm10_lim : float, optional
+        Limit for the deep water wave steepness (-), by default 0.012
 
     Returns
     -------
-    _type_
-        _description_
+    float | npt.NDArray[np.float64]
+        The influence factor for surface roughness gamma_f (-)
     """
 
     gamma_f1 = 1.0 - c_f1 * np.power(Dn50 / Hm0, c_f2)
@@ -496,7 +499,7 @@ def calculate_influence_berm_gamma_b(
     c_b2: float = 1.3,
     c_b3: float = 0.34,
     c_b4: float = 0.2,
-):
+) -> float | npt.NDArray[np.float64]:
     """_summary_
 
     _extended_summary_
@@ -506,20 +509,28 @@ def calculate_influence_berm_gamma_b(
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     smm10 : float | npt.NDArray[np.float64]
-        _description_
+        The deep water wave steepness based on the spectral wave period Tm-1,0 (-)
     Ac : float | npt.NDArray[np.float64]
-        _description_
+        Armour crest freeboard of the structure (m)
     B_berm : float | npt.NDArray[np.float64]
-        _description_
+        Berm width of the structure (m)
     BL : float | npt.NDArray[np.float64]
-        _description_
+        Vertical distance of the berm relative to the crest of the armour Ac (m)
+    c_b1 : float, optional
+        Coefficient in the gamma_b formula, by default 18.0
+    c_b2 : float, optional
+        Coefficient in the gamma_b formula, by default 1.3
+    c_b3 : float, optional
+        Coefficient in the gamma_b formula, by default 0.34
+    c_b4 : float, optional
+        Coefficient in the gamma_b formula, by default 0.2
 
     Returns
     -------
-    _type_
-        _description_
+    float | npt.NDArray[np.float64]
+        The influence factor for a berm gamma_b (-)
     """
 
     gamma_b = 1.0 - c_b1 * np.power(smm10 * B_berm / Hm0, c_b2) * (
@@ -542,14 +553,14 @@ def calculate_influence_oblique_waves_gamma_beta(
     Parameters
     ----------
     beta : float | npt.NDArray[np.float64]
-        _description_
+        Angle of wave incidence (degrees)
     c_beta : float, optional
-        _description_, by default 0.35
+        Coefficient in the gamma_beta formula, by default 0.35
 
     Returns
     -------
     float | npt.NDArray[np.float64]
-        _description_
+        The influence factor for oblique wave incidence gamma_beta (-)
     """
 
     gamma_beta = (1 - c_beta) * np.power(np.cos(np.radians(beta)), 2) + c_beta
@@ -572,18 +583,18 @@ def calculate_influence_wave_wall_gamma_v(
     Parameters
     ----------
     cot_alpha : float | npt.NDArray[np.float64]
-        _description_
+        Cotangent of the front-side slope of the structure (-)
     Rc : float | npt.NDArray[np.float64]
-        _description_
+        Crest freeboard of the structure (m)
     Ac : float | npt.NDArray[np.float64]
-        _description_
+        Armour crest freeboard of the structure (m)
     c_v : float, optional
-        _description_, by default 0.45
+        Coefficient in the gamma_v formula, by default 0.45
 
     Returns
     -------
     float | npt.NDArray[np.float64]
-        _description_
+        The influence factor for a crest wall gamma_v (-)
     """
 
     gamma_v = np.where(
@@ -602,7 +613,7 @@ def calculate_influence_wind_gamma_w(
     q_diml: float | npt.NDArray[np.float64],
     c_w1: float = 0.075,
     c_w2: float = -0.3,
-):
+) -> float | npt.NDArray[np.float64]:
     """_summary_
 
     _extended_summary_
@@ -612,16 +623,16 @@ def calculate_influence_wind_gamma_w(
     Parameters
     ----------
     hc : float | npt.NDArray[np.float64]
-        _description_
+        protruding part of a crest wall, hc = Rc - Ac (m)
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     q_diml : float | npt.NDArray[np.float64]
-        _description_
+        Dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-)
 
     Returns
     -------
-    _type_
-        _description_
+    float | npt.NDArray[np.float64]
+        The influence factor for wind gamma_w (-)
     """
 
     hc = Rc - Ac
@@ -657,46 +668,47 @@ def calculate_crest_freeboard_Rc(
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     Hm0_swell : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m)
     Tmm10 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral wave period Tm-1,0 (s)
     q : float | npt.NDArray[np.float64]
-        _description_
+        Mean wave overtopping discharge (m^3/s/m)
     Ac : float | npt.NDArray[np.float64]
-        _description_
+        Armour crest freeboard of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the front-side slope of the structure (-), by default np.nan
     cot_alpha_down : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
     cot_alpha_up : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Angle of wave incidence (degrees), by default np.nan
     B_berm : float | npt.NDArray[np.float64], optional
-        _description_, by default 0.0
+        Berm width of the structure (m), by default 0.0
     db : float | npt.NDArray[np.float64], optional
-        _description_, by default 0.0
+        Berm height of the structure (m), by default 0.0
     Dn50 : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Nominal rock diameter (m), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for surface roughness (-), by default np.nan
     gamma_b : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for a berm (-), by default np.nan
     gamma_v : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for a crest wall (-), by default np.nan
     gamma_beta : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for oblique wave incidence (-), by default np.nan
     design_calculation : bool, optional
-        _description_, by default True
+        Use the 95% confidence level for design calculations, by default True
     include_influence_wind : bool, optional
-        _description_, by default False
+        Include influence of wind on wave overtopping, by default False
 
     Returns
     -------
     tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
-        _description_
+        The crest freeboard of the structure Rc (m) and a boolean indicating
+        whether the maximum value formula was used
     """
 
     Rc_diml, max_reached = calculate_dimensionless_crest_freeboard(
@@ -753,53 +765,54 @@ def calculate_dimensionless_crest_freeboard(
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     Hm0_swell : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m)
     Tmm10 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral wave period Tm-1,0 (s)
     q : float | npt.NDArray[np.float64]
-        _description_
+        Mean wave overtopping discharge (m^3/s/m)
     Ac : float | npt.NDArray[np.float64]
-        _description_
+        Armour crest freeboard of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the front-side slope of the structure (-), by default np.nan
     cot_alpha_down : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
     cot_alpha_up : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Angle of wave incidence (degrees), by default np.nan
     B_berm : float | npt.NDArray[np.float64], optional
-        _description_, by default 0.0
+        Berm width of the structure (m), by default 0.0
     db : float | npt.NDArray[np.float64], optional
-        _description_, by default 0.0
+        Berm height of the structure (m), by default 0.0
     Dn50 : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Nominal rock diameter (m), by default np.nan
     gamma_f : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for surface roughness (-), by default np.nan
     gamma_b : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for a berm (-), by default np.nan
     gamma_v : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for a crest wall (-), by default np.nan
     gamma_beta : float | npt.NDArray[np.float64], optional
-        _description_, by default np.nan
+        Influence factor for oblique wave incidence (-), by default np.nan
     g : float, optional
-        _description_, by default 9.81
+        Gravitational constant (m/s^2), by default 9.81
     design_calculation : bool, optional
-        _description_, by default True
+        Use the 95% confidence level for design calculations, by default True
     include_influence_wind : bool, optional
-        _description_, by default False
+        Include influence of wind on wave overtopping, by default False
 
     Returns
     -------
     tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
-        _description_
+        The dimensionless crest freeboard of the structure Rc/Hm0 (-) and a boolean indicating
+        whether the maximum value formula was used
 
     Raises
     ------
     ValueError
-        _description_
+        Raise an error if gamma_f is not provided and Dn50 is not provided so it cannot be calculated.
     """
 
     if np.isnan(gamma_beta):
@@ -910,7 +923,7 @@ def Rc_diml_max_equation(
     c2: float = 0.8,
     c3: float = -2.5,
     g: float = 9.81,
-):
+) -> float | npt.NDArray[np.float64]:
     """_summary_
 
     _extended_summary_
@@ -918,34 +931,34 @@ def Rc_diml_max_equation(
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     Hm0_swell : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m)
     q : float | npt.NDArray[np.float64]
-        _description_
+        Mean wave overtopping discharge (m^3/s/m)
     cot_alpha : float | npt.NDArray[np.float64]
-        _description_
+        Cotangent of the front-side slope of the structure (-)
     ksi_mm10 : float | npt.NDArray[np.float64]
         _description_
     gamma_f : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for surface roughness (-)
     gamma_b : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for a berm (-)
     gamma_v : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for a crest wall (-)
     gamma_beta : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for oblique wave incidence (-)
     c2 : float, optional
         _description_, by default 0.8
     c3 : float, optional
         _description_, by default -2.5
     g : float, optional
-        _description_, by default 9.81
+        Gravitational constant (m/s^2), by default 9.81
 
     Returns
     -------
-    _type_
-        _description_
+    float | npt.NDArray[np.float64]
+        The maximum value of the dimensionless crest freeboard of the structure Rc/Hm0 (-)
     """
 
     Rc_diml_max = (
