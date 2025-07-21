@@ -119,9 +119,12 @@ def calculate_overtopping_discharge_q(
     design_calculation: bool = True,
     include_influence_wind: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
-    """_summary_
+    """Calculate the mean wave overtopping discharge q with the Van Gent (2025) formula.
 
-    _extended_summary_
+    The mean wave overtopping discharge q (m^3/s/m) is calculated using the Van Gent (2025) formula.
+    Here, eq. B1 from Van Gent (2025) is implemented.
+
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -216,11 +219,12 @@ def calculate_dimensionless_overtopping_discharge_q(
     design_calculation: bool = True,
     include_influence_wind: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
-    """_summary_
+    """Calculate the dimensionless mean wave overtopping discharge q with the Van Gent (2025) formula.
 
-    _extended_summary_
+    The dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-) is calculated using the
+    Van Gent (2025) formula. Here, eq. B1 from Van Gent (2025) is implemented.
 
-    Eq. B1
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -272,6 +276,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     ValueError
         Raise an error if gamma_f is not provided and Dn50 is not provided so it cannot be calculated.
     """
+    # TODO include DOI when available
 
     if np.isnan(gamma_beta):
         gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta=beta)
@@ -387,11 +392,12 @@ def q_diml_max_equation(
     c2: float = 0.8,
     c3: float = -2.5,
 ) -> float | npt.NDArray[np.float64]:
-    """_summary_
+    """Calculate the maximum dimensionless mean wave overtopping discharge q with the Van Gent (2025) formula.
 
-    _extended_summary_
+    The maximum value for the dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-) is calculated
+    using the Van Gent (2025) formula. Here, eq. B2 from Van Gent (2025) is implemented.
 
-    Eq. B2
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -452,11 +458,12 @@ def calculate_influence_friction_gamma_f(
     c_f2: float = 0.05,  # TODO Check whether this should be 0.05 or 0.1, conflicting values in the paper
     smm10_lim: float = 0.012,
 ) -> float | npt.NDArray[np.float64]:
-    """_summary_
+    """Calculate influence factor for surface roughness gamma_f
 
-    _extended_summary_
+    The influence factor gamma_f is determined using Van Gent (2025) eq. B3a for sm-1,0 >= smm10__lim
+     (0.012 by default) and eq. B3b for sm-1,0 < smm10__lim.
 
-    Eqs. B3a and B3b
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -500,11 +507,11 @@ def calculate_influence_berm_gamma_b(
     c_b3: float = 0.34,
     c_b4: float = 0.2,
 ) -> float | npt.NDArray[np.float64]:
-    """_summary_
+    """Calculate influence factor for a berm gamma_b
 
-    _extended_summary_
+    The influence factor gamma_b is determined using Van Gent (2025) eq. B4.
 
-    Eq. B4
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -544,11 +551,11 @@ def calculate_influence_oblique_waves_gamma_beta(
     beta: float | npt.NDArray[np.float64],
     c_beta: float = 0.35,
 ) -> float | npt.NDArray[np.float64]:
-    """_summary_
+    """Calculate the influence factor for oblique wave incidence gamma_beta
 
-    _extended_summary_
+    The influence factor gamma_beta is determined using Van Gent (2025) eq. B6
 
-    Eq. B6
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -563,22 +570,25 @@ def calculate_influence_oblique_waves_gamma_beta(
         The influence factor for oblique wave incidence gamma_beta (-)
     """
 
+    # TODO check with Marcel: what to do for Hm0-deep/htoe >= 1.0?
+
     gamma_beta = (1 - c_beta) * np.power(np.cos(np.radians(beta)), 2) + c_beta
 
     return gamma_beta
 
 
-def calculate_influence_wave_wall_gamma_v(
+def calculate_influence_crest_wall_gamma_v(
     cot_alpha: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
     Ac: float | npt.NDArray[np.float64],
     c_v: float = 0.45,
 ) -> float | npt.NDArray[np.float64]:
-    """_summary_
+    """Calculate the influence factor for a crest wall gamma_v
 
-    _extended_summary_
+    The influence factor gamma_v is determined using Van Gent (2025) eq. B5a for cot_alpha <= 4.0
+    and B5b for cot_alpha > 4.0.
 
-    Eqs. B5a and B5b
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -614,11 +624,11 @@ def calculate_influence_wind_gamma_w(
     c_w1: float = 0.075,
     c_w2: float = -0.3,
 ) -> float | npt.NDArray[np.float64]:
-    """_summary_
+    """Calculate the influence factor for wind gamma_w
 
-    _extended_summary_
+    The influence factor gamma_w is determined using Van Gent (2025) eq. B7
 
-    Eq. B7
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -661,9 +671,12 @@ def calculate_crest_freeboard_Rc(
     design_calculation: bool = True,
     include_influence_wind: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
-    """_summary_
+    """Calculate the crest freeboard Rc with the Van Gent (2025) formula.
 
-    _extended_summary_
+    The crest freeboard Rc (m) is calculated using the Van Gent (2025) formula.
+    Here, eq. B1 from Van Gent (2025) is implemented.
+
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -758,9 +771,12 @@ def calculate_dimensionless_crest_freeboard(
     design_calculation: bool = True,
     include_influence_wind: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
-    """_summary_
+    """Calculate the dimensionless crest freeboard Rc/Hm0 with the Van Gent (2025) formula.
 
-    _extended_summary_
+    The dimensionless crest freeboard Rc/Hm0 (-) is calculated using the Van Gent (2025) formula.
+    Here, eq. B1 from Van Gent (2025) is implemented.
+
+    For more details, see: https://doi.org/????????????????????????
 
     Parameters
     ----------
@@ -924,10 +940,12 @@ def Rc_diml_max_equation(
     c3: float = -2.5,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
-    """_summary_
+    """Calculate the maximum dimensionless crest freeboard Rc/Hm0 with the Van Gent (2025) formula.
 
-    _extended_summary_
+    The maximum value for the dimensionless crest freeboard Rc/Hm0 (-) is calculated
+    using the Van Gent (2025) formula. Here, eq. B2 from Van Gent (2025) is implemented.
 
+    For more details, see: https://doi.org/????????????????????????
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
