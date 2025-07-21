@@ -446,7 +446,7 @@ def calculate_influence_oblique_waves_gamma_beta(
     return gamma_beta
 
 
-def calculate_influence_wave_wall_gamma_v(
+def calculate_influence_crest_wall_gamma_v(
     alpha_wall_deg: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the influence factor for crest walls gamma_v
