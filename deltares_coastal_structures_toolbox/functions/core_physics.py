@@ -28,7 +28,7 @@ def calculate_wave_steepness_s(
     Returns
     -------
     float | npt.NDArray[np.float64]
-        Deep water Wave steepness s (-)
+        Deep water wave steepness s (-)
     """
 
     s = (2 * np.pi / g) * H / np.power(T, 2)

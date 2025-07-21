@@ -480,7 +480,8 @@ def calculate_crest_freeboard_Rc(
     Returns
     -------
     tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
-        The crest freeboard of the structure Rc (m)
+        The crest freeboard of the structure Rc (m) and a boolean indicating
+        whether the maximum value formula was used
     """
 
     Rc_diml, max_reached = calculate_dimensionless_crest_freeboard(
@@ -590,7 +591,8 @@ def calculate_dimensionless_crest_freeboard(
     Returns
     -------
     tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]
-        The dimensionless crest freeboard of the structure Rc/Hm0 (-)
+        The dimensionless crest freeboard of the structure Rc/Hm0 (-) and a boolean indicating
+        whether the maximum value formula was used
     """
 
     c1, c2, c3, c4 = check_best_fit(
