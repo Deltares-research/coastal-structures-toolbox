@@ -21,6 +21,7 @@ def check_validity_range(
 ) -> None:
 
     # TODO adjust validity ranges to based on the paper
+    # TODO check of alleen ranges nodig zijn uit table 1, of is dat maar een deel van de data?
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(Hm0, Tmm10)
         core_utility.check_variable_validity_range(
