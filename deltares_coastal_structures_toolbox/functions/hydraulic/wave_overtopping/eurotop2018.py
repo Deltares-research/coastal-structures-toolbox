@@ -74,7 +74,7 @@ def calculate_overtopping_discharge_q(
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
-        Influence factor for a wave wall (-), by default 1.0
+        Influence factor for a crest wall (-), by default 1.0
     gamma_star : float | npt.NDArray[np.float64], optional
         _description_, by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional
@@ -182,7 +182,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
-        Influence factor for a wave wall (-), by default 1.0
+        Influence factor for a crest wall (-), by default 1.0
     gamma_star : float | npt.NDArray[np.float64], optional
         _description_, by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional
@@ -451,7 +451,7 @@ def calculate_crest_freeboard_Rc(
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
-        Influence factor for a wave wall (-), by default 1.0
+        Influence factor for a crest wall (-), by default 1.0
     gamma_star : float | npt.NDArray[np.float64], optional
         _description_, by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional
@@ -562,7 +562,7 @@ def calculate_dimensionless_crest_freeboard(
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
-        Influence factor for a wave wall (-), by default 1.0
+        Influence factor for a crest wall (-), by default 1.0
     gamma_star : float | npt.NDArray[np.float64], optional
         _description_, by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional

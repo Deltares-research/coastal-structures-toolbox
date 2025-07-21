@@ -38,7 +38,7 @@ def check_validity_range(
     gamma_beta : float | npt.NDArray[np.float64]
         Influence factor for oblique wave incidence (-), by default np.nan
     gamma_v : float | npt.NDArray[np.float64]
-        Influence factor for a wave wall (-), by default np.nan
+        Influence factor for a crest wall (-), by default np.nan
     cot_alpha : float | npt.NDArray[np.float64]
         Cotangent of the front-side slope of the structure (-), by default np.nan
     """

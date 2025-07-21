@@ -50,7 +50,7 @@ def check_validity_range(
     gamma_beta : float | npt.NDArray[np.float64], optional
         Influence factor for oblique wave incidence (-), by default np.nan
     gamma_v : float | npt.NDArray[np.float64], optional
-        Influence factor for a wave wall (-), by default np.nan
+        Influence factor for a crest wall (-), by default np.nan
     """
 
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
@@ -184,7 +184,7 @@ def calculate_overtopping_discharge_q(
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
-        Influence factor for a wave wall (-), by default 1.0
+        Influence factor for a crest wall (-), by default 1.0
     sigma : float | npt.NDArray[np.float64], optional
         Apply sigma standard deviations to the best fit coefficients, by default 0
     g : float, optional
@@ -274,7 +274,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
-        Influence factor for a wave wall (-), by default 1.0
+        Influence factor for a crest wall (-), by default 1.0
     sigma : float | npt.NDArray[np.float64], optional
         Apply sigma standard deviations to the best fit coefficients, by default 0
     use_best_fit : bool, optional
@@ -449,19 +449,19 @@ def calculate_influence_oblique_waves_gamma_beta(
 def calculate_influence_wave_wall_gamma_v(
     alpha_wall_deg: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the influence factor for wave walls gamma_v
+    """Calculate the influence factor for crest walls gamma_v
 
-    The influence factor for wave walls gamma_v (-) on wave overtopping is calculated using eq. 16 from TAW (2002).
+    The influence factor for crest walls gamma_v (-) on wave overtopping is calculated using eq. 16 from TAW (2002).
 
     Parameters
     ----------
     alpha_wall_deg : float | npt.NDArray[np.float64]
-        Slope of the (near) vertical wave wall (degrees)
+        Slope of the (near) vertical crest wall (degrees)
 
     Returns
     -------
     float | npt.NDArray[np.float64]
-        The influence factor for a wave wall gamma_v (-)
+        The influence factor for a crest wall gamma_v (-)
     """
 
     gamma_v = np.where(alpha_wall_deg <= 45, 1.0, 1.35 - 0.0078 * alpha_wall_deg)
@@ -523,7 +523,7 @@ def calculate_crest_freeboard_Rc(
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
-        Influence factor for a wave wall (-), by default 1.0
+        Influence factor for a crest wall (-), by default 1.0
     sigma : float | npt.NDArray[np.float64], optional
         Apply sigma standard deviations to the best fit coefficients, by default 0
     g : float, optional
@@ -615,7 +615,7 @@ def calculate_dimensionless_crest_freeboard(
     gamma_f : float | npt.NDArray[np.float64], optional
         Influence factor for surface roughness (-), by default 1.0
     gamma_v : float | npt.NDArray[np.float64], optional
-        Influence factor for a wave wall (-), by default 1.0
+        Influence factor for a crest wall (-), by default 1.0
     sigma : float | npt.NDArray[np.float64], optional
         Apply sigma standard deviations to the best fit coefficients, by default 0
     g : float, optional
