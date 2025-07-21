@@ -115,6 +115,8 @@ def calculate_overtopping_discharge_q(
     gamma_v: float | npt.NDArray[np.float64] = np.nan,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
     g: float = 9.81,
+    design_calculation: bool = True,
+    include_influence_wind: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """_summary_
 
@@ -156,6 +158,10 @@ def calculate_overtopping_discharge_q(
         _description_, by default np.nan
     g : float, optional
         _description_, by default 9.81
+    design_calculation : bool, optional
+        _description_, by default True
+    include_influence_wind : bool, optional
+        _description_, by default False
 
     Returns
     -------
@@ -180,6 +186,8 @@ def calculate_overtopping_discharge_q(
         gamma_b=gamma_b,
         gamma_v=gamma_v,
         gamma_beta=gamma_beta,
+        design_calculation=design_calculation,
+        include_influence_wind=include_influence_wind,
     )
     q = q_diml * np.sqrt(g * Hm0**3)
 
@@ -203,6 +211,8 @@ def calculate_dimensionless_overtopping_discharge_q(
     gamma_b: float | npt.NDArray[np.float64] = np.nan,
     gamma_v: float | npt.NDArray[np.float64] = np.nan,
     gamma_beta: float | npt.NDArray[np.float64] = np.nan,
+    design_calculation: bool = True,
+    include_influence_wind: bool = False,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """_summary_
 
@@ -244,6 +254,10 @@ def calculate_dimensionless_overtopping_discharge_q(
         _description_, by default np.nan
     gamma_beta : float | npt.NDArray[np.float64], optional
         _description_, by default np.nan
+    design_calculation : bool, optional
+        _description_, by default True
+    include_influence_wind : bool, optional
+        _description_, by default False
 
     Returns
     -------
@@ -323,10 +337,23 @@ def calculate_dimensionless_overtopping_discharge_q(
         gamma_v=gamma_v,
         gamma_beta=gamma_beta,
     )
-    # TODO implement connection to gamma_w for wind influence
-    # TODO Check with Marcel: default should be design value following Eq. B8???
+
     q_diml = np.min([q_diml_eqB1, q_diml_max], axis=0)
     max_reached = np.min([q_diml_eqB1, q_diml_max], axis=0) == q_diml_max
+
+    if include_influence_wind:
+        gamma_w = calculate_influence_wind_gamma_w(
+            Rc=Rc,
+            Ac=Ac,
+            Hm0=Hm0,
+            q_diml=q_diml,
+        )
+        q_diml = q_diml * gamma_w
+
+    # TODO Check with Marcel: default should be design value following Eq. B8???
+    # TODO Check with Marcel: first apply wind influence, then design values?
+    if design_calculation:
+        q_diml = np.power(q_diml, 0.857)
 
     check_validity_range(
         Hm0=Hm0,
