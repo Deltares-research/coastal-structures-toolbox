@@ -813,7 +813,7 @@ def calculate_adjusted_influence_roughness_gamma_f(
     gamma_b : float | npt.NDArray[np.float64]
         Influence factor for a berm
     ksi_mm10 : float | npt.NDArray[np.float64]
-        _description_
+        The Irribarren number based on the spectral wave period Tm-1,0 (-)
 
     Returns
     -------
