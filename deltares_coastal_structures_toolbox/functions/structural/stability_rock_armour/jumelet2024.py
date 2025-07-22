@@ -216,84 +216,85 @@ def calculate_nominal_rock_diameter_Dn50(
     return Dn50
 
 
-def calculate_significant_wave_height_Hs(
-    Tmm10: float | npt.NDArray[np.float64],
-    N_waves: float | npt.NDArray[np.float64],
-    cot_alpha: float | npt.NDArray[np.float64],
-    rho_armour: float | npt.NDArray[np.float64],
-    S: float | npt.NDArray[np.float64],
-    Dn50: float | npt.NDArray[np.float64] = np.nan,
-    M50: float | npt.NDArray[np.float64] = np.nan,
-    c_pl: float = 4.3,
-    g: float = 9.81,
-) -> float | npt.NDArray[np.float64]:
-    """Calculate the maximum significant wave height Hs for rock armour layers with the Jumelet et al. (2024) formula.
+# def calculate_significant_wave_height_Hs(
+#     Tmm10: float | npt.NDArray[np.float64],
+#     N_waves: float | npt.NDArray[np.float64],
+#     cot_alpha: float | npt.NDArray[np.float64],
+#     rho_armour: float | npt.NDArray[np.float64],
+#     S: float | npt.NDArray[np.float64],
+#     Dn50: float | npt.NDArray[np.float64] = np.nan,
+#     M50: float | npt.NDArray[np.float64] = np.nan,
+#     c_pl: float = 4.3,
+#     g: float = 9.81,
+# ) -> float | npt.NDArray[np.float64]:
+#     """Calculate the maximum significant wave height Hs for rock armour layers with the Jumelet et al. (2024) formula.
 
-    Here, eq. 8 from Jumelet et al. (2024) is implemented.
+#     Here, eq. 8 from Jumelet et al. (2024) is implemented.
 
-    For more details, see: https://doi.org/10.1016/j.coastaleng.2023.104418
+#     For more details, see: https://doi.org/10.1016/j.coastaleng.2023.104418
 
-    Parameters
-    ----------
-    Tmm10 : float | npt.NDArray[np.float64]
-        Spectral wave period Tm-1,0 (s)
-    N_waves : float | npt.NDArray[np.float64]
-        Number of waves (-)
-    cot_alpha : float | npt.NDArray[np.float64]
-        Cotangent of the front-side slope of the structure (-)
-    rho_armour : float | npt.NDArray[np.float64]
-        Armour rock density (kg/m^3)
-    S : float | npt.NDArray[np.float64]
-        Damage number (-)
-    Dn50 : float | npt.NDArray[np.float64], optional
-        Nominal rock diameter (m), by default np.nan
-    M50 : float | npt.NDArray[np.float64], optional
-        Median rock mass (kg), by default np.nan
-    c_pl : float, optional
-        Coefficient in the stability formula, by default 4.3
-    g : float, optional
-        Gravitational constant (m/s^2), by default 9.81
+#     Parameters
+#     ----------
+#     Tmm10 : float | npt.NDArray[np.float64]
+#         Spectral wave period Tm-1,0 (s)
+#     N_waves : float | npt.NDArray[np.float64]
+#         Number of waves (-)
+#     cot_alpha : float | npt.NDArray[np.float64]
+#         Cotangent of the front-side slope of the structure (-)
+#     rho_armour : float | npt.NDArray[np.float64]
+#         Armour rock density (kg/m^3)
+#     S : float | npt.NDArray[np.float64]
+#         Damage number (-)
+#     Dn50 : float | npt.NDArray[np.float64], optional
+#         Nominal rock diameter (m), by default np.nan
+#     M50 : float | npt.NDArray[np.float64], optional
+#         Median rock mass (kg), by default np.nan
+#     c_pl : float, optional
+#         Coefficient in the stability formula, by default 4.3
+#     g : float, optional
+#         Gravitational constant (m/s^2), by default 9.81
 
-    Returns
-    -------
-    float | npt.NDArray[np.float64]
-        The significant wave height Hs (m)
-    """
+#     Returns
+#     -------
+#     float | npt.NDArray[np.float64]
+#         The significant wave height Hs (m)
+#     """
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(
-        Dn50=Dn50, M50=M50, rho_armour=rho_armour
-    )
+#     Dn50 = core_physics.check_usage_Dn50_or_M50(
+#         Dn50=Dn50, M50=M50, rho_armour=rho_armour
+#     )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
-        H=Hs, T=Tmm10, cot_alpha=cot_alpha
-    )
+#     # TODO this should be an implicit solving routine, since N_plunging is a function of Hs
+#     ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+#         H=Hs, T=Tmm10, cot_alpha=cot_alpha
+#     )
 
-    Delta = core_physics.calculate_buoyant_density_Delta(
-        rho_rock=rho_armour, rho_water=1025
-    )
+#     Delta = core_physics.calculate_buoyant_density_Delta(
+#         rho_rock=rho_armour, rho_water=1025
+#     )
 
-    Fp = calculate_fraction_plunging_waves_Fp(ksi_mm10=ksi_mm10)
+#     Fp = calculate_fraction_plunging_waves_Fp(ksi_mm10=ksi_mm10)
 
-    N_plunging = Fp * N_waves
+#     N_plunging = Fp * N_waves
 
-    Hs = np.power(
-        c_pl
-        * np.power(S, 0.2)
-        * np.power(N_plunging, -0.1)
-        * cot_alpha
-        * np.sqrt((2 * np.pi / g) * np.power(Tmm10, -2))
-        * Delta
-        * Dn50,
-        2.0,
-    )
+#     Hs = np.power(
+#         c_pl
+#         * np.power(S, 0.2)
+#         * np.power(N_plunging, -0.1)
+#         * cot_alpha
+#         * np.sqrt((2 * np.pi / g) * np.power(Tmm10, -2))
+#         * Delta
+#         * Dn50,
+#         2.0,
+#     )
 
-    check_validity_range(
-        Hs=Hs,
-        Tmm10=Tmm10,
-        N_waves=N_waves,
-        cot_alpha=cot_alpha,
-    )
-    return Hs
+#     check_validity_range(
+#         Hs=Hs,
+#         Tmm10=Tmm10,
+#         N_waves=N_waves,
+#         cot_alpha=cot_alpha,
+#     )
+#     return Hs
 
 
 def calculate_fraction_plunging_waves_Fp(
