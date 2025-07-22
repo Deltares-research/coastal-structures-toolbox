@@ -15,6 +15,7 @@ def check_validity_range(
     Dn50: float | npt.NDArray[np.float64] = np.nan,
     Dn50_core: float | npt.NDArray[np.float64] = np.nan,
     rho_armour: float | npt.NDArray[np.float64] = np.nan,
+    rho_water: float = 1025.0,
 ) -> None:
     """Check the parameter values vs the validity range of the stability formula as defined in
     Scaravaglione et al. (2025).
@@ -42,6 +43,8 @@ def check_validity_range(
         Nominal core rock diameter (m), by default np.nan
     rho_armour : float | npt.NDArray[np.float64], optional
         Armour rock density (kg/m^3), by default np.nan
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
     """
 
     if not np.any(np.isnan(P)):
@@ -55,7 +58,7 @@ def check_validity_range(
 
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Dn50)):
         Ns = core_physics.calculate_stability_number_Ns(
-            H=Hm0, D=Dn50, rho_rock=rho_armour, rho_water=1025
+            H=Hm0, D=Dn50, rho_rock=rho_armour, rho_water=rho_water
         )
         core_utility.check_variable_validity_range(
             "Stability number Ns",
@@ -133,6 +136,7 @@ def calculate_damage_number_S(
     M50: float | npt.NDArray[np.float64] = np.nan,
     M50_core: float | npt.NDArray[np.float64] = np.nan,
     c_VGnew: float = 3.3,
+    rho_water: float = 1025.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the damage number S for rock armour layers in shallow water with
     the Scaravaglione et al. (2025) formula.
@@ -163,6 +167,8 @@ def calculate_damage_number_S(
         Median core rock mass (kg), by default np.nan
     c_VGnew : float, optional
         Coefficient (-), by default 3.3
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
 
     Returns
     -------
@@ -180,7 +186,7 @@ def calculate_damage_number_S(
     s_mm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
 
     Ns = core_physics.calculate_stability_number_Ns(
-        H=Hm0, D=Dn50, rho_rock=rho_armour, rho_water=1025
+        H=Hm0, D=Dn50, rho_rock=rho_armour, rho_water=rho_water
     )
 
     S = np.power(
@@ -216,6 +222,7 @@ def calculate_nominal_rock_diameter_Dn50(
     Dn50_core: float | npt.NDArray[np.float64] = np.nan,
     M50_core: float | npt.NDArray[np.float64] = np.nan,
     c_VGnew: float = 3.3,
+    rho_water: float = 1025.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the nominal rock diameter Dn50 for rock armour layers in shallow water
     with the Scaravaglione et al. (2025) formula.
@@ -244,6 +251,8 @@ def calculate_nominal_rock_diameter_Dn50(
         Median core rock mass (kg), by default np.nan
     c_VGnew : float, optional
         Coefficient (-), by default 3.3
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
 
     Returns
     -------
@@ -258,7 +267,7 @@ def calculate_nominal_rock_diameter_Dn50(
     s_mm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
 
     Delta = core_physics.calculate_buoyant_density_Delta(
-        rho_rock=rho_armour, rho_water=1025
+        rho_rock=rho_armour, rho_water=rho_water
     )
 
     Dn50 = (Hm0 / Delta) * (1 / c_VGnew) * np.power(S / np.sqrt(N_waves), -0.2) * (
@@ -290,6 +299,7 @@ def calculate_significant_wave_height_Hm0(
     M50_core: float | npt.NDArray[np.float64] = np.nan,
     c_VGnew: float = 3.3,
     g: float = 9.81,
+    rho_water: float = 1025.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the maximum significant spectral wave height Hm0 for rock armour
     layers in shallow water with the Scaravaglione et al. (2025) formula.
@@ -322,6 +332,8 @@ def calculate_significant_wave_height_Hm0(
         Coefficient (-), by default 3.3
     g : float, optional
         Gravitational constant (m/s^2), by default 9.81
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
 
     Returns
     -------
@@ -336,7 +348,7 @@ def calculate_significant_wave_height_Hm0(
     )
 
     Delta = core_physics.calculate_buoyant_density_Delta(
-        rho_rock=rho_armour, rho_water=1025
+        rho_rock=rho_armour, rho_water=rho_water
     )
 
     Hm0 = np.power(

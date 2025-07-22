@@ -15,6 +15,7 @@ def check_validity_range(
     P: float | npt.NDArray[np.float64] = np.nan,
     Dn50: float | npt.NDArray[np.float64] = np.nan,
     rho_armour: float | npt.NDArray[np.float64] = np.nan,
+    rho_water: float = 1025.0,
 ) -> None:
     """Check the parameter values vs the validity range of the Modified Van der Meer formula as defined in
     Van Gent et al. (2003).
@@ -43,6 +44,8 @@ def check_validity_range(
         Nominal rock diameter (m), by default np.nan
     rho_armour : float | npt.NDArray[np.float64], optional
         Armour rock density (kg/m^3), by default np.nan
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
     """
 
     if not np.any(np.isnan(P)):
@@ -56,7 +59,7 @@ def check_validity_range(
 
     if not np.any(np.isnan(Hs)) and not np.any(np.isnan(Dn50)):
         Ns = core_physics.calculate_stability_number_Ns(
-            H=Hs, D=Dn50, rho_rock=rho_armour, rho_water=1025
+            H=Hs, D=Dn50, rho_rock=rho_armour, rho_water=rho_water
         )
         core_utility.check_variable_validity_range(
             "Stability number Ns",
@@ -124,6 +127,7 @@ def calculate_damage_number_S(
     M50: float | npt.NDArray[np.float64] = np.nan,
     c_pl: float = 8.4,
     c_s: float = 1.3,
+    rho_water: float = 1025.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the damage number S for rock armour layers with the Modified Van der Meer
     formula by Van Gent et al. (2003).
@@ -158,6 +162,8 @@ def calculate_damage_number_S(
         Coefficient for plunging waves (-), by default 8.4
     c_s : float, optional
         Coefficient for surging waves (-), by default 1.3
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
 
     Returns
     -------
@@ -179,7 +185,7 @@ def calculate_damage_number_S(
     )
 
     Ns = core_physics.calculate_stability_number_Ns(
-        H=Hs, D=Dn50, rho_rock=rho_armour, rho_water=1025
+        H=Hs, D=Dn50, rho_rock=rho_armour, rho_water=rho_water
     )
 
     # Plunging waves
@@ -226,6 +232,7 @@ def calculate_nominal_rock_diameter_Dn50(
     S: float | npt.NDArray[np.float64],
     c_pl: float = 8.4,
     c_s: float = 1.3,
+    rho_water: float = 1025.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the nominal rock diameter Dn50 for rock armour layers with the Modified Van der Meer
     formula by Van Gent et al. (2003).
@@ -258,6 +265,8 @@ def calculate_nominal_rock_diameter_Dn50(
         Coefficient for plunging waves (-), by default 8.4
     c_s : float, optional
         Coefficient for surging waves (-), by default 1.3
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
 
     Returns
     -------
@@ -274,7 +283,7 @@ def calculate_nominal_rock_diameter_Dn50(
     )
 
     Delta = core_physics.calculate_buoyant_density_Delta(
-        rho_rock=rho_armour, rho_water=1025
+        rho_rock=rho_armour, rho_water=rho_water
     )
 
     # Plunging waves
@@ -326,6 +335,7 @@ def calculate_significant_wave_height_Hs(
     c_pl: float = 8.4,
     c_s: float = 1.3,
     g: float = 9.81,
+    rho_water: float = 1025.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the maximum significant wave height Hs for rock armour layers with the Modified Van der Meer
     formula by Van Gent et al. (2003).
@@ -363,6 +373,8 @@ def calculate_significant_wave_height_Hs(
         Coefficient for surging waves (-), by default 1.3
     g : float, optional
         Gravitational constant (m/s^2), by default 9.81
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
 
     Returns
     -------
@@ -379,7 +391,7 @@ def calculate_significant_wave_height_Hs(
     )
 
     Delta = core_physics.calculate_buoyant_density_Delta(
-        rho_rock=rho_armour, rho_water=1025
+        rho_rock=rho_armour, rho_water=rho_water
     )
 
     # Plunging waves
