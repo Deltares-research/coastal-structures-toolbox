@@ -135,7 +135,7 @@ def calculate_damage_number_S(
 
     Fp = calculate_fraction_plunging_waves_Fp(ksi_mm10=ksi_mm10)
 
-    N_plunging = Fp * N_waves
+    N_plunging = np.round(Fp * N_waves)
 
     S = np.power(Ns * ksi_mm10 * np.power(N_plunging, 0.1) * (1.0 / c_pl), 5.0)
 
@@ -197,14 +197,14 @@ def calculate_nominal_rock_diameter_Dn50(
 
     Fp = calculate_fraction_plunging_waves_Fp(ksi_mm10=ksi_mm10)
 
-    N_plunging = Fp * N_waves
+    N_plunging = np.round(Fp * N_waves)
 
     Dn50 = (
         (Hs / Delta)
         * ksi_mm10
         * np.power(N_plunging, 0.1)
         * (1.0 / c_pl)
-        * np.power(S, 0.2)
+        * np.power(S, -0.2)
     )
 
     check_validity_range(
@@ -275,7 +275,7 @@ def calculate_nominal_rock_diameter_Dn50(
 
 #     Fp = calculate_fraction_plunging_waves_Fp(ksi_mm10=ksi_mm10)
 
-#     N_plunging = Fp * N_waves
+#     N_plunging = np.round(Fp * N_waves)
 
 #     Hs = np.power(
 #         c_pl
