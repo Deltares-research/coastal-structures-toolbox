@@ -226,6 +226,8 @@ def calculate_significant_wave_height_Hs(
     M50: float | npt.NDArray[np.float64] = np.nan,
     c_pl: float = 4.3,
     g: float = 9.81,
+    smm10_init: float = 0.03,
+    max_iter: int = 1000,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the maximum significant wave height Hs for rock armour layers with the Jumelet et al. (2024) formula.
 
@@ -264,9 +266,6 @@ def calculate_significant_wave_height_Hs(
         Dn50=Dn50, M50=M50, rho_armour=rho_armour
     )
 
-    # TODO this should be an implicit solving routine, since N_plunging is a function of Hs
-    smm10_init = 0.03
-    max_iter = 1000
     n_iter = 0
     Hs_init = smm10_init * np.power(Tmm10, 2) * g / (2 * np.pi)
     ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
