@@ -5,10 +5,6 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 
-import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
-import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
-import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002 as wave_runup_taw2002
-
 
 def write_input_file_XGB_Overtopping(
     beta: float | npt.NDArray[np.float64],
