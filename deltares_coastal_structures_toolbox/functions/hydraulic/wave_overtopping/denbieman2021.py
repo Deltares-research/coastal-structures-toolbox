@@ -27,6 +27,10 @@ def write_input_file_XGB_Overtopping(
     file_name: str = "input_XGB_Overtopping",
 ):
     # TODO check equal lengths (or length = 1, then copy everything to the same length)
+    if isinstance(beta, float):
+        index = [0]
+    else:
+        index = None
 
     input_dataframe = pd.DataFrame(
         data={
@@ -46,7 +50,8 @@ def write_input_file_XGB_Overtopping(
             "gf_d": gamma_f_down,
             "gf_u": gamma_f_up,
             "tanaf": tan_alpha_f,
-        }
+        },
+        index=index,
     )
     input_dataframe.to_csv(os.path.join(output_dir, f"{file_name}.csv"), sep=";")
 
