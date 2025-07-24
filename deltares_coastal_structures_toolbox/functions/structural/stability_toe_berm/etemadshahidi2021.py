@@ -170,7 +170,7 @@ def calculate_damage_Nod(
     m: float | npt.NDArray[np.float64],
     Dn50: float | npt.NDArray[np.float64],
     rho_rock: float | npt.NDArray[np.float64],
-    rho_water: float | npt.NDArray[np.float64],
+    rho_water: float = 1025.0,
     g: float = 9.81,
     c1: float = 1.2,
     c2: float = 11.2,
@@ -180,6 +180,54 @@ def calculate_damage_Nod(
     c6: float = -1.0 / 10.0,
     c7: float = 3.7,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate damage number Nod for toe structure using Etemad-Shahidi et al. (2021)
+
+    Here, Eq. 8 of Etemad-Shahidi et al. (2021) is implemented.
+
+    For more details see Etemad-Shahidi et al. (2021), available here: https://doi.org/10.1016/j.coastaleng.2020.103835
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64]
+        Significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    h : float | npt.NDArray[np.float64]
+        Water depth (m)
+    ht : float | npt.NDArray[np.float64]
+        Water depth above the toe (m)
+    Bt : float | npt.NDArray[np.float64]
+        Width of toe structure (m)
+    m : float | npt.NDArray[np.float64]
+        Tangent of the foreshore slope
+    Dn50 : float | npt.NDArray[np.float64]
+        Nominal rock diameter (m)
+    rho_rock : float | npt.NDArray[np.float64]
+        Rock density (kg/m^3)
+    rho_water : float
+        Water density (kg/m^3), by default 1025.0
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+    c1 : float, optional
+        Coefficient in the toe stability formula, by default 1.2
+    c2 : float, optional
+        Coefficient in the toe stability formula, by default 11.2
+    c3 : float, optional
+        Coefficient in the toe stability formula, by default 7.0/4.0
+    c4 : float, optional
+        Coefficient in the toe stability formula, by default 1.0/6.0
+    c5 : float, optional
+        Coefficient in the toe stability formula, by default 2.0/5.0
+    c6 : float, optional
+        Coefficient in the toe stability formula, by default -1.0/10.0
+    c7 : float, optional
+        Coefficient in the toe stability formula, by default 3.7
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The damage parameter Nod (-)
+    """
 
     smm10 = core_physics.calculate_wave_steepness_s(H=Hs, T=Tmm10, g=g)
 
@@ -214,7 +262,7 @@ def calculate_nominal_diameter_Dn50(
     Nod: float | npt.NDArray[np.float64],
     m: float | npt.NDArray[np.float64],
     rho_rock: float | npt.NDArray[np.float64],
-    rho_water: float | npt.NDArray[np.float64],
+    rho_water: float = 1025.0,
     g: float = 9.81,
     c1: float = 1.2,
     c2: float = 11.2,
@@ -224,6 +272,54 @@ def calculate_nominal_diameter_Dn50(
     c6: float = -1.0 / 10.0,
     c7: float = 3.7,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the nominal rock diameter Dn50 for toe stability using Etemad-Shahidi et al. (2021)
+
+    Here, Eq. 8 of Etemad-Shahidi et al. (2021) is implemented.
+
+    For more details see Etemad-Shahidi et al. (2021), available here: https://doi.org/10.1016/j.coastaleng.2020.103835
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64]
+        Significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    h : float | npt.NDArray[np.float64]
+        Water depth (m)
+    ht : float | npt.NDArray[np.float64]
+        Water depth above the toe (m)
+    Bt : float | npt.NDArray[np.float64]
+        Width of toe structure (m)
+    Nod : float | npt.NDArray[np.float64]
+        Damage parameter (-)
+    m : float | npt.NDArray[np.float64]
+        Tangent of the foreshore slope
+    rho_rock : float | npt.NDArray[np.float64]
+        Rock density (kg/m^3)
+    rho_water : float
+        Water density (kg/m^3), by default 1025.0
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+    c1 : float, optional
+        Coefficient in the toe stability formula, by default 1.2
+    c2 : float, optional
+        Coefficient in the toe stability formula, by default 11.2
+    c3 : float, optional
+        Coefficient in the toe stability formula, by default 7.0/4.0
+    c4 : float, optional
+        Coefficient in the toe stability formula, by default 1.0/6.0
+    c5 : float, optional
+        Coefficient in the toe stability formula, by default 2.0/5.0
+    c6 : float, optional
+        Coefficient in the toe stability formula, by default -1.0/10.0
+    c7 : float, optional
+        Coefficient in the toe stability formula, by default 3.7
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The nominal rock diameter Dn50 (m)
+    """
 
     Delta = core_physics.calculate_buoyant_density_Delta(
         rho_rock=rho_rock, rho_water=rho_water
@@ -256,7 +352,7 @@ def calculate_significant_wave_height_Hs(
     m: float | npt.NDArray[np.float64],
     Dn50: float | npt.NDArray[np.float64],
     rho_rock: float | npt.NDArray[np.float64],
-    rho_water: float | npt.NDArray[np.float64],
+    rho_water: float = 1025.0,
     g: float = 9.81,
     c1: float = 1.2,
     c2: float = 11.2,
@@ -267,7 +363,59 @@ def calculate_significant_wave_height_Hs(
     c7: float = 3.7,
     smm10_init: float = 0.03,
     max_iter: int = 1000,
-):
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the maximum significant wave height Hs for toe stability using Etemad-Shahidi et al. (2021)
+
+    Here, Eq. 8 of Etemad-Shahidi et al. (2021) is implemented. Note that the Hs needs to be solved iteratively.
+
+    For more details see Etemad-Shahidi et al. (2021), available here: https://doi.org/10.1016/j.coastaleng.2020.103835
+
+    Parameters
+    ----------
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    h : float | npt.NDArray[np.float64]
+        Water depth (m)
+    ht : float | npt.NDArray[np.float64]
+        Water depth above the toe (m)
+    Bt : float | npt.NDArray[np.float64]
+        Width of toe structure (m)
+    Nod : float | npt.NDArray[np.float64]
+        Damage parameter (-)
+    m : float | npt.NDArray[np.float64]
+        Tangent of the foreshore slope
+    Dn50 : float | npt.NDArray[np.float64]
+        Nominal rock diameter (m)
+    rho_rock : float | npt.NDArray[np.float64]
+        Rock density (kg/m^3)
+    rho_water : float
+        Water density (kg/m^3), by default 1025.0
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+    c1 : float, optional
+        Coefficient in the toe stability formula, by default 1.2
+    c2 : float, optional
+        Coefficient in the toe stability formula, by default 11.2
+    c3 : float, optional
+        Coefficient in the toe stability formula, by default 7.0/4.0
+    c4 : float, optional
+        Coefficient in the toe stability formula, by default 1.0/6.0
+    c5 : float, optional
+        Coefficient in the toe stability formula, by default 2.0/5.0
+    c6 : float, optional
+        Coefficient in the toe stability formula, by default -1.0/10.0
+    c7 : float, optional
+        Coefficient in the toe stability formula, by default 3.7
+    smm10_init : float, optional
+        Initial wave steepness sm-1,0 (-) for the iterative solution, by default 0.03
+    max_iter : int, optional
+        Maximum number of iterations, by default 1000
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The significant wave height Hs (m)
+    """
 
     Delta = core_physics.calculate_buoyant_density_Delta(
         rho_rock=rho_rock, rho_water=rho_water
