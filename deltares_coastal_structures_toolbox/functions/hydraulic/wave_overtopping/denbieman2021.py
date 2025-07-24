@@ -32,8 +32,8 @@ def write_input_file_XGB_Overtopping(
     predicts the mean wave overtopping discharge q (m^3/s/m) including uncertainties. The model is available
     as a free web tool at https://www.deltares.nl/en/software-and-data/products/overtopping-xgb.
 
-    The input file can contain up to 200 combinations of input parameters. All input parameters should be arrays
-    of the same length.
+    The input file can contain up to 200 combinations of input parameters. All input parameters should be (1D)
+    arrays of the same length.
 
     For more details, see Den Bieman et al. (2021), which is available here:
     https://doi.org/10.1016/j.coastaleng.2020.103830
