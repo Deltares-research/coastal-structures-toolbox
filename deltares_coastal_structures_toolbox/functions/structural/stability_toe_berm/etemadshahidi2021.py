@@ -181,7 +181,7 @@ def calculate_damage_Nod(
     c7: float = 3.7,
 ) -> float | npt.NDArray[np.float64]:
 
-    smm10 = core_physics.calculate_wave_steepness_s(H=Hs, Tmm10=Tmm10, g=g)
+    smm10 = core_physics.calculate_wave_steepness_s(H=Hs, T=Tmm10, g=g)
 
     Ns = core_physics.calculate_stability_number_Ns(
         H=Hs,
@@ -229,7 +229,7 @@ def calculate_nominal_diameter_Dn50(
         rho_rock=rho_rock, rho_water=rho_water
     )
 
-    smm10 = core_physics.calculate_wave_steepness_s(H=Hs, Tmm10=Tmm10, g=g)
+    smm10 = core_physics.calculate_wave_steepness_s(H=Hs, T=Tmm10, g=g)
 
     Dn50 = (Hs / Delta) * np.power(
         c1
@@ -301,6 +301,6 @@ def calculate_significant_wave_height_Hs(
         Hs_diff = np.abs(Hs - Hs_prev)
         Hs_prev = Hs
 
-        smm10 = core_physics.calculate_wave_steepness_s(H=Hs, Tmm10=Tmm10, g=g)
+        smm10 = core_physics.calculate_wave_steepness_s(H=Hs, T=Tmm10, g=g)
 
     return Hs
