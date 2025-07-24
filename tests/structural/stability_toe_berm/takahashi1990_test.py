@@ -1,5 +1,6 @@
-import pytest
 import numpy as np
+import pytest
+
 import deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.takahashi1990_caisson as takahashi
 
 
