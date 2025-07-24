@@ -1,5 +1,6 @@
 import numpy as np
 
+import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.vangent2007 as vangent2007
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.denbieman2021 as denbieman2021
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.taw2002 as wave_overtopping_taw2002
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.eurotop2018 as wave_overtopping_eurotop2018
@@ -8,6 +9,26 @@ import deltares_coastal_structures_toolbox.functions.structural.stability_rock_a
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988_modified as stability_rock_vandermeer1988_modified
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_rear.vangent2007 as stability_rear_with_crest_vangent2007
 
+
+vangent2007.write_input_file_NN_Overtopping(
+    beta=np.asarray([0.0, 0.0, 0.0]),
+    h=np.asarray([2.0, 2.0, 2.0]),
+    Hm0=np.asarray([0.45, 0.50, 0.55]),
+    Tmm10=np.asarray([5.0, 5.0, 5.0]),
+    Bt=np.asarray([0, 0, 0]),
+    ht=np.asarray([2.0, 2.0, 2.0]),
+    B_berm=np.asarray([0, 0, 0]),
+    db=np.asarray([0, 0, 0]),
+    Rc=np.asarray([0.5, 0.5, 0.5]),
+    Ac=np.asarray([0, 0, 0]),
+    Gc=np.asarray([0, 0, 0]),
+    cot_alpha_down=np.asarray([2.5, 2.5, 2.5]),
+    cot_alpha_up=np.asarray([2.5, 2.5, 2.5]),
+    gamma_f=np.asarray([0.55, 0.55, 0.55]),
+    tan_alpha_B=np.asarray([0, 0, 0]),
+    output_dir="d:/tmp/20250325_dcst/",
+    file_name="input_NN_Overtopping_test_n3",
+)
 
 denbieman2021.write_input_file_XGB_Overtopping(
     beta=np.asarray([30.0, 30.0, 30.0]),
