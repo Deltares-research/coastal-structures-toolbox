@@ -33,6 +33,9 @@ def write_input_file_NN_Overtopping(
 
     All input parameters should be (1D) arrays of the same length.
 
+    Note that the NN Overtopping model is also available as a downloadable installer here:
+    https://dserie.deltares.nl/NNOvertopping/helppage.aspx
+
     For more details, see Van Gent et al. (2007), which is available here:
     https://doi.org/10.1016/j.coastaleng.2006.12.001
 
