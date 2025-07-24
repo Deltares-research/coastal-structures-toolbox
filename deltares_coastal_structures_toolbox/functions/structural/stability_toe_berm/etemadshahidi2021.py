@@ -275,6 +275,8 @@ def calculate_significant_wave_height_Hs(
 
     n_iter = 0
     Hs_init = smm10_init * np.power(Tmm10, 2) * g / (2 * np.pi)
+
+    Hs = Hs_init
     smm10 = smm10_init
 
     Hs_diff = np.inf
@@ -295,6 +297,9 @@ def calculate_significant_wave_height_Hs(
                 * (1.0 - c7 * m)
             )
         )
+
+        Hs_diff = np.abs(Hs - Hs_prev)
+        Hs_prev = Hs
 
         smm10 = core_physics.calculate_wave_steepness_s(H=Hs, Tmm10=Tmm10, g=g)
 
