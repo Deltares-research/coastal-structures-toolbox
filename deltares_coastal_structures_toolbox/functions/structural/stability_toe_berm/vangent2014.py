@@ -66,7 +66,12 @@ def calculate_damage_Nod(
     rho_rock: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     cot_alpha_armour_slope: float | npt.NDArray[np.float64],
-    g: float | npt.NDArray[np.float64] = 9.81,
+    g: float = 9.81,
+    c1: float = 0.032,
+    c2: float = 0.3,
+    c3: float = 1.0,
+    c4: float = 3.0,
+    c5: float = 1.0,
 ) -> float | npt.NDArray[np.float64]:
     """calculate damage number Nod for toe structure using van Gent and van der Werf (2014)
 
@@ -95,20 +100,24 @@ def calculate_damage_Nod(
         Density of water (kg/m^3)
     cot_alpha_armour_slope : float | npt.NDArray[np.float64]
         Slope above structure (not used in formula, only in checks) (-)
-    g : float | npt.NDArray[np.float64], optional
+    g : float, optional
         Gravitational acceleration, by default 9.81
+    c1 : float, optional
+        Coefficient in the toe stability formula, by default 0.032
+    c2 : float, optional
+        Coefficient in the toe stability formula, by default 0.3
+    c3 : float, optional
+        Coefficient in the toe stability formula, by default 1.0
+    c4 : float, optional
+        Coefficient in the toe stability formula, by default 3.0
+    c5 : float, optional
+        Coefficient in the toe stability formula, by default 1.0
 
     Returns
     -------
     Nod : float | npt.NDArray[np.float64]
         Damage parameter (-)
     """
-    # no arrays, only single values
-    c1 = 0.032
-    c2 = 0.3
-    c3 = 1.0
-    c4 = 3.0
-    c5 = 1.0
 
     u_delta = calculate_velocity_u_delta(Hs=Hm0, Tmm10=Tmm10, ht=ht, g=g)
     Delta = core_physics.calculate_buoyant_density_Delta(
@@ -136,7 +145,7 @@ def calculate_nominal_diameter_Dn50(
     rho_rock: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     cot_alpha_armour_slope: float | npt.NDArray[np.float64],
-    g: float | npt.NDArray[np.float64] = 9.81,
+    g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
     """calculate nominal diameter Dn50 for toe structure using van Gent and van der Werf (2014)
 
@@ -165,7 +174,7 @@ def calculate_nominal_diameter_Dn50(
         Density of water (kg/m^3)
     cot_alpha_armour_slope : float | npt.NDArray[np.float64]
         Slope above structure (not used in formula, only in checks) (-)
-    g : float | npt.NDArray[np.float64], optional
+    g : float, optional
         Gravitational acceleration, by default 9.81
 
     Returns
@@ -196,7 +205,7 @@ def calculate_velocity_u_delta(
     Hs: float | npt.NDArray[np.float64],
     Tmm10: float | npt.NDArray[np.float64],
     ht: float | npt.NDArray[np.float64],
-    g: float | npt.NDArray[np.float64] = 9.81,
+    g: float = 9.81,
 ):
     """estimate characteristic orbital velocity above the toe structure
 
@@ -208,7 +217,7 @@ def calculate_velocity_u_delta(
         Wave period determined from spectrum (s)
     ht : float | npt.NDArray[np.float64]
         Water depth above the toe structure
-    g : float | npt.NDArray[np.float64], optional
+    g : float, optional
         Gravitational acceleration, by default 9.81
 
     Returns
