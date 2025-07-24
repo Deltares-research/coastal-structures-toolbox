@@ -255,6 +255,10 @@ def calculate_significant_wave_height_Hs(
         Coefficient in the stability formula, by default 4.3
     g : float, optional
         Gravitational constant (m/s^2), by default 9.81
+    smm10_init : float, optional
+        Initial wave steepness sm-1,0 (-) for the iterative solution, by default 0.03
+    max_iter : int, optional
+        Maximum number of iterations, by default 1000
 
     Returns
     -------
