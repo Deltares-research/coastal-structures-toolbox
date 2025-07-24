@@ -57,7 +57,11 @@ def check_validity_range(
             0.6,
         )
 
-    if not np.any(np.isnan(Hs)) and not np.any(np.isnan(Dn50)):
+    if (
+        not np.any(np.isnan(Hs))
+        and not np.any(np.isnan(Dn50))
+        and not np.any(np.isnan(rho_armour))
+    ):
         Ns = core_physics.calculate_stability_number_Ns(
             H=Hs, D=Dn50, rho_rock=rho_armour, rho_water=rho_water
         )
