@@ -5,8 +5,6 @@ import numpy.typing as npt
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 
-# TODO refer to https://doi.org/10.1016/j.coastaleng.2020.103655 and https://doi.org/10.1016/j.coastaleng.2022.104142
-
 
 def check_validity_range(
     Hs: float | npt.NDArray[np.float64] = np.nan,
@@ -20,8 +18,37 @@ def check_validity_range(
     rho_armour: float | npt.NDArray[np.float64] = np.nan,
     rho_water: float = 1025.0,
 ) -> None:
+    """Check the parameter values vs the validity range of the Etemad-Shahidi et al. (2020) formula.
 
-    # TODO implement validity ranges from paper
+    For all parameters supplied, their values are checked versus the range of test conditions specified in
+    Table 1 of Etemad-Shahidi et al. (2020). When parameters are nan (by default), they are not checked.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103655
+    and the corresponding corrigendum: https://doi.org/10.1016/j.coastaleng.2022.104142
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64], optional
+        Significant wave height (m), by default np.nan
+    Tmm10 : float | npt.NDArray[np.float64], optional
+        Spectral wave period Tm-1,0 (s), by default np.nan
+    N_waves : int | npt.NDArray[np.int32], optional
+        Number of waves (-), by default np.nan
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    P : float | npt.NDArray[np.float64], optional
+        Notional permeability coefficient (-), by default np.nan
+    S : float | npt.NDArray[np.float64], optional
+        Damage number (-), by default np.nan
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter (m), by default np.nan
+    Dn50_core : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter of the core material (m), by default np.nan
+    rho_armour : float | npt.NDArray[np.float64], optional
+        Armour rock density (kg/m^3), by default np.nan
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
+    """
 
     if not np.any(np.isnan(Hs)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(H=Hs, T=Tmm10)
@@ -143,8 +170,54 @@ def calculate_damage_number_S(
     m: float | npt.NDArray[np.float64] = np.nan,
     use_depth_limited_version: bool = False,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the damage number S for rock armour layers with the Etemad-Shahidi et al. (2020) formula.
 
-    # TODO ref eq. 17a & 17b
+    Here, eqs. 17a & 17b from Etemad-Shahidi et al. (2020) are implemented. The user can also choose to
+    use the depth limited version of the formula (eqs. 12a & 12b) by enabling that option and providing
+    the foreshore slope.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103655
+    and the corresponding corrigendum: https://doi.org/10.1016/j.coastaleng.2022.104142
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64]
+        Significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    N_waves : float | npt.NDArray[np.float64]
+        Number of waves (-)
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    rho_armour : float | npt.NDArray[np.float64]
+        Armour rock density (kg/m^3)
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter (m), by default np.nan
+    M50 : float | npt.NDArray[np.float64], optional
+        Median rock mass (kg), by default np.nan
+    Dn50_core : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter of the core material (m), by default np.nan
+    M50_core : float | npt.NDArray[np.float64], optional
+        Median rock mass of the core material (kg), by default np.nan
+    rho_core : float | npt.NDArray[np.float64], optional
+        Core rock density (kg/m^3), by default np.nan
+    rho_water : float, optional
+        Water density (kg/m^3), by default 1025.0
+    m : float | npt.NDArray[np.float64], optional
+        Tangent of the foreshore slope (-), by default np.nan
+    use_depth_limited_version : bool, optional
+        Use depth limited version of the formula, by default False
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The damage number S (-)
+
+    Raises
+    ------
+    ValueError
+        If depth limited version is used and m is not provided.
+    """
 
     if use_depth_limited_version:
         if np.any(np.isnan(m)):
@@ -226,8 +299,58 @@ def calculate_nominal_rock_diameter_Dn50(
     max_iter: int = 1000,
     tolerance: float = 1e-5,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the nominal rock diameter Dn50 for rock armour layers with the Etemad-Shahidi et al. (2020) formula.
 
-    # TODO ref eq. 10a & 10b (iterative solution necessary due to Cp dependency on Dn50)
+    Here, eqs. 10a & 10b from Etemad-Shahidi et al. (2020) are implemented. The user can also choose to
+    use the depth limited version of the formula (eqs. 12a & 12b) by enabling that option and providing
+    the foreshore slope.
+
+    Note that, due to the dependency of Cp on Dn50, an iterative solution is necessary.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103655
+    and the corresponding corrigendum: https://doi.org/10.1016/j.coastaleng.2022.104142
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64]
+        Significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    N_waves : float | npt.NDArray[np.float64]
+        Number of waves (-)
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    rho_armour : float | npt.NDArray[np.float64]
+        Armour rock density (kg/m^3)
+    S : float | npt.NDArray[np.float64]
+        Damage number (-)
+    Dn50_core : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter of the core material (m), by default np.nan
+    M50_core : float | npt.NDArray[np.float64], optional
+        Median rock mass of the core material (kg), by default np.nan
+    rho_core : float | npt.NDArray[np.float64], optional
+        Core rock density (kg/m^3), by default np.nan
+    m : float | npt.NDArray[np.float64], optional
+        Tangent of the foreshore slope (-), by default np.nan
+    use_depth_limited_version : bool, optional
+        Use depth limited version of the formula, by default False
+    Cp_init : float, optional
+        Initial coefficient of permeability Cp (-) for the iterative solution, by default 0.5
+    max_iter : int, optional
+        Maximum number of iterations, by default 1000
+    tolerance : float, optional
+        Tolerance for convergence of the iterative solution, by default 1e-5
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The nominal rock diameter Dn50 (m)
+
+    Raises
+    ------
+    ValueError
+        If depth limited version is used and m is not provided.
+    """
 
     if use_depth_limited_version:
         if np.any(np.isnan(m)):
@@ -329,8 +452,55 @@ def calculate_significant_wave_height_Hs(
     use_depth_limited_version: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the maximum significant wave height Hs for rock armour layers with the Etemad-Shahidi et al. (2020)
+    formula.
 
-    # TODO ref eq. 18a & 18b
+    Here, eqs. 18a & 18b from Etemad-Shahidi et al. (2020) are implemented. The user can also choose to
+    use the depth limited version of the formula (eqs. 12a & 12b) by enabling that option and providing
+    the foreshore slope.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103655
+    and the corresponding corrigendum: https://doi.org/10.1016/j.coastaleng.2022.104142
+
+    Parameters
+    ----------
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    N_waves : float | npt.NDArray[np.float64]
+        Number of waves (-)
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    rho_armour : float | npt.NDArray[np.float64]
+        Armour rock density (kg/m^3)
+    S : float | npt.NDArray[np.float64]
+        Damage number (-)
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter (m), by default np.nan
+    M50 : float | npt.NDArray[np.float64], optional
+        Median rock mass (kg), by default np.nan
+    Dn50_core : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter of the core material (m), by default np.nan
+    M50_core : float | npt.NDArray[np.float64], optional
+        Median rock mass of the core material (kg), by default np.nan
+    rho_core : float | npt.NDArray[np.float64], optional
+        Core rock density (kg/m^3), by default np.nan
+    m : float | npt.NDArray[np.float64], optional
+        Tangent of the foreshore slope (-), by default np.nan
+    use_depth_limited_version : bool, optional
+        Use depth limited version of the formula, by default False
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The significant wave height Hs (m)
+
+    Raises
+    ------
+    ValueError
+        If depth limited version is used and m is not provided.
+    """
 
     if use_depth_limited_version:
         if np.any(np.isnan(m)):
@@ -411,6 +581,25 @@ def calculate_permeability_coefficient_Cp(
     Dn50: float | npt.NDArray[np.float64],
     Dn50_core: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the coefficient of permeability Cp following Etemad-Shahidi et al. (2020).
+
+    Here, eq. 11 from Etemad-Shahidi et al. (2020) is implemented.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103655
+    and the corresponding corrigendum: https://doi.org/10.1016/j.coastaleng.2022.104142
+
+    Parameters
+    ----------
+    Dn50 : float | npt.NDArray[np.float64]
+        Nominal rock diameter (m)
+    Dn50_core : float | npt.NDArray[np.float64]
+        Nominal rock diameter of the core material (m)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The coefficient of permeability Cp (-)
+    """
 
     Cp = np.power(1 + np.power(Dn50_core / Dn50, 3.0 / 10.0), 3.0 / 5.0)
 
