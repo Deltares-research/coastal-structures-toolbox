@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import warnings
 
+import numpy as np
+
 
 def check_variable_validity_range(
     variable_name: str,
@@ -24,6 +26,10 @@ def check_variable_validity_range(
     max_value : float
         Maximum value of the validity range.
     """
+
+    if isinstance(values, np.ndarray):
+        values = values.tolist()
+
     if isinstance(values, (int, float)):
         values = [values]
 
