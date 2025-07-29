@@ -14,16 +14,24 @@ def check_validity_range(
     Tmm10: float | npt.NDArray[np.float64] = np.nan,
     N_waves: int | npt.NDArray[np.int32] = np.nan,
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
+    P: float | npt.NDArray[np.float64] = np.nan,
+    S: float | npt.NDArray[np.float64] = np.nan,
+    Dn50: float | npt.NDArray[np.float64] = np.nan,
+    Dn50_core: float | npt.NDArray[np.float64] = np.nan,
+    rho_armour: float | npt.NDArray[np.float64] = np.nan,
+    rho_water: float = 1025.0,
 ) -> None:
+
+    # TODO implement validity ranges from paper
 
     if not np.any(np.isnan(Hs)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(H=Hs, T=Tmm10)
         core_utility.check_variable_validity_range(
             "Wave steepness sm-1,0",
-            "Jumelet et al., 2024",
+            "Etemad-Shahidi et al., 2020",
             smm10,
-            0.009,
-            0.057,
+            0.003,
+            0.088,
         )
 
     if (
@@ -36,29 +44,88 @@ def check_validity_range(
         )
         core_utility.check_variable_validity_range(
             "Irribarren number ksi_m-1,0",
-            "Jumelet et al., 2024",
+            "Etemad-Shahidi et al., 2020",
             ksi_mm10,
-            0.42,
-            1.66,
+            0.65,
+            8.18,
         )
 
     if not np.any(np.isnan(cot_alpha)):
         core_utility.check_variable_validity_range(
             "Cotangent of outer structure slope cot_alpha",
-            "Jumelet et al., 2024",
+            "Etemad-Shahidi et al., 2020",
             cot_alpha,
+            1.5,
             6.0,
-            10.0,
         )
 
     if not np.any(np.isnan(N_waves)):
         core_utility.check_variable_validity_range(
             "Number of waves N_waves",
-            "Jumelet et al., 2024",
+            "Etemad-Shahidi et al., 2020",
             N_waves,
-            250,
-            20000,
+            500,
+            5000,
         )
+
+    if not np.any(np.isnan(rho_armour)):
+        Delta = core_physics.calculate_buoyant_density_Delta(
+            rho_rock=rho_armour, rho_water=rho_water
+        )
+        core_utility.check_variable_validity_range(
+            "Buoyant density Delta",
+            "Etemad-Shahidi et al., 2020",
+            Delta,
+            0.92,
+            2.05,
+        )
+
+    if not np.any(np.isnan(P)):
+        Delta = core_physics.calculate_buoyant_density_Delta(
+            rho_rock=rho_armour, rho_water=rho_water
+        )
+        core_utility.check_variable_validity_range(
+            "Permeability P",
+            "Etemad-Shahidi et al., 2020",
+            P,
+            0.1,
+            0.6,
+        )
+
+    if not np.any(np.isnan(Dn50)) and not np.any(np.isnan(Dn50_core)):
+        core_utility.check_variable_validity_range(
+            "Relative core diameter Dn50_core / Dn50",
+            "Etemad-Shahidi et al., 2020",
+            Dn50_core / Dn50,
+            0.0,
+            1.0,
+        )
+
+    if (
+        not np.any(np.isnan(Hs))
+        and not np.any(np.isnan(Dn50))
+        and not np.any(np.isnan(rho_armour))
+    ):
+        Ns = core_physics.calculate_stability_number_Ns(
+            H=Hs, D=Dn50, rho_rock=rho_armour, rho_water=rho_water
+        )
+        core_utility.check_variable_validity_range(
+            "Stability number Ns",
+            "Etemad-Shahidi et al., 2020",
+            Ns,
+            1.0,
+            4.3,
+        )
+
+    if not np.any(np.isnan(S)):
+        core_utility.check_variable_validity_range(
+            "Damage number S",
+            "Etemad-Shahidi et al., 2020",
+            S,
+            2.0,
+            12.0,
+        )
+
     return
 
 
@@ -122,6 +189,11 @@ def calculate_damage_number_S(
         Tmm10=Tmm10,
         N_waves=N_waves,
         cot_alpha=cot_alpha,
+        Dn50=Dn50,
+        Dn50_core=Dn50_core,
+        S=S,
+        rho_armour=rho_armour,
+        rho_water=rho_water,
     )
 
     return S
@@ -210,6 +282,10 @@ def calculate_nominal_rock_diameter_Dn50(
         Tmm10=Tmm10,
         N_waves=N_waves,
         cot_alpha=cot_alpha,
+        Dn50=Dn50,
+        Dn50_core=Dn50_core,
+        S=S,
+        rho_armour=rho_armour,
     )
     return Dn50
 
@@ -287,6 +363,10 @@ def calculate_significant_wave_height_Hs(
         Tmm10=Tmm10,
         N_waves=N_waves,
         cot_alpha=cot_alpha,
+        Dn50=Dn50,
+        Dn50_core=Dn50_core,
+        S=S,
+        rho_armour=rho_armour,
     )
     return Hs
 
