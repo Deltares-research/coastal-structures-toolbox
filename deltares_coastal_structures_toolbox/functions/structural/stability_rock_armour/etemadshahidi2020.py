@@ -245,7 +245,6 @@ def calculate_nominal_rock_diameter_Dn50(
             * np.power(ksi_mm10, 1.0 / 3.0)
         )
 
-        Cp_s_prev = Cp_s
         Cp_s = calculate_permeability_coefficient_Cp(Dn50=Dn50_s, Dn50_core=Dn50_core)
         Dn50_s_diff = np.abs(Dn50_s - Dn50_s_prev)
         Dn50_s_prev = Dn50_s
