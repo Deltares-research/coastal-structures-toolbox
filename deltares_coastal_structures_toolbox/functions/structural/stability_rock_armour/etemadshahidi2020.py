@@ -5,7 +5,6 @@ import numpy.typing as npt
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 
-
 # TODO refer to https://doi.org/10.1016/j.coastaleng.2020.103655 and https://doi.org/10.1016/j.coastaleng.2022.104142
 
 
@@ -164,14 +163,14 @@ def calculate_damage_number_S(
     Cp = calculate_permeability_coefficient_Cp(Dn50=Dn50, Dn50_core=Dn50_core)
 
     S_s = (
-        np.power(0.26, 6.0)
+        np.power(1.0 / 3.9, 6.0)
         * np.power(Ns, 6.0)
         * np.power(Cp, -6.0)
         * np.power(N_waves, 0.6)
         * np.power(ksi_mm10, 2.0)
     )
     S_pl = (
-        np.power(0.22, 6.0)
+        np.power(1.0 / 4.5, 6.0)
         * np.power(Ns, 6.0)
         * np.power(Cp, -6.0)
         * np.power(N_waves, 0.6)
@@ -211,6 +210,7 @@ def calculate_nominal_rock_diameter_Dn50(
     rho_core: float | npt.NDArray[np.float64] = np.nan,
     Cp_init: float = 0.5,
     max_iter: int = 1000,
+    tolerance: float = 1e-5,
 ) -> float | npt.NDArray[np.float64]:
 
     # TODO ref eq. 10a & 10b (iterative solution necessary due to Cp dependency on Dn50)
@@ -233,7 +233,7 @@ def calculate_nominal_rock_diameter_Dn50(
     Dn50_s_prev = np.inf
     Cp_s = Cp_init
 
-    while Dn50_s_diff > 1e-3 and n_iter_s < max_iter:
+    while Dn50_s_diff > tolerance and n_iter_s < max_iter:
         n_iter_s += 1
 
         Dn50_s = (
@@ -245,6 +245,7 @@ def calculate_nominal_rock_diameter_Dn50(
             * np.power(ksi_mm10, 1.0 / 3.0)
         )
 
+        Cp_s_prev = Cp_s
         Cp_s = calculate_permeability_coefficient_Cp(Dn50=Dn50_s, Dn50_core=Dn50_core)
         Dn50_s_diff = np.abs(Dn50_s - Dn50_s_prev)
         Dn50_s_prev = Dn50_s
@@ -255,7 +256,7 @@ def calculate_nominal_rock_diameter_Dn50(
     Dn50_pl_prev = np.inf
     Cp_pl = Cp_init
 
-    while Dn50_pl_diff > 1e-3 and n_iter_pl < max_iter:
+    while Dn50_pl_diff > tolerance and n_iter_pl < max_iter:
         n_iter_pl += 1
 
         Dn50_pl = (
@@ -322,7 +323,7 @@ def calculate_significant_wave_height_Hs(
 
     Hs_s = np.power(
         S
-        * np.power(0.26, -6.0)
+        * np.power(1.0 / 3.9, -6.0)
         * (2 * np.pi / g)
         * np.power(Cp, 6.0)
         * np.power(Delta * Dn50, 6.0)
@@ -334,7 +335,7 @@ def calculate_significant_wave_height_Hs(
 
     Hs_pl = np.power(
         S
-        * np.power(0.22, -6.0)
+        * np.power(1.0 / 4.5, -6.0)
         * np.power(2 * np.pi / g, 7.0 / 4.0)
         * np.power(Cp, 6.0)
         * np.power(Delta * Dn50, 6.0)
