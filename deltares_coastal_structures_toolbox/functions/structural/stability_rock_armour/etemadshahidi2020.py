@@ -140,9 +140,19 @@ def calculate_damage_number_S(
     M50_core: float | npt.NDArray[np.float64] = np.nan,
     rho_core: float | npt.NDArray[np.float64] = np.nan,
     rho_water: float = 1025.0,
+    m: float | npt.NDArray[np.float64] = np.nan,
+    use_depth_limited_version: bool = False,
 ) -> float | npt.NDArray[np.float64]:
 
     # TODO ref eq. 17a & 17b
+
+    if use_depth_limited_version:
+        if np.any(np.isnan(m)):
+            raise ValueError("For the depth limited version, m should be provided")
+        else:
+            influence_depth_limitation = 1.0 - 3.0 * m
+    else:
+        influence_depth_limitation = 1.0
 
     Dn50 = core_physics.check_usage_Dn50_or_M50(
         Dn50=Dn50, M50=M50, rho_armour=rho_armour
@@ -168,6 +178,7 @@ def calculate_damage_number_S(
         * np.power(Cp, -6.0)
         * np.power(N_waves, 0.6)
         * np.power(ksi_mm10, 2.0)
+        * np.power(influence_depth_limitation, -6.0)
     )
     S_pl = (
         np.power(1.0 / 4.5, 6.0)
@@ -175,6 +186,7 @@ def calculate_damage_number_S(
         * np.power(Cp, -6.0)
         * np.power(N_waves, 0.6)
         * np.power(ksi_mm10, 7.0 / 2.0)
+        * np.power(influence_depth_limitation, -6.0)
     )
 
     S = np.where(
@@ -208,12 +220,22 @@ def calculate_nominal_rock_diameter_Dn50(
     Dn50_core: float | npt.NDArray[np.float64] = np.nan,
     M50_core: float | npt.NDArray[np.float64] = np.nan,
     rho_core: float | npt.NDArray[np.float64] = np.nan,
+    m: float | npt.NDArray[np.float64] = np.nan,
+    use_depth_limited_version: bool = False,
     Cp_init: float = 0.5,
     max_iter: int = 1000,
     tolerance: float = 1e-5,
 ) -> float | npt.NDArray[np.float64]:
 
     # TODO ref eq. 10a & 10b (iterative solution necessary due to Cp dependency on Dn50)
+
+    if use_depth_limited_version:
+        if np.any(np.isnan(m)):
+            raise ValueError("For the depth limited version, m should be provided")
+        else:
+            influence_depth_limitation = 1.0 - 3.0 * m
+    else:
+        influence_depth_limitation = 1.0
 
     Dn50_core = core_physics.check_usage_Dn50_or_M50(
         Dn50=Dn50_core, M50=M50_core, rho_armour=rho_core
@@ -243,6 +265,7 @@ def calculate_nominal_rock_diameter_Dn50(
             * np.power(N_waves, 1.0 / 10.0)
             * np.power(S, -1.0 / 6.0)
             * np.power(ksi_mm10, 1.0 / 3.0)
+            * np.power(influence_depth_limitation, -1.0)
         )
 
         Cp_s = calculate_permeability_coefficient_Cp(Dn50=Dn50_s, Dn50_core=Dn50_core)
@@ -265,6 +288,7 @@ def calculate_nominal_rock_diameter_Dn50(
             * np.power(N_waves, 1.0 / 10.0)
             * np.power(S, -1.0 / 6.0)
             * np.power(ksi_mm10, 7.0 / 12.0)
+            * np.power(influence_depth_limitation, -1.0)
         )
 
         Cp_pl = calculate_permeability_coefficient_Cp(Dn50=Dn50_pl, Dn50_core=Dn50_core)
@@ -301,10 +325,20 @@ def calculate_significant_wave_height_Hs(
     Dn50_core: float | npt.NDArray[np.float64] = np.nan,
     M50_core: float | npt.NDArray[np.float64] = np.nan,
     rho_core: float | npt.NDArray[np.float64] = np.nan,
+    m: float | npt.NDArray[np.float64] = np.nan,
+    use_depth_limited_version: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
 
     # TODO ref eq. 18a & 18b
+
+    if use_depth_limited_version:
+        if np.any(np.isnan(m)):
+            raise ValueError("For the depth limited version, m should be provided")
+        else:
+            influence_depth_limitation = 1.0 - 3.0 * m
+    else:
+        influence_depth_limitation = 1.0
 
     Dn50 = core_physics.check_usage_Dn50_or_M50(
         Dn50=Dn50, M50=M50, rho_armour=rho_armour
@@ -328,7 +362,8 @@ def calculate_significant_wave_height_Hs(
         * np.power(Delta * Dn50, 6.0)
         * np.power(Tmm10, -2.0)
         * np.power(cot_alpha, 2.0)
-        * np.power(N_waves, -0.6),
+        * np.power(N_waves, -0.6)
+        * np.power(influence_depth_limitation, 6.0),
         1.0 / 5.0,
     )
 
@@ -340,7 +375,8 @@ def calculate_significant_wave_height_Hs(
         * np.power(Delta * Dn50, 6.0)
         * np.power(Tmm10, -7.0 / 2.0)
         * np.power(cot_alpha, 7.0 / 2.0)
-        * np.power(N_waves, -0.6),
+        * np.power(N_waves, -0.6)
+        * np.power(influence_depth_limitation, 6.0),
         4.0 / 17.0,
     )
 
