@@ -73,7 +73,7 @@ def write_input_file_XGB_Overtopping(
     gamma_f_up : float | npt.NDArray[np.float64]
         Influence factor for surface roughness of the upper part of the structure (-)
     tan_alpha_f : float | npt.NDArray[np.float64]
-        Tangent of the foreshore slope (-).
+        Tangent of the foreshore slope (-)
     output_dir : str
         Directory where the input file will be saved.
     file_name : str, optional
