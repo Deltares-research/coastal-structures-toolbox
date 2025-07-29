@@ -228,6 +228,7 @@ def calculate_significant_wave_height_Hs(
     g: float = 9.81,
     smm10_init: float = 0.03,
     max_iter: int = 1000,
+    tolerance: float = 1e-3,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the maximum significant wave height Hs for rock armour layers with the Jumelet et al. (2024) formula.
 
@@ -259,6 +260,8 @@ def calculate_significant_wave_height_Hs(
         Initial wave steepness sm-1,0 (-) for the iterative solution, by default 0.03
     max_iter : int, optional
         Maximum number of iterations, by default 1000
+    tolerance : float, optional
+        Tolerance for convergence of the iterative solution, by default 1e-3
 
     Returns
     -------
@@ -283,7 +286,7 @@ def calculate_significant_wave_height_Hs(
     Hs_diff = np.inf
     Hs_prev = Hs_init
 
-    while Hs_diff > 1e-3 and n_iter < max_iter:
+    while Hs_diff > tolerance and n_iter < max_iter:
         n_iter += 1
 
         Fp = calculate_fraction_plunging_waves_Fp(ksi_mm10=ksi_mm10)
