@@ -137,9 +137,11 @@ def calculate_nominal_rock_diameter_Dn50(
     Dn50_core: float | npt.NDArray[np.float64] = np.nan,
     M50_core: float | npt.NDArray[np.float64] = np.nan,
     rho_core: float | npt.NDArray[np.float64] = np.nan,
+    Cp_init: float = 0.5,
+    max_iter: int = 1000,
 ) -> float | npt.NDArray[np.float64]:
 
-    # TODO ref eq. 10a & 10b
+    # TODO ref eq. 10a & 10b (iterative solution necessary due to Cp dependency on Dn50)
 
     Dn50_core = core_physics.check_usage_Dn50_or_M50(
         Dn50=Dn50_core, M50=M50_core, rho_armour=rho_core
@@ -153,24 +155,49 @@ def calculate_nominal_rock_diameter_Dn50(
         rho_rock=rho_armour, rho_water=1025
     )
 
-    Cp = calculate_permeability_coefficient_Cp(Dn50=Dn50, Dn50_core=Dn50_core)
+    n_iter_s = 0
 
-    Dn50_s = (
-        (Hs / Delta)
-        * (1.0 / 3.9)
-        * (1.0 / Cp)
-        * np.power(N_waves, 1.0 / 10.0)
-        * np.power(S, -1.0 / 6.0)
-        * np.power(ksi_mm10, 1.0 / 3.0)
-    )
-    Dn50_pl = (
-        (Hs / Delta)
-        * (1.0 / 4.5)
-        * (1.0 / Cp)
-        * np.power(N_waves, 1.0 / 10.0)
-        * np.power(S, -1.0 / 6.0)
-        * np.power(ksi_mm10, 7.0 / 12.0)
-    )
+    Dn50_s_diff = np.inf
+    Dn50_s_prev = np.inf
+    Cp_s = Cp_init
+
+    while Dn50_s_diff > 1e-3 and n_iter_s < max_iter:
+        n_iter_s += 1
+
+        Dn50_s = (
+            (Hs / Delta)
+            * (1.0 / 3.9)
+            * (1.0 / Cp_s)
+            * np.power(N_waves, 1.0 / 10.0)
+            * np.power(S, -1.0 / 6.0)
+            * np.power(ksi_mm10, 1.0 / 3.0)
+        )
+
+        Cp_s = calculate_permeability_coefficient_Cp(Dn50=Dn50_s, Dn50_core=Dn50_core)
+        Dn50_s_diff = np.abs(Dn50_s - Dn50_s_prev)
+        Dn50_s_prev = Dn50_s
+
+    n_iter_pl = 0
+
+    Dn50_pl_diff = np.inf
+    Dn50_pl_prev = np.inf
+    Cp_pl = Cp_init
+
+    while Dn50_pl_diff > 1e-3 and n_iter_pl < max_iter:
+        n_iter_pl += 1
+
+        Dn50_pl = (
+            (Hs / Delta)
+            * (1.0 / 4.5)
+            * (1.0 / Cp_pl)
+            * np.power(N_waves, 1.0 / 10.0)
+            * np.power(S, -1.0 / 6.0)
+            * np.power(ksi_mm10, 7.0 / 12.0)
+        )
+
+        Cp_pl = calculate_permeability_coefficient_Cp(Dn50=Dn50_pl, Dn50_core=Dn50_core)
+        Dn50_pl_diff = np.abs(Dn50_pl - Dn50_pl_prev)
+        Dn50_pl_prev = Dn50_pl
 
     Dn50 = np.where(
         ksi_mm10 >= 1.8,
