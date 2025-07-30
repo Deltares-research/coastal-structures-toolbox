@@ -15,6 +15,32 @@ def check_validity_range(
     Dn50: float | npt.NDArray[np.float64] = np.nan,
     structure_type: str = "impermeable",
 ) -> None:
+    """Check the parameter values vs the validity range of the Van Gent (2024) formula.
+
+    For all parameters supplied, their values are checked versus the range of test conditions specified in
+    of Van Gent (2024). When parameters are nan (by default), they are not checked.
+
+    Note that the validity ranges differ between impermeable and permeable submerged structures.
+
+    For more details, see: https://doi.org/10.59490/jchs.2024.0033
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64], optional
+        Spectral significant wave height (m), by default np.nan
+    Tmm10 : float | npt.NDArray[np.float64], optional
+        Spectral wave period Tm-1,0 (s), by default np.nan
+    Rc : float | npt.NDArray[np.float64], optional
+        Crest freeboard of the structure (m), by default np.nan
+    B : float | npt.NDArray[np.float64], optional
+        Submerged structure crest width (m), by default np.nan
+    hc : float | npt.NDArray[np.float64], optional
+        Submerged structure height (m), by default np.nan
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter (m), by default np.nan
+    structure_type : str, optional
+        Impermeable or permeable submerged structure, by default "impermeable"
+    """
 
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(Hm0, Tmm10)
@@ -89,6 +115,26 @@ def calculate_structure_induced_setup_delta_impermeable(
     Tmm10: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the structure-induced setup delta for an impermeable submerged structure following Van Gent (2024).
+
+    Here, eq. 2 from Van Gent (2024) is implemented.
+
+    For more details, see: https://doi.org/10.59490/jchs.2024.0033
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The structure-induced setup delta (m)
+    """
 
     delta_diml = calculate_dimensionless_structure_induced_setup_impermeable(
         Hm0=Hm0, Tmm10=Tmm10, Rc=Rc
@@ -104,6 +150,27 @@ def calculate_dimensionless_structure_induced_setup_impermeable(
     Tmm10: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the dimensionless structure-induced setup delta/Hm0 for an impermeable submerged structure
+    following Van Gent (2024).
+
+    Here, eq. 2 from Van Gent (2024) is implemented.
+
+    For more details, see: https://doi.org/10.59490/jchs.2024.0033
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The dimensionless structure-induced setup delta/Hm0 (-)
+    """
 
     smm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
 
@@ -125,6 +192,28 @@ def calculate_structure_induced_setup_delta_permeable(
     Rc: float | npt.NDArray[np.float64],
     hc: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the structure-induced setup delta for a permeable submerged structure following Van Gent (2024).
+
+    Here, eq. 3 from Van Gent (2024) is implemented.
+
+    For more details, see: https://doi.org/10.59490/jchs.2024.0033
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+    hc : float | npt.NDArray[np.float64]
+        Submerged structure height (m)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The structure-induced setup delta (m)
+    """
 
     delta_diml = calculate_dimensionless_structure_induced_setup_permeable(
         Hm0=Hm0, Tmm10=Tmm10, Rc=Rc, hc=hc
@@ -141,6 +230,29 @@ def calculate_dimensionless_structure_induced_setup_permeable(
     Rc: float | npt.NDArray[np.float64],
     hc: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the dimensionless structure-induced setup delta/Hm0 for a permeable submerged structure
+    following Van Gent (2024).
+
+    Here, eq. 3 from Van Gent (2024) is implemented.
+
+    For more details, see: https://doi.org/10.59490/jchs.2024.0033
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+    hc : float | npt.NDArray[np.float64]
+        Submerged structure height (m)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The dimensionless structure-induced setup delta/Hm0 (-)
+    """
 
     smm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
 
