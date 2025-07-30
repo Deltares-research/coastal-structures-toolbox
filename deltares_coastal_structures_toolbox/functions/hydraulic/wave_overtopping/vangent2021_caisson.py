@@ -13,6 +13,26 @@ def check_validity_range(
     Rc: float | npt.NDArray[np.float64] = np.nan,
     q_diml: float | npt.NDArray[np.float64] = np.nan,
 ) -> None:
+    """Check the parameter values vs the validity range of the Van Gent (2021) formula.
+
+    For all parameters supplied, their values are checked versus the range of test conditions specified in
+    Table 2 in Van Gent (2021). When parameters are nan (by default), they are not checked.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103834
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64], optional
+        Spectral significant wave height (m), by default np.nan
+    Tmm10 : float | npt.NDArray[np.float64], optional
+        Spectral wave period Tm-1,0 (s), by default np.nan
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    Rc : float | npt.NDArray[np.float64], optional
+        Crest freeboard of the structure (m), by default np.nan
+    q_diml : float | npt.NDArray[np.float64], optional
+        Dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-), by default np.nan
+    """
 
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(Hm0, Tmm10)
@@ -59,7 +79,45 @@ def calculate_overtopping_discharge_q(
     parapet: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the mean wave overtopping discharge q for caisson breakwaters with the Van Gent (2021) formula."""
+    """Calculate the mean wave overtopping discharge q for caisson breakwaters with the Van Gent (2021) formula.
+
+    The mean wave overtopping discharge q (m^3/s/m) for caisson breakwaters is calculated using the Van Gent (2021)
+    formula. Here, eq. 11 from Van Gent (2021) is implemented.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103834
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    Hm0_swell : float | npt.NDArray[np.float64], optional
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m),
+        by default np.nan
+    c : float, optional
+        Exponent in the wave overtopping formula, by default 1.0
+    c_swell : float, optional
+        Coefficient for the effective freeboard reduction due to swell (only active for crossing_seas = True),
+        by default 0.4
+    short_crested_waves : bool, optional
+        Use coefficient for short-crested waves (else long-crested), by default True
+    crossing_seas : bool, optional
+        Calculation for crossing seas where Hm0_swell has an influence, by default False
+    parapet : bool, optional
+        Indicate the presence of a recurved parapet / bullnose / recurved wave return wall, by default False
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The mean wave overtopping discharge q (m^3/s/m)
+    """
 
     q_diml = calculate_dimensionless_overtopping_discharge_q(
         Hm0=Hm0,
@@ -90,8 +148,49 @@ def calculate_dimensionless_overtopping_discharge_q(
     crossing_seas: bool = False,
     parapet: bool = False,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the dimensionless mean wave overtopping discharge q for caisson
-    breakwaters with the Van Gent (2021) formula."""
+    """Calculate the dimensionless mean wave overtopping discharge q for caisson breakwaters with the
+    Van Gent (2021) formula.
+
+    The dimensionless mean wave overtopping discharge q (m^3/s/m) for caisson breakwaters is calculated using the
+    Van Gent (2021) formula. Here, eq. 11 from Van Gent (2021) is implemented.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103834
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    Hm0_swell : float | npt.NDArray[np.float64], optional
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m),
+        by default np.nan
+    c : float, optional
+        Exponent in the wave overtopping formula, by default 1.0
+    c_swell : float, optional
+        Coefficient for the effective freeboard reduction due to swell (only active for crossing_seas = True),
+        by default 0.4
+    short_crested_waves : bool, optional
+        Use coefficient for short-crested waves (else long-crested), by default True
+    crossing_seas : bool, optional
+        Calculation for crossing seas where Hm0_swell has an influence, by default False
+    parapet : bool, optional
+        Indicate the presence of a recurved parapet / bullnose / recurved wave return wall, by default False
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3)
+
+    Raises
+    ------
+    ValueError
+        When Hm0_swell is not provided in the case of crossing seas.
+    """
 
     a, b, c_beta, gamma_p = _determine_coefficients(
         c=c,
@@ -134,7 +233,26 @@ def calculate_influence_oblique_waves_gamma_beta(
     gamma_p: float,
     c_beta: float,
 ) -> float | npt.NDArray[np.float64]:
-    # """Calculate the influence factor for oblique wave incidence gamma_beta"""
+    """Calculate the influence factor for oblique wave incidence gamma_beta
+
+    The influence factor gamma_beta is determined using Van Gent (2021) eq. 10
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103834
+
+    Parameters
+    ----------
+    beta : float | npt.NDArray[np.float64]
+        Angle of wave incidence (degrees)
+    gamma_p : float
+        Influence factor for a recurved parapet / bullnose / recurved wave return wall (-)
+    c_beta : float
+        Coefficient in the gamma_beta formula
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The influence factor for oblique wave incidence gamma_beta (-)
+    """
 
     gamma_beta = (1 - c_beta / gamma_p) * np.power(
         np.cos(np.radians(beta)), 2
@@ -156,6 +274,45 @@ def calculate_crest_freeboard_Rc(
     parapet: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the crest freeboard Rc for caisson breakwaters with the Van Gent (2021) formula.
+
+    The crest freeboard Rc (m) of a caisson breakwater is calculated using the Van Gent (2021) formula.
+    Here, eq. 11 from Van Gent (2021) is implemented.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103834
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    Hm0_swell : float | npt.NDArray[np.float64], optional
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m),
+        by default np.nan
+    c : float, optional
+        Exponent in the wave overtopping formula, by default 1.0
+    c_swell : float, optional
+        Coefficient for the effective freeboard reduction due to swell (only active for crossing_seas = True),
+        by default 0.4
+    short_crested_waves : bool, optional
+        Use coefficient for short-crested waves (else long-crested), by default True
+    crossing_seas : bool, optional
+        Calculation for crossing seas where Hm0_swell has an influence, by default False
+    parapet : bool, optional
+        Indicate the presence of a recurved parapet / bullnose / recurved wave return wall, by default False
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The crest freeboard of the structure Rc (m)
+    """
 
     Rc_diml = calculate_dimensionless_crest_freeboard(
         Hm0=Hm0,
@@ -189,6 +346,50 @@ def calculate_dimensionless_crest_freeboard(
     parapet: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the dimensionless crest freeboard Rc/Hm0 for caisson breakwaters with the Van Gent (2021) formula.
+
+    The dimensionless crest freeboard Rc/Hm0 (-) of a caisson breakwater is calculated using the Van Gent (2021)
+    formula. Here, eq. 11 from Van Gent (2021) is implemented.
+
+    For more details, see: https://doi.org/10.1016/j.coastaleng.2020.103834
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    Hm0_swell : float | npt.NDArray[np.float64], optional
+        Spectral significant wave height of swell or infragravity waves in case of a second wave field (m),
+        by default np.nan
+    c : float, optional
+        Exponent in the wave overtopping formula, by default 1.0
+    c_swell : float, optional
+        Coefficient for the effective freeboard reduction due to swell (only active for crossing_seas = True),
+        by default 0.4
+    short_crested_waves : bool, optional
+        Use coefficient for short-crested waves (else long-crested), by default True
+    crossing_seas : bool, optional
+        Calculation for crossing seas where Hm0_swell has an influence, by default False
+    parapet : bool, optional
+        Indicate the presence of a recurved parapet / bullnose / recurved wave return wall, by default False
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The dimensionless crest freeboard of the structure Rc/Hm0 (-)
+
+    Raises
+    ------
+    ValueError
+        When Hm0_swell is not provided in the case of crossing seas.
+    """
 
     a, b, c_beta, gamma_p = _determine_coefficients(
         c=c,
