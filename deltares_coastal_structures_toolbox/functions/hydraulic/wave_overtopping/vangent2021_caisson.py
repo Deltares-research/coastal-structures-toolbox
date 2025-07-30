@@ -58,10 +58,10 @@ def calculate_overtopping_discharge_q(
     crossing_seas: bool = False,
     parapet: bool = False,
     g: float = 9.81,
-) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+) -> float | npt.NDArray[np.float64]:
     """Calculate the mean wave overtopping discharge q for caisson breakwaters with the Van Gent (2021) formula."""
 
-    q_diml, max_reached = calculate_dimensionless_overtopping_discharge_q(
+    q_diml = calculate_dimensionless_overtopping_discharge_q(
         Hm0=Hm0,
         Hm0_swell=Hm0_swell,
         Rc=Rc,
@@ -75,7 +75,7 @@ def calculate_overtopping_discharge_q(
     )
     q = q_diml * np.sqrt(g * Hm0**3)
 
-    return q, max_reached
+    return q
 
 
 def calculate_dimensionless_overtopping_discharge_q(
@@ -89,7 +89,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     short_crested_waves: bool = True,
     crossing_seas: bool = False,
     parapet: bool = False,
-) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+) -> float | npt.NDArray[np.float64]:
     """Calculate the dimensionless mean wave overtopping discharge q for caisson
     breakwaters with the Van Gent (2021) formula."""
 
