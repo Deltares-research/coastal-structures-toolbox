@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.vangent2014 as vangent2014
+import deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.vangentvanderwerf2014 as vangentvanderwerf2014
 
 
 @pytest.mark.parametrize(
@@ -19,7 +19,7 @@ import deltares_coastal_structures_toolbox.functions.structural.stability_toe_be
 )
 def test_udelta_backward(Hs, Tmm10, ht, udelta_expected):
 
-    udelta_calculated = vangent2014.calculate_velocity_u_delta(
+    udelta_calculated = vangentvanderwerf2014.calculate_velocity_u_delta(
         Hs=Hs,
         Tmm10=Tmm10,
         ht=ht,
@@ -146,7 +146,7 @@ def test_Nod_backward(
     Nod_expected,
 ):
 
-    Nod_calculated = vangent2014.calculate_damage_Nod(
+    Nod_calculated = vangentvanderwerf2014.calculate_damage_Nod(
         Hm0=Hs,
         Tmm10=Tmm10,
         ht=ht,
@@ -279,7 +279,7 @@ def test_Dn50_backward(
     Nod,
 ):
 
-    Dn50_calculated = vangent2014.calculate_nominal_diameter_Dn50(
+    Dn50_calculated = vangentvanderwerf2014.calculate_nominal_diameter_Dn50(
         Hm0=Hs,
         Tmm10=Tmm10,
         ht=ht,
