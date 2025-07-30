@@ -261,7 +261,7 @@ def calculate_local_wavelength(
     """
 
     # implementation of disper handles arrays for T, but not for h, hence this implementation
-    if isinstance(h, float):
+    if isinstance(h, (float, int)):
         k = dispersion.disper(w=((2 * np.pi) / T), h=h, g=g)
     elif len(h) > 1 and isinstance(T, float):
         k = np.array([])
