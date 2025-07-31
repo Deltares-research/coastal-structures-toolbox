@@ -451,7 +451,10 @@ def iteration_procedure_z2p(
     z2p_estimate_i1 = 1.5 * Hm0
     z2p_estimate_i0 = z2p_estimate_i1 + 2 * tolerance
 
-    while n_iter <= max_iter and abs(z2p_estimate_i1 - z2p_estimate_i0) > tolerance:
+    while (
+        n_iter <= max_iter
+        and np.max(abs(z2p_estimate_i1 - z2p_estimate_i0)) > tolerance
+    ):
         z2p_estimate_i0 = z2p_estimate_i1
 
         L_berm = calculate_berm_length(

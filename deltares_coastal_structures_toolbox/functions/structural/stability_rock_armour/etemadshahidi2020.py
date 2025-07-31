@@ -378,7 +378,7 @@ def calculate_nominal_rock_diameter_Dn50(
     Dn50_s_prev = np.inf
     Cp_s = Cp_init
 
-    while Dn50_s_diff > tolerance and n_iter_s < max_iter:
+    while np.max(Dn50_s_diff) > tolerance and n_iter_s < max_iter:
         n_iter_s += 1
 
         Dn50_s = (
@@ -401,7 +401,7 @@ def calculate_nominal_rock_diameter_Dn50(
     Dn50_pl_prev = np.inf
     Cp_pl = Cp_init
 
-    while Dn50_pl_diff > tolerance and n_iter_pl < max_iter:
+    while np.max(Dn50_pl_diff) > tolerance and n_iter_pl < max_iter:
         n_iter_pl += 1
 
         Dn50_pl = (

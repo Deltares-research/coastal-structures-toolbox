@@ -413,7 +413,7 @@ def calculate_maximum_significant_wave_height_Hs(
     Hs_i0 = Hs_i1 + np.inf
     iteration = 0
 
-    while iteration < max_iterations and np.abs(Hs_i1 - Hs_i0) > tolerance:
+    while iteration < max_iterations and np.max(np.abs(Hs_i1 - Hs_i0)) > tolerance:
 
         iteration += 1
         Hs_i0 = Hs_i1

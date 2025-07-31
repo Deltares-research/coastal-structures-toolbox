@@ -430,7 +430,7 @@ def calculate_significant_wave_height_Hs(
     Hs_diff = np.inf
     Hs_prev = Hs_init
 
-    while Hs_diff > 1e-3 and n_iter < max_iter:
+    while np.max(Hs_diff) > 1e-3 and n_iter < max_iter:
 
         Hs = (
             Delta

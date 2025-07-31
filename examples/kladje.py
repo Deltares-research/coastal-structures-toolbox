@@ -8,6 +8,36 @@ import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw200
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988 as stability_rock_vandermeer1988
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988_modified as stability_rock_vandermeer1988_modified
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_rear.vangent2007 as stability_rear_with_crest_vangent2007
+import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.etemadshahidi2020 as etemadshahidi2020
+
+Hm0 = 2.0
+Tmm10 = 5.0
+Tp = 1.1 * Tmm10
+beta = 30.0
+rho_water = 1025.0
+cot_alpha = 2.5
+B_berm = 3.0
+db = 0.5
+Rc_var = np.linspace(2.0, 6.0, 1000)
+q_max = 10e-3
+S = 9.0
+rho_armour = 2650.0
+P = 0.4
+N_waves = 3000
+H2p = 1.4 * Hm0
+Tm = 0.915 * Tmm10
+M50_core = 50
+S_var = np.linspace(2.0, 10.0, 1000)
+
+Dn50_es2020_var = etemadshahidi2020.calculate_nominal_rock_diameter_Dn50(
+    Hs=Hm0,
+    Tmm10=Tmm10,
+    N_waves=N_waves,
+    cot_alpha=cot_alpha,
+    rho_armour=rho_armour,
+    S=S_var,
+    M50_core=M50_core,
+)
 
 
 vangent2007.write_input_file_NN_Overtopping(

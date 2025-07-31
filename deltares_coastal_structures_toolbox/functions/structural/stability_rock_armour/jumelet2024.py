@@ -286,7 +286,7 @@ def calculate_significant_wave_height_Hs(
     Hs_diff = np.inf
     Hs_prev = Hs_init
 
-    while Hs_diff > tolerance and n_iter < max_iter:
+    while np.max(Hs_diff) > tolerance and n_iter < max_iter:
         n_iter += 1
 
         Fp = calculate_fraction_plunging_waves_Fp(ksi_mm10=ksi_mm10)
