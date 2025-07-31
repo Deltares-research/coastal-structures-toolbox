@@ -6,7 +6,7 @@ import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
-import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.vangent2002 as vangent2002
+import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.vangent2002_velocity as vangent2002_velocity
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.vangent2001 as vangent2001
 
 
@@ -200,7 +200,7 @@ def calculate_damage_number_S(
         Hs=Hs, Tmm10=Tmm10, gamma=gamma_f, cot_alpha=cot_alpha
     )
 
-    u1p = vangent2002.calculate_maximum_wave_overtopping_velocity_uXp(
+    u1p = vangent2002_velocity.calculate_maximum_wave_overtopping_velocity_uXp(
         Hs=Hs, zXp=z1p, Rc=Rc, Bc=Bc, gamma_f=gamma_f, gamma_f_Crest=gamma_f_Crest
     )
 
@@ -300,7 +300,7 @@ def calculate_nominal_rock_diameter_Dn50(
         Hs=Hs, Tmm10=Tmm10, gamma=gamma_f, cot_alpha=cot_alpha
     )
 
-    u1p = vangent2002.calculate_maximum_wave_overtopping_velocity_uXp(
+    u1p = vangent2002_velocity.calculate_maximum_wave_overtopping_velocity_uXp(
         Hs=Hs, zXp=z1p, Rc=Rc, Bc=Bc, gamma_f=gamma_f, gamma_f_Crest=gamma_f_Crest
     )
 
@@ -432,7 +432,7 @@ def calculate_maximum_significant_wave_height_Hs(
         )
 
         # calculate z1% using inverted u1% formula
-        z1p = vangent2002._invert_for_zXp(
+        z1p = vangent2002_velocity._invert_for_zXp(
             Hs=Hs_i0,
             uXp=u1p,
             Rc=Rc,
