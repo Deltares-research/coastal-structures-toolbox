@@ -24,8 +24,50 @@ def calculate_overtopping_discharge_q_rubble_mound(
     use_best_fit: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the mean wave overtopping discharge q for simple rubble mound slopes with the EurOtop (2007) formula.
 
-    q_diml, max_reached = calculate_dimensionless_overtopping_discharge_q_rubble_mound(
+    _extended_summary_
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        _description_
+    Tmm10 : float | npt.NDArray[np.float64]
+        _description_
+    Rc : float | npt.NDArray[np.float64]
+        _description_
+    beta : float | npt.NDArray[np.float64], optional
+        _description_, by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        _description_, by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        _description_, by default 1.0
+    B_berm : float | npt.NDArray[np.float64], optional
+        _description_, by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        _description_, by default 0.0
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        _description_, by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        _description_, by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        _description_, by default np.nan
+    c2 : float, optional
+        _description_, by default 0.2
+    c3 : float, optional
+        _description_, by default 2.3
+    use_best_fit : bool, optional
+        _description_, by default False
+    g : float, optional
+        _description_, by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        _description_
+    """
+
+    q_diml = calculate_dimensionless_overtopping_discharge_q_rubble_mound(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -43,7 +85,7 @@ def calculate_overtopping_discharge_q_rubble_mound(
     )
     q = q_diml * np.sqrt(g * Hm0**3)
 
-    return q, max_reached
+    return q
 
 
 def calculate_dimensionless_overtopping_discharge_q_rubble_mound(
@@ -70,7 +112,7 @@ def calculate_dimensionless_overtopping_discharge_q_rubble_mound(
 
     if wave_runup_taw2002.check_calculate_gamma_beta(beta=beta, gamma_beta=gamma_beta):
         gamma_beta = wave_runup_taw2002.calculate_influence_oblique_waves_gamma_beta(
-            beta=beta, gamma_f=gamma_f
+            beta=beta
         )
 
     if wave_runup_taw2002.check_composite_slope(
@@ -204,7 +246,7 @@ def calculate_dimensionless_crest_freeboard_rubble_mound(
 
     if wave_runup_taw2002.check_calculate_gamma_beta(beta=beta, gamma_beta=gamma_beta):
         gamma_beta = wave_runup_taw2002.calculate_influence_oblique_waves_gamma_beta(
-            beta=beta, gamma_f=gamma_f
+            beta=beta
         )
 
     if wave_runup_taw2002.check_composite_slope(
