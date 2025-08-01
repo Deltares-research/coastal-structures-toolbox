@@ -91,10 +91,8 @@ def calculate_nominal_rock_diameter_Dn50(
         Dn50_prev = Dn50
 
     check_validity_range(
-        Hs=Hs,
         Rc=Rc,
         Dn50=Dn50,
-        rho_armour=rho_armour,
     )
     return Dn50
 
@@ -140,9 +138,7 @@ def calculate_significant_wave_height_Hs(
     Hs = (0.06 * np.power(Rc / Dn50, 2.0) - 0.23 * Rc / Dn50 + 1.36) * Delta * Dn50
 
     check_validity_range(
-        Hs=Hs,
         Rc=Rc,
         Dn50=Dn50,
-        rho_armour=rho_armour,
     )
     return Hs
