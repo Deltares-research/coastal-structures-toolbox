@@ -30,8 +30,8 @@ def check_validity_range(
             "Relative crest height Rc / Dn50",
             "Kramer & Burcharth, 2004",
             Rc / Dn50,
-            -3.0,
-            2.0,
+            -3.1,
+            1.5,
         )
 
     return
