@@ -118,7 +118,7 @@ def calculate_overtopping_discharge_q_eq24(
     Rc: float | npt.NDArray[np.float64],
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following De Ridder et al. (2024).
+    """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 24 in  De Ridder et al. (2024).
 
     For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
 
@@ -147,6 +147,43 @@ def calculate_overtopping_discharge_q_eq24(
     ) * np.sqrt(g * np.power(Hm0, 3))
     return q
 
+def calculate_overtopping_discharge_q_eq26(
+    Hm0: float | npt.NDArray[np.float64],
+    smm10_HF: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+    g: float = 9.81,
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 26 in De Ridder et al. (2024).
+
+    For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Significant spectral wave height (m)
+    smm10_HF : float | npt.NDArray[np.float64]
+        Wave steepness sm-1,0 based on the deep water wave length corresponding
+        to the high frequency spectral wave period Tm-1,0,HF(-)
+    Hm0_LF : float | npt.NDArray[np.float64]
+        Low-frequency wave height (m)
+    gamma_f : float | npt.NDArray[np.float64]
+        Reduction factor for wave overtopping due to friction (-)
+    Rc : float | npt.NDArray[np.float64]
+        Freeboard of the structure (m)
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge q (m^3/s/m)
+    """
+
+    q = calculate_dimensionless_overtopping_discharge_eq26(
+        Hm0, smm10_HF, gamma_f, Rc
+    ) * np.sqrt(g * np.power(Hm0, 3))
+    return q
 
 def calculate_dimensionless_overtopping_discharge_eq24(
     Hm0: float | npt.NDArray[np.float64],
@@ -155,7 +192,7 @@ def calculate_dimensionless_overtopping_discharge_eq24(
     Rc: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the dimensionless mean wave overtopping discharge q for a rubble mound breakwater following
-    De Ridder et al. (2024).
+    De Ridder et al. (2024) using equation 24.
 
     For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
 
@@ -186,6 +223,52 @@ def calculate_dimensionless_overtopping_discharge_eq24(
         smm10_HF=smm10_HF,
         gamma_f=gamma_f,
         Rc=Rc,
+    )
+
+    return q_dimensionless
+
+def calculate_dimensionless_overtopping_discharge_eq26(
+    Hm0: float | npt.NDArray[np.float64],
+    smm10_HF: float | npt.NDArray[np.float64],
+    Hm0_LF: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the dimensionless mean wave overtopping discharge q for a rubble mound breakwater following
+    De Ridder et al. (2024) using equation 26.
+
+    For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Significant spectral wave height (m)
+    smm10_HF : float | npt.NDArray[np.float64]
+        Wave steepness sm-1,0 based on the deep water wave length corresponding
+        to the high frequency spectral wave period Tm-1,0,HF(-)
+    Hm0_LF : float | npt.NDArray[np.float64]
+        Low-frequency wave height (m)
+    gamma_f : float | npt.NDArray[np.float64]
+        Reduction factor for wave overtopping due to friction (-)
+    Rc : float | npt.NDArray[np.float64]
+        Freeboard of the structure (m)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        Dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-)
+    """
+
+    q_dimensionless = 0.50 * np.exp(
+        -7.91 * ((Rc-0.21*Hm0_LF) / Hm0 * gamma_f) * np.power(smm10_HF, 0.30)
+    )
+
+    check_validity_range(
+        Hm0=Hm0,
+        smm10_HF=smm10_HF,
+        gamma_f=gamma_f,
+        Rc=Rc,
+        Hm0_LF=Hm0_LF,
     )
 
     return q_dimensionless
