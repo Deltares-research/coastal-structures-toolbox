@@ -153,10 +153,9 @@ def calculate_crest_freeboard_Rc(
     max_iter: int = 1000,
     tolerance: float = 1e-5,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the crest freeboard Rc for submerged structures with the Kramer & Burcharth (2004) formula.
+    """Calculate the crest freeboard Rc for low-crested structures with the Kramer & Burcharth (2004) formula.
 
     Here, eq. 4 from Kramer & Burcharth (2004) is implemented.
-    ! Note that this function only works for submerged structures, i.e. Rc < 0.
 
     For more details see Kramer & Burcharth (2004), available here: https://doi.org/10.1061/40733(147)12
 
