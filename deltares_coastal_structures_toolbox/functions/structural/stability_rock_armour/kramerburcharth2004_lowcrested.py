@@ -142,3 +142,71 @@ def calculate_significant_wave_height_Hs(
         Dn50=Dn50,
     )
     return Hs
+
+
+def calculate_crest_freeboard_Rc(
+    Hs: float | npt.NDArray[np.float64],
+    rho_armour: float | npt.NDArray[np.float64],
+    Dn50: float | npt.NDArray[np.float64] = np.nan,
+    M50: float | npt.NDArray[np.float64] = np.nan,
+    Rc_Dn50_init: float = -1.0,
+    max_iter: int = 1000,
+    tolerance: float = 1e-5,
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the crest freeboard Rc for submerged structures with the Kramer & Burcharth (2004) formula.
+
+    Here, eq. 4 from Kramer & Burcharth (2004) is implemented.
+    ! Note that this function only works for submerged structures, i.e. Rc < 0.
+
+    For more details see Kramer & Burcharth (2004), available here: https://doi.org/10.1061/40733(147)12
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64]
+        Significant wave height (m)
+    rho_armour : float | npt.NDArray[np.float64]
+        Armour rock density (kg/m^3)
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter (m), by default np.nan
+    M50 : float | npt.NDArray[np.float64], optional
+        Median rock mass (kg), by default np.nan
+    Rc_Dn50_init : float, optional
+        Initial relative crest height Rc/Dn50 for the iterative solution, by default -1.0
+    max_iter : int, optional
+        Maximum number of iterations, by default 1000
+    tolerance : float, optional
+        Tolerance for convergence of the iterative solution, by default 1e-5
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The crest freeboard of the structure (m)
+    """
+
+    Dn50 = core_physics.check_usage_Dn50_or_M50(
+        Dn50=Dn50, M50=M50, rho_armour=rho_armour
+    )
+
+    Delta = core_physics.calculate_buoyant_density_Delta(
+        rho_rock=rho_armour, rho_water=1025
+    )
+
+    n_iter = 0
+
+    Rc_diff = np.inf
+    Rc_prev = np.inf
+    Rc = Rc_Dn50_init * Dn50
+
+    while np.max(Rc_diff) > tolerance and n_iter < max_iter:
+        n_iter += 1
+
+        Rc = ((Hs / Delta) - 1.36 * Dn50) / (0.06 * (Rc / Dn50) - 0.23)
+
+        Rc_diff = np.abs(Rc - Rc_prev)
+        Rc_prev = Rc
+
+    check_validity_range(
+        Rc=Rc,
+        Dn50=Dn50,
+    )
+    return Rc
