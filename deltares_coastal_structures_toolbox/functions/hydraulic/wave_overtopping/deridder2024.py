@@ -118,7 +118,8 @@ def calculate_overtopping_discharge_q_eq24(
     Rc: float | npt.NDArray[np.float64],
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 24 in  De Ridder et al. (2024).
+    """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 24 in
+     De Ridder et al. (2024).
 
     For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
 
@@ -147,6 +148,7 @@ def calculate_overtopping_discharge_q_eq24(
     ) * np.sqrt(g * np.power(Hm0, 3))
     return q
 
+
 def calculate_overtopping_discharge_q_eq26(
     Hm0: float | npt.NDArray[np.float64],
     smm10_HF: float | npt.NDArray[np.float64],
@@ -154,7 +156,8 @@ def calculate_overtopping_discharge_q_eq26(
     Rc: float | npt.NDArray[np.float64],
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 26 in De Ridder et al. (2024).
+    """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 26 in
+     De Ridder et al. (2024).
 
     For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
 
@@ -184,6 +187,7 @@ def calculate_overtopping_discharge_q_eq26(
         Hm0, smm10_HF, gamma_f, Rc
     ) * np.sqrt(g * np.power(Hm0, 3))
     return q
+
 
 def calculate_dimensionless_overtopping_discharge_eq24(
     Hm0: float | npt.NDArray[np.float64],
@@ -227,6 +231,7 @@ def calculate_dimensionless_overtopping_discharge_eq24(
 
     return q_dimensionless
 
+
 def calculate_dimensionless_overtopping_discharge_eq26(
     Hm0: float | npt.NDArray[np.float64],
     smm10_HF: float | npt.NDArray[np.float64],
@@ -260,7 +265,7 @@ def calculate_dimensionless_overtopping_discharge_eq26(
     """
 
     q_dimensionless = 0.50 * np.exp(
-        -7.91 * ((Rc-0.21*Hm0_LF) / Hm0 * gamma_f) * np.power(smm10_HF, 0.30)
+        -7.91 * ((Rc - 0.21 * Hm0_LF) / Hm0 * gamma_f) * np.power(smm10_HF, 0.30)
     )
 
     check_validity_range(
