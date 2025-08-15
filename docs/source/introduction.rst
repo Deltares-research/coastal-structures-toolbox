@@ -17,7 +17,6 @@ The available formulas are grouped into the following categories:
 
 * hydraulic
     * wave overtopping
-    * wave reflection
     * wave run-up
     * wave transmission
 * structural
