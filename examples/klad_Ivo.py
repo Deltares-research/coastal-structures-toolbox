@@ -38,15 +38,27 @@ else:
 print("Done")
 
 
-plt.plot(Hs_table_in, label="in")
-plt.plot(Hs_table_out, label="out")
-plt.show
+class BoundaryCondition:
 
-intersection = np.intersect1d(Hs_table_in, Hs_table_out)
+    # boundary condition for breakwater calculations
+    condition_name = str
+    spectrum_gamma = np.nan
+    spectrum_Hm0 = np.nan
+    spectrum_Tp = np.nan
+    spectrum_values = np.array([])
+    water_level = np.nan
+    return_period = np.nan
 
-ind = np.argmin(np.abs(Hs_table_in - Hs_table_out))
+    def __init__(self):
+        pass
 
-fromto = [
-    np.minimum(Hs_table_in[ind], Hs_table_out[ind]) - 0.1,
-    np.maximum(Hs_table_in[ind], Hs_table_out[ind]) + 0.1,
-]
+    def set_spectrum(f, S):
+        pass
+
+    @property
+    def Tmm10(self):
+        pass
+
+    @Tmm10.setter
+    def Tmm10(self, value):
+        pass
