@@ -6,8 +6,34 @@ import deltares_coastal_structures_toolbox.functions.core_utility as core_utilit
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.vangent2001 as runup
 
 
-def check_validity_FH2p(Rc, Ac, Hs):
-    pass
+def check_validity_FH2p(
+    Rc: float | npt.NDArray[np.float64] = np.nan,
+    Ac: float | npt.NDArray[np.float64] = np.nan,
+    Hm0: float | npt.NDArray[np.float64] = np.nan,
+) -> None:
+
+    if (
+        not np.any(np.isnan(Hm0))
+        and not np.any(np.isnan(Rc))
+        and not np.any(np.isnan(Ac))
+    ):
+        core_utility.check_variable_validity_range(
+            "(Rc-Ac)/Hm0",
+            "Van Gent and Van der Werf 2019",
+            ((Rc - Ac) / Hm0),
+            0.26,
+            0.77,
+        )
+
+    if not np.any(np.isnan(Rc)) and not np.any(np.isnan(Ac)):
+        core_utility.check_variable_validity_range(
+            "Rc/Ac", "Van Gent and Van der Werf 2019", (Rc / Ac), 1.27, 1.55
+        )
+
+    if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Rc)):
+        core_utility.check_variable_validity_range(
+            " ", "Van Gent and Van der Werf 2019", (Rc / Hm0), 0.79, 2.18
+        )
 
 
 def calculate_gamma_beta(
@@ -89,17 +115,20 @@ def calculate_FH2p_perpendicular_from_Hm0():
 
 
 def calculate_FH2p_perpendicular_from_z2p(
-    Hs: float | npt.NDArray[np.float64],
+    Hm0: float | npt.NDArray[np.float64],
     z2p: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     Ac: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
     Hwall: float | npt.NDArray[np.float64],
     g: float | npt.NDArray[np.float64] = 9.81,
+    cFH: float | npt.NDArray[np.float64] = 1.0,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
 
-    check_validity_FH2p()
+    check_validity_FH2p(Hm0=Hm0, Ac=Ac, Rc=Rc)
 
-    FH2p = rho_water * g * Hwall * (z2p - Ac)
+    # Formula 13 paper
+    FH2p = cFH * rho_water * g * Hwall * (z2p - Ac)
 
     FH2p = np.min(FH2p, 0)
 

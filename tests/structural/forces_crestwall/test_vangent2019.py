@@ -47,3 +47,33 @@ def test_z2p_backward(Hm0, Tmm10, cot_alpha, gamma_f, gamma_beta, c0, c1, z2p_ex
     )
 
     assert z2p_calculated == pytest.approx(z2p_expected, abs=1e-3)
+
+
+@pytest.mark.parametrize(
+    ("Hm0", "z2p", "rho_water", "Ac", "Rc", "Hwall", "g", "cFH", "FH2p_expected"),
+    (
+        (0.1589, 0.228712, 1000, 0.097, 0.150, 0.200, 9.81, 1.0, 258.419),
+        (0.1589, 0.250, 1000, 0.097, 0.150, 0.200, 9.81, 1.0, 300.186),
+        (0.1589, 0.228712, 1000, 0.080, 0.150, 0.200, 9.81, 1.0, 291.773),
+        (0.14, 0.250, 1000, 0.097, 0.150, 0.200, 9.81, 1.0, 300.186),
+        (0.1589, 0.228712, 1025, 0.097, 0.150, 0.200, 9.81, 1.0, 264.879),
+        (0.1589, 0.228712, 1000, 0.097, 0.200, 0.200, 9.81, 1.0, 258.419),
+        (0.1589, 0.228712, 1000, 0.097, 0.150, 0.250, 9.81, 1.0, 323.024),
+    ),  # B
+)
+def test_FH2p_perpendicular_from_z2p(
+    Hm0, z2p, rho_water, Ac, Rc, Hwall, g, cFH, FH2p_expected
+):
+
+    FH2p_calculated = vangent2019.calculate_FH2p_perpendicular_from_z2p(
+        Hm0=Hm0,
+        z2p=z2p,
+        rho_water=rho_water,
+        Ac=Ac,
+        Rc=Rc,
+        Hwall=Hwall,
+        g=g,
+        cFH=cFH,
+    )
+
+    assert FH2p_calculated == pytest.approx(FH2p_expected, abs=1e-3)
