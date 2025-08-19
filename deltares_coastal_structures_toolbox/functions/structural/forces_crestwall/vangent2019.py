@@ -69,14 +69,18 @@ def calculate_z2p(
     c0: float | npt.NDArray[np.float64] = 1.45,
     c1: float | npt.NDArray[np.float64] = 5.0,
 ):
-    """Calculate the wave runup height with the Van Gent (2001) formula, as referenced in the Van Gent and van der Werf (2019) paper
+    """Calculate the wave runup height with the Van Gent (2001) formula, as referenced in the Van Gent
+    and van der Werf (2019) paper
 
     For more details see Van Gent (2001), available here: https://doi.org/10.1061/(ASCE)0733-950X(2001)127:5(254)
     or here: https://www.researchgate.net/publication/245293002_Wave_Run-Up_on_Dikes_with_Shallow_Foreshores
-    The coefficients c0 and c1 as well as gamma_f are according to the above paper and as used in the Van Gent and van der Werf (2019) paper
+    The coefficients c0 and c1 as well as gamma_f are according to the above paper and as used in the Van Gent
+    and van der Werf (2019) paper
 
-    For more details also see Van Gent and van der Werf (2019), available here: https://doi.org/10.1016/j.coastaleng.2019.04.001
-    or here: https://www.researchgate.net/publication/332744221_Influence_of_oblique_wave_attack_on_wave_overtopping_and_forces_on_rubble_mound_breakwater_crest_walls
+    For more details also see Van Gent and van der Werf (2019), available here:
+    https://doi.org/10.1016/j.coastaleng.2019.04.001
+    or here:
+    https://www.researchgate.net/publication/332744221_Influence_of_oblique_wave_attack_on_wave_overtopping_and_forces_on_rubble_mound_breakwater_crest_walls
 
     Parameters
     ----------
