@@ -1,7 +1,6 @@
 import numpy as np
 import numpy.typing as npt
 
-import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.vangent2001 as runup
 
