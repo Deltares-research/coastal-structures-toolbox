@@ -40,13 +40,56 @@ def calculate_Irribarren_number_ksi(
     T: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the Irribarren number ksi
+
+    This function calculates the Irribarren number ksi, which is a dimensionless parameter that characterizes different wave breaking regimes.
+
+    Parameters
+    ----------
+    H : float | npt.NDArray[np.float64]
+        Wave height (m)
+    T : float | npt.NDArray[np.float64]
+        Wave period (s)
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The Irribarren number ksi (-)
+    """
 
     s = calculate_wave_steepness_s(H, T)
     ksi = (1.0 / cot_alpha) / np.sqrt(s)
     return ksi
 
 
-def calculate_critical_Irribarren_number_ksi_mc(c_pl, c_s, P, cot_alpha):
+def calculate_critical_Irribarren_number_ksi_mc(
+    c_pl: float | npt.NDArray[np.float64],
+    c_s: float | npt.NDArray[np.float64],
+    P: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64],
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the critical Irribarren number ksi_mc
+
+    This function calculates the critical Irribarren number ksi_mc, used in different formulas for rock stability.
+
+    Parameters
+    ----------
+    c_pl : float | npt.NDArray[np.float64]
+        Coefficient for plunging waves (-)
+    c_s : float | npt.NDArray[np.float64]
+        Coefficient for surging waves (-)
+    P : float | npt.NDArray[np.float64]
+        Notional permeability coefficient (-)
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The critical Irribarren number ksi_mc (-)
+    """
 
     ksi_mc = np.power(
         (c_pl / c_s) * np.power(P, 0.31) * np.sqrt(1.0 / cot_alpha),
@@ -61,6 +104,26 @@ def calculate_stability_number_Ns(
     rho_rock: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the stability number Ns
+
+    The stability number Ns is commonly used in empirical formulas regarding the stability of coastal structures.
+
+    Parameters
+    ----------
+    H : float | npt.NDArray[np.float64]
+        Wave height (m)
+    D : float | npt.NDArray[np.float64]
+        Rock diameter (m)
+    rho_rock : float | npt.NDArray[np.float64]
+        Rock density (kg/m^3)
+    rho_water : float | npt.NDArray[np.float64]
+        Water density (kg/m^3)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The stability number Ns (-)
+    """
 
     Delta = calculate_buoyant_density_Delta(rho_rock, rho_water)
     Ns = H / (Delta * D)
@@ -71,6 +134,22 @@ def calculate_buoyant_density_Delta(
     rho_rock: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate buoyant density
+
+    Calculates thebuoyant density of rock material in water.
+
+    Parameters
+    ----------
+    rho_rock : float | npt.NDArray[np.float64]
+        Rock density (kg/m^3)
+    rho_water : float | npt.NDArray[np.float64]
+        Water density (kg/m^3)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The buoyant density Delta (-)
+    """
 
     Delta = (rho_rock - rho_water) / rho_water
     return Delta
@@ -79,6 +158,22 @@ def calculate_buoyant_density_Delta(
 def calculate_M50_from_Dn50(
     Dn50: float | npt.NDArray[np.float64], rho_rock: float = 2650
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the median rock mass M50 from the nominal rock diameter Dn50
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    Dn50 : float | npt.NDArray[np.float64]
+        Nominal rock diameter (m)
+    rho_rock : float, optional
+        Rock density (kg/m^3), by default 2650
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The median rock mass M50 (kg)
+    """
 
     M50 = rho_rock * np.power(Dn50, 3)
     return M50
@@ -87,6 +182,20 @@ def calculate_M50_from_Dn50(
 def calculate_Dn50_from_M50(
     M50: float | npt.NDArray[np.float64], rho_rock: float = 2650
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the nominal rock diameter Dn50 from median rock mass M50
+
+    Parameters
+    ----------
+    M50 : float | npt.NDArray[np.float64]
+        Median rock mass (kg)
+    rho_rock : float, optional
+        Rock density (kg/m^3), by default 2650
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The nominal rock diameter Dn50 (m)
+    """
 
     Dn50 = np.power(M50 / rho_rock, 1 / 3)
     return Dn50
