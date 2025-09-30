@@ -139,9 +139,7 @@ def calculate_damage_number_S(
         The damage number S (-)
     """
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(
-        Dn50=Dn50, M50=M50, rho_armour=rho_armour
-    )
+    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50=Dn50, M50=M50, rho_rock=rho_armour)
 
     ksi_0m = core_physics.calculate_Irribarren_number_ksi(
         H=Hs, T=Tm, cot_alpha=cot_alpha
@@ -356,9 +354,7 @@ def calculate_significant_wave_height_Hs(
         The significant wave height Hs (m)
     """
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(
-        Dn50=Dn50, M50=M50, rho_armour=rho_armour
-    )
+    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50=Dn50, M50=M50, rho_rock=rho_armour)
 
     ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
         c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha

@@ -176,11 +176,9 @@ def calculate_damage_number_S(
         The damage number S (-)
     """
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(
-        Dn50=Dn50, M50=M50, rho_armour=rho_armour
-    )
+    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50=Dn50, M50=M50, rho_rock=rho_armour)
     Dn50_core = core_physics.check_usage_Dn50_or_M50(
-        Dn50=Dn50_core, M50=M50_core, rho_armour=rho_core
+        Dn50=Dn50_core, M50=M50_core, rho_rock=rho_core
     )
 
     s_mm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
@@ -261,7 +259,7 @@ def calculate_nominal_rock_diameter_Dn50(
     """
 
     Dn50_core = core_physics.check_usage_Dn50_or_M50(
-        Dn50=Dn50_core, M50=M50_core, rho_armour=rho_core
+        Dn50=Dn50_core, M50=M50_core, rho_rock=rho_core
     )
 
     s_mm10 = core_physics.calculate_wave_steepness_s(H=Hm0, T=Tmm10)
@@ -344,7 +342,7 @@ def calculate_significant_wave_height_Hm0(
     Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50, M50, rho_armour)
 
     Dn50_core = core_physics.check_usage_Dn50_or_M50(
-        Dn50=Dn50_core, M50=M50_core, rho_armour=rho_core
+        Dn50=Dn50_core, M50=M50_core, rho_rock=rho_core
     )
 
     Delta = core_physics.calculate_buoyant_density_Delta(

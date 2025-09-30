@@ -127,9 +127,7 @@ def calculate_significant_wave_height_Hs(
         The significant wave height Hs (m)
     """
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(
-        Dn50=Dn50, M50=M50, rho_armour=rho_armour
-    )
+    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50=Dn50, M50=M50, rho_rock=rho_armour)
 
     Delta = core_physics.calculate_buoyant_density_Delta(
         rho_rock=rho_armour, rho_water=1025
@@ -182,9 +180,7 @@ def calculate_crest_freeboard_Rc(
         The crest freeboard of the structure (m)
     """
 
-    Dn50 = core_physics.check_usage_Dn50_or_M50(
-        Dn50=Dn50, M50=M50, rho_armour=rho_armour
-    )
+    Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50=Dn50, M50=M50, rho_rock=rho_armour)
 
     Delta = core_physics.calculate_buoyant_density_Delta(
         rho_rock=rho_armour, rho_water=1025

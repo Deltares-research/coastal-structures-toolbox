@@ -95,20 +95,43 @@ def calculate_Dn50_from_M50(
 def check_usage_Dn50_or_M50(
     Dn50: float | npt.NDArray[np.float64],
     M50: float | npt.NDArray[np.float64],
-    rho_armour: float | npt.NDArray[np.float64],
+    rho_rock: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Check usage of Dn50 or M50
+
+    This function checks whether Dn50 or M50 is provided. If M50 is provided, it calculates Dn50 from M50.
+
+    Parameters
+    ----------
+    Dn50 : float | npt.NDArray[np.float64]
+        Nominal rock diameter (m)
+    M50 : float | npt.NDArray[np.float64]
+        Median rock mass (kg)
+    rho_rock : float | npt.NDArray[np.float64]
+        Rock density (kg/m^3)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The nominal rock diameter Dn50 (m)
+
+    Raises
+    ------
+    ValueError
+        Raise error if neither Dn50 nor M50 is provided
+    """
 
     if np.all(np.isnan(Dn50)) and np.all(np.isnan(M50)):
         raise ValueError("Either Dn50 or M50 should be provided")
 
     if np.all(np.isnan(Dn50)) and not np.all(np.isnan(M50)):
-        if np.all(np.isnan(rho_armour)):
+        if np.all(np.isnan(rho_rock)):
             warnings.warn(
                 "rho_armour is not provided, the default value of 2650 kg/m3 is used."
             )
             Dn50 = calculate_Dn50_from_M50(M50)
         else:
-            Dn50 = calculate_Dn50_from_M50(M50, rho_rock=rho_armour)
+            Dn50 = calculate_Dn50_from_M50(M50, rho_rock=rho_rock)
     return Dn50
 
 
