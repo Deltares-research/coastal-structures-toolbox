@@ -42,7 +42,8 @@ def calculate_Irribarren_number_ksi(
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the Irribarren number ksi
 
-    This function calculates the Irribarren number ksi, which is a dimensionless parameter that characterizes different wave breaking regimes.
+    This function calculates the Irribarren number ksi, which is a dimensionless parameter that characterizes
+    different wave breaking regimes.
 
     Parameters
     ----------
