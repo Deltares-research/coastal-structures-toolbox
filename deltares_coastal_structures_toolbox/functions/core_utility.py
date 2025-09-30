@@ -10,7 +10,7 @@ def check_variable_validity_range(
     values: float,
     min_value: float,
     max_value: float,
-) -> None:
+) -> bool:
     """Check if a variable is within the validity range for a formula and raise a warning if not.
 
     Parameters
@@ -25,6 +25,11 @@ def check_variable_validity_range(
         Minimum value of the validity range.
     max_value : float
         Maximum value of the validity range.
+
+    Returns
+    -------
+    bool
+        A boolean with True if the value is within the validity range, False otherwise.
     """
 
     if isinstance(values, np.ndarray):
