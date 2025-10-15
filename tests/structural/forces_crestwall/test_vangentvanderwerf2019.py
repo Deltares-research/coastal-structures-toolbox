@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-import deltares_coastal_structures_toolbox.functions.structural.forces_crestwall.vangent2019 as vangent2019
+import deltares_coastal_structures_toolbox.functions.structural.forces_crestwall.vangentvanderwerf2019 as vangentvanderwerf2019
 
 
 @pytest.mark.parametrize(
@@ -17,7 +17,9 @@ import deltares_coastal_structures_toolbox.functions.structural.forces_crestwall
 )
 def test_gamma_beta_backward(beta, c_beta, gamma_beta_expected):
 
-    gamma_beta_calculated = vangent2019.calculate_gamma_beta(np.deg2rad(beta), c_beta)
+    gamma_beta_calculated = vangentvanderwerf2019.calculate_gamma_beta(
+        np.deg2rad(beta), c_beta
+    )
 
     assert gamma_beta_calculated == pytest.approx(gamma_beta_expected, abs=1e-2)
 
@@ -36,7 +38,7 @@ def test_gamma_beta_backward(beta, c_beta, gamma_beta_expected):
 )
 def test_z2p_backward(Hm0, Tmm10, cot_alpha, gamma_f, gamma_beta, c0, c1, z2p_expected):
 
-    z2p_calculated = vangent2019.calculate_z2p(
+    z2p_calculated = vangentvanderwerf2019.calculate_z2p(
         Hm0=Hm0,
         Tmm10=Tmm10,
         cot_alpha=cot_alpha,
@@ -65,7 +67,7 @@ def test_FH2p_perpendicular_from_z2p(
     Hm0, z2p, rho_water, Ac, Rc, Hwall, g, cFH, FH2p_expected
 ):
 
-    FH2p_calculated = vangent2019.calculate_FH2p_perpendicular_from_z2p(
+    FH2p_calculated = vangentvanderwerf2019.calculate_FH2p_perpendicular_from_z2p(
         Hm0=Hm0,
         z2p=z2p,
         rho_water=rho_water,
