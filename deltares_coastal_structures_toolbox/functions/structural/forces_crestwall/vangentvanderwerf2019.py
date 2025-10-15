@@ -643,6 +643,24 @@ def calculate_FV2p_oblique(
 def calculate_FH01p_perpendicular(
     FH2p: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the 0.1% exceedance horizontal force on the crest wall with the Van Gent & van der Werf (2019) method.
+
+    The 0.1% exceedence horizontal force on a crest wall of a rubble mound breakwater for perpendicular wave attack
+    is calculated using the Van Gent & Van der Werf (2019) method.
+
+    For more details, see Van Gent & Van der Werf (2019), available here:
+    https://www.researchgate.net/publication/336170265_Prediction_method_for_wave_overtopping_and_forces_on_rubble_mound_breakwater_crest_walls
+
+    Parameters
+    ----------
+    FH2p : float | npt.NDArray[np.float64]
+        The 2% exceedance horizontal force on the crest wall (N/m)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The 0.1% exceedance horizontal force on the crest wall FH01% (N/m)
+    """
 
     FH01p = 1.6 * FH2p
 
@@ -651,9 +669,29 @@ def calculate_FH01p_perpendicular(
 
 def calculate_FV01p_perpendicular(
     FV2p: float | npt.NDArray[np.float64],
-    sop: float | npt.NDArray[np.float64],
+    s0p: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the 0.1% exceedance vertical force on the crest wall with the Van Gent & van der Werf (2019) method.
 
-    FV01p = (2.88 - 32 * sop) * FV2p
+    The 0.1% exceedence vertical force on a crest wall of a rubble mound breakwater for perpendicular wave attack
+    is calculated using the Van Gent & Van der Werf (2019) method.
+
+    For more details, see Van Gent & Van der Werf (2019), available here:
+    https://www.researchgate.net/publication/336170265_Prediction_method_for_wave_overtopping_and_forces_on_rubble_mound_breakwater_crest_walls
+
+    Parameters
+    ----------
+    FV2p : float | npt.NDArray[np.float64]
+        The 2% exceedance vertical force on the crest wall (N/m)
+    s0p : float | npt.NDArray[np.float64]
+        Deep water wave steepness (-)
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The 0.1% exceedance vertical force on the crest wall FH01% (N/m)
+    """
+
+    FV01p = (2.88 - 32 * s0p) * FV2p
 
     return FV01p
