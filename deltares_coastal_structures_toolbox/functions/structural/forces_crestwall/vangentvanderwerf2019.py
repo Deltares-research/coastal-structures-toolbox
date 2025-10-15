@@ -45,7 +45,7 @@ def check_validity_FH2p(
 
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Rc)):
         core_utility.check_variable_validity_range(
-            " ", "Van Gent and Van der Werf 2019", (Rc / Hm0), 0.79, 2.18
+            "Rc/Hm0", "Van Gent and Van der Werf 2019", (Rc / Hm0), 0.79, 2.18
         )
 
     return
@@ -129,20 +129,83 @@ def calculate_z2p(
     return ru2p
 
 
-def calculate_FH2p_perpendicular_from_Hm0():
-    pass
+def calculate_FH2p_perpendicular(
+    Hm0: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    cot_alpha: float | npt.NDArray[np.float64],
+    Ac: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+    Hwall: float | npt.NDArray[np.float64],
+    gamma_beta: float | npt.NDArray[np.float64] = 1.0,
+    gamma_f: float | npt.NDArray[np.float64] = 0.45,
+    c0: float | npt.NDArray[np.float64] = 1.45,
+    c1: float | npt.NDArray[np.float64] = 5.0,
+    rho_water: float | npt.NDArray[np.float64] = 1025.0,
+    g: float | npt.NDArray[np.float64] = 9.81,
+    cFH: float | npt.NDArray[np.float64] = 1.0,
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the 2% exceedance horizontal force on the crest wall with the Van Gent and van der Werf (2019) method.
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    cot_alpha : float | npt.NDArray[np.float64]
+        Cotangent of the front-side slope of the structure (-)
+    Ac : float | npt.NDArray[np.float64]
+        Armour crest freeboard of the structure (m)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+    Hwall : float | npt.NDArray[np.float64]
+        Height of the crest wall (m)
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default 1.0
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 0.45
+    c0 : float | npt.NDArray[np.float64], optional
+        Coefficient in wave runup formula (-), by default 1.45
+    c1 : float | npt.NDArray[np.float64], optional
+        Coefficient in wave runup formula (-), by default 5.0
+    rho_water : float | npt.NDArray[np.float64], optional
+        Water density (kg/m^3), by default 1025.0
+    g : float | npt.NDArray[np.float64], optional
+        Gravitational constant (m/s^2), by default 9.81
+    cFH : float | npt.NDArray[np.float64], optional
+        Coefficient in horizontal force formula (-), by default 1.0
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The 2% exceedance horizontal force on the crest wall FH2% (N/m)
+    """
+
+    gamma = gamma_f * gamma_beta
+
+    ru2p = vangent2001.calculate_wave_runup_height_zXp(
+        H=Hm0, Tmm10=Tmm10, cot_alpha=cot_alpha, gamma=gamma, c0=c0, c1=c1
+    )
+
+    FH2p = calculate_FH2p_perpendicular_from_z2p(
+        Hm0=Hm0, z2p=ru2p, rho_water=rho_water, Ac=Ac, Rc=Rc, Hwall=Hwall, g=g, cFH=cFH
+    )
+
+    return FH2p
 
 
 def calculate_FH2p_perpendicular_from_z2p(
     Hm0: float | npt.NDArray[np.float64],
     z2p: float | npt.NDArray[np.float64],
-    rho_water: float | npt.NDArray[np.float64],
     Ac: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
     Hwall: float | npt.NDArray[np.float64],
+    rho_water: float | npt.NDArray[np.float64] = 1025.0,
     g: float | npt.NDArray[np.float64] = 9.81,
     cFH: float | npt.NDArray[np.float64] = 1.0,
-) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+) -> float | npt.NDArray[np.float64]:
 
     check_validity_FH2p(Hm0=Hm0, Ac=Ac, Rc=Rc)
 
@@ -162,7 +225,7 @@ def calculate_FV2p_perpendicular(
     CFV: float | npt.NDArray[np.float64],
     Fb: float | npt.NDArray[np.float64],  # Level base plate relative to water level [m]
     g: float | npt.NDArray[np.float64] = 9.81,  # gravitational acceleration [m2/s]
-) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+) -> float | npt.NDArray[np.float64]:
 
     FV2p = CFV * rho_water * g * Bwall * (z2p - 0.75 * Ac) * (1 - (np.sqrt(Fb / Ac)))
 
@@ -173,7 +236,7 @@ def calculate_FV2p_perpendicular(
 
 def calculate_FH01p_perpendicular(
     FH2p: float | npt.NDArray[np.float64],
-):
+) -> float | npt.NDArray[np.float64]:
 
     FH01p = 1.6 * FH2p
 
@@ -183,15 +246,12 @@ def calculate_FH01p_perpendicular(
 def calculate_FV01p_perpendicular(
     FV2p: float | npt.NDArray[np.float64],
     sop: float | npt.NDArray[np.float64],
-):
+) -> float | npt.NDArray[np.float64]:
 
     FV01p = (2.88 - 32 * sop) * FV2p
 
     return FV01p
 
 
-def check_FV1p(
-    sop: float | npt.NDArray[np.float64],
-):
-
-    pass
+# TODO gammas laten uitrekenen (1 main functie, uitsplitsen naar H en V)
+# TODO oblique krachten uitrekenen
