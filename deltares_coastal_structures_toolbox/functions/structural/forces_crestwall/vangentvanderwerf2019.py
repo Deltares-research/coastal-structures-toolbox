@@ -112,7 +112,7 @@ def calculate_influence_oblique_waves_gamma_beta(
         influence factor for wave runup gamma_beta
     """
 
-    gamma_beta = (1 - c_beta) * np.cos(beta) ** 2 + c_beta
+    gamma_beta = (1 - c_beta) * np.cos(np.deg2rad(beta)) ** 2 + c_beta
 
     return gamma_beta
 
