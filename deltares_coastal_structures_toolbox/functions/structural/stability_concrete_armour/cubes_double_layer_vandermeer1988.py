@@ -20,8 +20,30 @@ def check_validity_range(
     rho_armour: float | npt.NDArray[np.float64] = np.nan,
     N_waves: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
-    Nod: float | npt.NDArray[np.float64] = np.nan,
 ):
+    """Check the parameter values vs the validity range as defined in Van der Meer (1988).
+
+    For all parameters supplied, their values are checked versus the range of test conditions specified in
+    Van der Meer (1988). When parameters are nan (by default), they are not checked.
+
+    For more details see: van der Meer 1988 (PhD thesis) and Rock Manual:
+    van der Meer 1988, available here: https://repository.tudelft.nl/record/uuid:67e5692c-0905-4ddd-8487-37fdda9af6b4
+    or more information in the Rock Manual (2007 / 2012):
+    https://kennisbank-waterbouw.nl/DesignCodes/rockmanual/BWchapter%205.pdf page 591
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64], optional
+        Significant wave height (m), by default np.nan
+    Tm : float | npt.NDArray[np.float64], optional
+        Mean wave period (s), by default np.nan
+    rho_armour : float | npt.NDArray[np.float64], optional
+        Armour rock density (kg/m^3), by default np.nan
+    N_waves : float | npt.NDArray[np.float64], optional
+        Number of waves (-), by default np.nan
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    """
 
     if not np.any(np.isnan(Hs)):
         core_utility.check_variable_validity_range(
@@ -78,6 +100,8 @@ def check_validity_range(
             0.07,
         )
 
+    return
+
 
 def calculate_nominal_diameter_Dn_vanDerMeer1988(
     Hs: float | npt.NDArray[np.float64],
@@ -129,7 +153,6 @@ def calculate_nominal_diameter_Dn_vanDerMeer1988(
         rho_armour=rho_armour,
         N_waves=N_waves,
         cot_alpha=cot_alpha,
-        Nod=Nod,
     )
 
     Delta = core_physics.calculate_buoyant_density_Delta(
@@ -199,7 +222,6 @@ def calculate_wave_height_Hs_vanDerMeer1988(
         rho_armour=rho_armour,
         N_waves=N_waves,
         cot_alpha=cot_alpha,
-        Nod=Nod,
     )
 
     return Hs
@@ -263,7 +285,6 @@ def calculate_damage_Nod_vanDerMeer1988(
         rho_armour=rho_armour,
         N_waves=N_waves,
         cot_alpha=cot_alpha,
-        Nod=Nod,
     )
 
     return Nod

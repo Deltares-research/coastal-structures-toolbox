@@ -2,7 +2,7 @@ import numpy as np
 import numpy.typing as npt
 
 import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
-import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.vangent2001 as runup
+import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.vangent2001 as vangent2001
 
 
 def check_validity_FH2p(
@@ -10,6 +10,20 @@ def check_validity_FH2p(
     Ac: float | npt.NDArray[np.float64] = np.nan,
     Hm0: float | npt.NDArray[np.float64] = np.nan,
 ) -> None:
+    """Check the parameter values vs the validity range as defined in Van Gent & Van der Werf (2019).
+
+    For all parameters supplied, their values are checked versus the range of test conditions specified in Table 2
+    (Van Gent & Van der Werf, 2019). When parameters are nan (by default), they are not checked.
+
+    Parameters
+    ----------
+    Rc : float | npt.NDArray[np.float64], optional
+        Crest freeboard of the structure (m), by default np.nan
+    Ac : float | npt.NDArray[np.float64], optional
+        Armour crest freeboard of the structure (m), by default np.nan
+    Hm0 : float | npt.NDArray[np.float64], optional
+        Spectral significant wave height (m), by default np.nan
+    """
 
     if (
         not np.any(np.isnan(Hm0))
@@ -33,6 +47,8 @@ def check_validity_FH2p(
         core_utility.check_variable_validity_range(
             " ", "Van Gent and Van der Werf 2019", (Rc / Hm0), 0.79, 2.18
         )
+
+    return
 
 
 def calculate_gamma_beta(
@@ -106,7 +122,7 @@ def calculate_z2p(
 
     gamma = gamma_f * gamma_beta
 
-    ru2p = runup.calculate_wave_runup_height_zXp(
+    ru2p = vangent2001.calculate_wave_runup_height_zXp(
         H=Hm0, Tmm10=Tmm10, cot_alpha=cot_alpha, gamma=gamma, c0=c0, c1=c1
     )
 

@@ -20,6 +20,18 @@ def check_validity_range(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
     seabed_slope_perc: float | npt.NDArray[np.float64] = np.nan,
 ):
+    """Check the parameter values vs the validity range for Core Loc
+
+    For all parameters supplied, their values are checked versus the range of validity.
+    When parameters are nan (by default), they are not checked.
+
+    Parameters
+    ----------
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    seabed_slope_perc : float | npt.NDArray[np.float64], optional
+        Seabed slope in percentage, by default np.nan
+    """
 
     if not np.any(np.isnan(cot_alpha)):
         core_utility.check_variable_validity_range(
@@ -38,6 +50,8 @@ def check_validity_range(
             0,
             10,
         )
+
+    return
 
 
 def calculate_unit_mass_M(
