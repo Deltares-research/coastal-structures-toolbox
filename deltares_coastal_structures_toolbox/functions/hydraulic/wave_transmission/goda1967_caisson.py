@@ -57,7 +57,6 @@ def calculate_wave_transmission_Kt(
         else:
             Kt = 0.03
 
-        # check_validity(sop=sop, ksiop=ksi_op)
     else:
         # arrays, so vectorize this function
         vfunc = np.vectorize(calculate_wave_transmission_Kt)
