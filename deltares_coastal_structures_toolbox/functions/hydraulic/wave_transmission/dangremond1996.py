@@ -17,6 +17,10 @@ def check_validity(
     For all parameters supplied, their values are checked versus the range of validity specified by
     D'Angremond et al. (1996). When parameters are nan (by default), they are not checked.
 
+    Background: d’Angremond, K.; van der Meer, J.W.; de Jong, R.J.Wave Transmission at Low-Crested Structures.
+        In Coastal Engineering 1996; American Society of Civil Engineers: New York, NY, USA, 1997; pp. 2418–2427.
+    https://doi.org/10.9753/icce.v25.%p
+
     Parameters
     ----------
     Kt : float | npt.NDArray[np.float64], optional

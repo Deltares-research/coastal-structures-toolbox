@@ -16,6 +16,11 @@ def check_validity(
     For all parameters supplied, their values are checked versus the range of validity
     specified by Briganti (2003). When parameters are nan (by default), they are not checked.
 
+    See: Briganti, R.,J.W. Van der Meer, M. Buccino and M.Calabrese (2003),’Wave transmission
+        behind low-crested structures’. Proceedings of Coastal Structures 2003, Portland,
+        USA, p. 580-592
+    http://dx.doi.org/10.1061/40733(147)48
+
     Parameters
     ----------
     s0p : float | npt.NDArray[np.float64], optional

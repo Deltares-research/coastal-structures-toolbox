@@ -25,6 +25,13 @@ def check_validity_range(
     For all parameters supplied, their values are checked versus the range of validity.
     When parameters are nan (by default), they are not checked.
 
+    For more details see: Hudson 1959 and Rock Manual:
+    Hudson 1959, available here: https://doi.org/10.1061/JWHEAU.0000142 (or google)
+    or more information in the Rock Manual (2007 / 2012):
+    https://kennisbank-waterbouw.nl/DesignCodes/rockmanual/BWchapter%205.pdf page 591
+    Information in this set of functions is also based on the design manual
+    (design table 2012, retrieved in march-2025)
+
     Parameters
     ----------
     cot_alpha : float | npt.NDArray[np.float64], optional
