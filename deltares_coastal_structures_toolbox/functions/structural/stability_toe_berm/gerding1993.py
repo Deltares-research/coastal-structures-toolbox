@@ -11,6 +11,25 @@ def check_validity(
     h: float | npt.NDArray[np.float64] = np.nan,
     Dn50: float | npt.NDArray[np.float64] = np.nan,
 ):
+    """Check the parameter values vs the validity range as defined in Gerding (1993).
+
+    For all parameters supplied, their values are checked versus the range of validity
+    specified by Gerding (1993). When parameters are nan (by default), they are not checked.
+
+    For more information, please refer to:
+    Gerding, E. 1993. Toe structure stability of rubble mound breakwaters, M.Sc. thesis, Delft University of
+        Technology, Delft and Delft Hydraulics Report H1874, Delft.
+    https://resolver.tudelft.nl/uuid:51af1788-de9f-4ef3-8115-ffefb2e26f76
+
+    Parameters
+    ----------
+    ht : float | npt.NDArray[np.float64], optional
+        Water depth above the toe (m), by default np.nan
+    h : float | npt.NDArray[np.float64], optional
+        Water depth in front of the toe (m), by default np.nan
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal diameter of toe armour (m), by default np.nan
+    """
 
     if not np.any(np.isnan(ht)) and not np.any(np.isnan(h)):
         core_utility.check_variable_validity_range(
@@ -29,6 +48,8 @@ def check_validity(
             3,
             25,
         )
+
+    return
 
 
 def calculate_damage_Nod(

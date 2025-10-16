@@ -17,6 +17,9 @@ def check_validity(
     For all parameters supplied, their values are checked versus the range of test conditions specified in Table 2
     (Van Gent & Van der Werf, 2019). When parameters are nan (by default), they are not checked.
 
+    For more details, see Van Gent & Van der Werf (2019), available here:
+    https://doi.org/10.1016/j.coastaleng.2019.04.001
+
     Parameters
     ----------
     Rc : float | npt.NDArray[np.float64], optional

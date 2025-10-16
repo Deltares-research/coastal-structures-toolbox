@@ -11,6 +11,30 @@ def check_validity(
     Ns: float | npt.NDArray[np.float64] = np.nan,
     Bt: float | npt.NDArray[np.float64] = np.nan,
 ):
+    """Check the parameter values vs the validity range
+
+    For all parameters supplied, their values are checked versus the range of validity.
+    When parameters are nan (by default), they are not checked.
+
+    For more information, please refer to:
+    Takahashi, S., K. Tanimoto and K. Shimosako, 1990. “Wave and block forces on a caisson
+        covered with wave dissipating blocks.” Report of Port and Harbour Research Institute, Vol.
+        30, No.4, Yokosuka, Japan, p. 3-34.
+
+    AND
+
+    Tanimoto, K., T. Yagyu and Y. Goda, 1983. “Irregular wave tests for composite breakwater
+        foundations.” In proc. 18th int. conf. on Coastal Engineering, 14-19 Nov. 1982, Vol.III,
+        ASCE, New York, p. 2144-2163
+
+    Parameters
+    ----------
+    Ns : float | npt.NDArray[np.float64], optional
+        _description_, by default np.nan
+    Bt : float | npt.NDArray[np.float64], optional
+        _description_, by default np.nan
+    """
+
     if not np.any(np.isnan(Ns)):
         core_utility.check_variable_validity_range(
             "Stability number Ns",
@@ -28,6 +52,8 @@ def check_validity(
             0,
             np.inf,
         )
+
+    return
 
 
 def calculate_nominal_diameter_Dn50(

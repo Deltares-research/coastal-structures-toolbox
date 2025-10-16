@@ -12,6 +12,27 @@ def check_validity(
     ht: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha_armour_slope: float | npt.NDArray[np.float64] = np.nan,
 ):
+    """Check the parameter values vs the validity range as defined in Van Gent & Van der Werf (2014).
+
+    For all parameters supplied, their values are checked versus the range of validity specified by
+    Van Gent & Van der Werf (2014). When parameters are nan (by default), they are not checked.
+
+    For more information, please refer to:
+    Van Gent, M.R.A. and I.M. van der Werf. 2014. Rock toe stability of rubble mound breakwaters,
+        Coastal Engineering, Vol. 83, pp. 166-176, Elsevier.
+    http://dx.doi.org/10.1016/j.coastaleng.2013.10.012
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64], optional
+        Significant wave height (m), by default np.nan
+    tt : float | npt.NDArray[np.float64], optional
+        Height of toe structure (m), by default np.nan
+    ht : float | npt.NDArray[np.float64], optional
+        Water depth above the toe (m), by default np.nan
+    cot_alpha_armour_slope : float | npt.NDArray[np.float64], optional
+        Slope above structure (-), by default np.nan
+    """
 
     if not np.any(np.isnan(cot_alpha_armour_slope)):
         core_utility.check_variable_validity_range(
@@ -54,6 +75,8 @@ def check_validity(
             1.2,
             4.5,
         )
+
+    return
 
 
 def calculate_damage_Nod(

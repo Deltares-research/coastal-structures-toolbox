@@ -2,29 +2,43 @@
 import numpy as np
 import numpy.typing as npt
 
-import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
-
-# import deltares_wave_toolbox.cores.core_dispersion as dispersion
+import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 
 
 def check_validity(
     Kt: float | npt.NDArray[np.float64] = np.nan,
-    sop: float | npt.NDArray[np.float64] = np.nan,
+    s0p: float | npt.NDArray[np.float64] = np.nan,
     Hsi_over_h: float | npt.NDArray[np.float64] = np.nan,
     Rc_over_Hsi: float | npt.NDArray[np.float64] = np.nan,
 ):
+    """Check the parameter values vs the validity range as defined in D'Angremond et al. (1996).
+
+    For all parameters supplied, their values are checked versus the range of validity specified by
+    D'Angremond et al. (1996). When parameters are nan (by default), they are not checked.
+
+    Parameters
+    ----------
+    Kt : float | npt.NDArray[np.float64], optional
+        Wave Transmission Coefficient (-), by default np.nan
+    s0p : float | npt.NDArray[np.float64], optional
+        Wave steepness (-), by default np.nan
+    Hsi_over_h : float | npt.NDArray[np.float64], optional
+        Relative water depth Hsi/h (-), by default np.nan
+    Rc_over_Hsi : float | npt.NDArray[np.float64], optional
+        Relative crest level Rc/Hsi (-), by default np.nan
+    """
 
     if not np.any(np.isnan(Kt)):
         core_utility.check_variable_validity_range(
             "Transmission coefficient Kt", "D'Angremond et al. (1996)", Kt, 0.075, 0.8
         )
 
-    if not np.any(np.isnan(sop)):
+    if not np.any(np.isnan(s0p)):
         core_utility.check_variable_validity_range(
-            "Wave steepness sop (dataset limit)",
+            "Wave steepness s0p (dataset limit)",
             "D'Angremond et al. (1996)",
-            sop,
+            s0p,
             0,
             0.06,
         )
@@ -88,13 +102,13 @@ def calculate_wave_transmission_Kt_permeable(
     Kt : float | npt.NDArray[np.float64]
         Wave Transmission Coefficient (-)
     """
-    ksi_op = core_physics.calculate_Iribarren_number_ksi(Hsi, Tpi, cot_alpha=cot_alpha)
-    sop = core_physics.calculate_wave_steepness_s(H=Hsi, T=Tpi)
+    ksi_0p = core_physics.calculate_Iribarren_number_ksi(Hsi, Tpi, cot_alpha=cot_alpha)
+    s0p = core_physics.calculate_wave_steepness_s(H=Hsi, T=Tpi)
 
-    Kt = -0.4 * (Rc / Hsi) + ((B / Hsi) ** -0.31) * (1 - np.exp(-0.5 * ksi_op)) * C1
+    Kt = -0.4 * (Rc / Hsi) + ((B / Hsi) ** -0.31) * (1 - np.exp(-0.5 * ksi_0p)) * C1
 
     if do_validity_check:
-        check_validity(Kt, sop=sop, Hsi_over_h=Hsi / h, Rc_over_Hsi=Rc / Hsi)
+        check_validity(Kt, s0p=s0p, Hsi_over_h=Hsi / h, Rc_over_Hsi=Rc / Hsi)
 
     Kt = np.minimum(0.8, Kt)
     Kt = np.maximum(0.075, Kt)

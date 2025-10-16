@@ -14,6 +14,31 @@ def check_validity(
     Nod: float | npt.NDArray[np.float64] = np.nan,
     Delta: float | npt.NDArray[np.float64] = np.nan,
 ):
+    """Check the parameter values vs the validity range as defined in Van der Meer (1998).
+
+    For all parameters supplied, their values are checked versus the range of validity
+    specified by Van der Meer (1998). When parameters are nan (by default), they are not checked.
+
+    For more information, please refer to:
+    WL|Delft Hydraulics (former Deltares), report number H2458/H3051, June, 1997
+    or
+    Meer, J. Van der, 1998. “Geometrical design of coastal structures.” Infram publication Nr. 2.
+
+    Parameters
+    ----------
+    Hs : float | npt.NDArray[np.float64], optional
+        Incident significant wave height near the toe (m), by default np.nan
+    ht : float | npt.NDArray[np.float64], optional
+        Water depth above the toe (m), by default np.nan
+    h : float | npt.NDArray[np.float64], optional
+        Water depth in front of the toe (m), by default np.nan
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal diameter of toe armour (m), by default np.nan
+    Nod : float | npt.NDArray[np.float64], optional
+        Damage parameter (-), by default np.nan
+    Delta : float | npt.NDArray[np.float64], optional
+        Buoyant density (-), by default np.nan
+    """
 
     if not np.any(np.isnan(Hs)):
         core_utility.check_variable_validity_range(
@@ -56,6 +81,8 @@ def check_validity(
             np.inf,
         )
 
+    return
+
 
 def calculate_damage_Nod(
     Hs: float | npt.NDArray[np.float64],
@@ -75,7 +102,7 @@ def calculate_damage_Nod(
     Parameters
     ----------
     Hs : float | npt.NDArray[np.float64]
-        Incident wave height near the toe (m)
+        Incident significant wave height near the toe (m)
     ht : float | npt.NDArray[np.float64]
         Water depth above the toe (m)
     h : float | npt.NDArray[np.float64]
@@ -122,7 +149,7 @@ def calculate_nominal_diameter_Dn50(
     Parameters
     ----------
     Hs : float | npt.NDArray[np.float64]
-        Incident wave height near the toe (m)
+        Incident significant wave height near the toe (m)
     ht : float | npt.NDArray[np.float64]
         Water depth above the toe (m)
     h : float | npt.NDArray[np.float64]
@@ -188,7 +215,7 @@ def calculate_wave_height_Hs(
     Returns
     -------
     Hs : float | npt.NDArray[np.float64]
-        Incident wave height near the toe (m)
+        Incident significant wave height near the toe (m)
     """
 
     Delta = core_physics.calculate_buoyant_density_Delta(
@@ -220,7 +247,7 @@ def calculate_depth_above_toe_ht(
     Parameters
     ----------
     Hs : float | npt.NDArray[np.float64]
-        Incident wave height near the toe (m)
+        Incident significant wave height near the toe (m)
     Dn50 : float | npt.NDArray[np.float64]
         Nominal diameter of toe armour (m)
     h : float | npt.NDArray[np.float64]
