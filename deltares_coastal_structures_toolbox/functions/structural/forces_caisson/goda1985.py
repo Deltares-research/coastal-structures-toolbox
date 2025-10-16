@@ -7,65 +7,77 @@ import deltares_coastal_structures_toolbox.functions.core_physics as core_physic
 
 
 def check_validity_range(
-    beta: float | npt.NDArray[np.float64] = np.nan,  # wave angle wrt normal
-    cota_seabed: float | npt.NDArray[np.float64] = np.nan,  # seabed slope
-    Tmax: float | npt.NDArray[np.float64] = np.nan,  # wave period
-    tup: (
-        float | npt.NDArray[np.float64]
-    ) = np.nan,  # distance caisson heel to centre of gravity
-    Bup: float | npt.NDArray[np.float64] = np.nan,  # Width of caisson upright section
-    h_s: float | npt.NDArray[np.float64] = np.nan,  # water depth at site
-    B1: float | npt.NDArray[np.float64] = np.nan,  # width toe berm
+    beta: float | npt.NDArray[np.float64] = np.nan,
+    cota_seabed: float | npt.NDArray[np.float64] = np.nan,
+    Tmax: float | npt.NDArray[np.float64] = np.nan,
+    tup: float | npt.NDArray[np.float64] = np.nan,
+    Bup: float | npt.NDArray[np.float64] = np.nan,
+    h_s: float | npt.NDArray[np.float64] = np.nan,
+    B1: float | npt.NDArray[np.float64] = np.nan,
 ):
+    """Check the parameter values vs the validity range as defined in Goda (1985).
 
-    all_is_valid = []
+    For all parameters supplied, their values are checked versus the range of validity specified by Goda (1985).
+    When parameters are nan (by default), they are not checked.
+
+    Parameters
+    ----------
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    cota_seabed : float | npt.NDArray[np.float64], optional
+        Cotangent of the sea bed slope (-), by default np.nan
+    Tmax : float | npt.NDArray[np.float64], optional
+        Maximum wave period (s), by default np.nan
+    tup : float | npt.NDArray[np.float64], optional
+        Di, by default np.nan
+    Bup : float | npt.NDArray[np.float64], optional
+        Width of upright section of caisson (m), by default np.nan
+    h_s : float | npt.NDArray[np.float64], optional
+        Water depth at site (m), by default np.nan
+    B1 : float | npt.NDArray[np.float64], optional
+        Width of toe berm (top of toe berm) (m), by default np.nan
+    """
+
     if not np.any(np.isnan(beta)):
-        out = core_utility.check_variable_validity_range(
+        core_utility.check_variable_validity_range(
             "Angle of wave incidence", "Goda (2000)", beta, 0.0, 90.0
         )
-        all_is_valid.append(out)
 
     if not np.any(np.isnan(cota_seabed)):
-        out = core_utility.check_variable_validity_range(
+        core_utility.check_variable_validity_range(
             "Seabed slope", "Goda (2000)", cota_seabed, 10.0, 100.0
         )
-        all_is_valid.append(out)
 
     if not np.any(np.isnan(Tmax)):
-        out = core_utility.check_variable_validity_range(
+        core_utility.check_variable_validity_range(
             "Wave period", "Goda (2000)", Tmax, 0.0, 30.0
         )
-        all_is_valid.append(out)
 
     if not np.any(np.isnan(tup)) and not np.any(np.isnan(Bup)):
-        out = core_utility.check_variable_validity_range(
+        core_utility.check_variable_validity_range(
             "Centre of gravity inside of caisson", "Goda (2000)", tup / Bup, 0.0, 1.0
         )
-        all_is_valid.append(out)
 
     if not np.any(np.isnan(h_s)):
-        out = core_utility.check_variable_validity_range(
+        core_utility.check_variable_validity_range(
             "Water depth at site",
             "Goda (2000)",
             h_s,
             0.0,
             np.inf,  # no upper limit provided
         )
-        all_is_valid.append(out)
 
     if not np.any(np.isnan(B1)):
-        out = core_utility.check_variable_validity_range(
+        core_utility.check_variable_validity_range(
             "Width of toe berm", "Goda (2000)", B1, 0.0, np.inf
         )
-        all_is_valid.append(out)
 
     if not np.any(np.isnan(Bup)):
-        out = core_utility.check_variable_validity_range(
+        core_utility.check_variable_validity_range(
             "Width of caisson upright section", "Goda (2000)", Bup, 0.0, np.inf
         )
-        all_is_valid.append(out)
 
-    return all_is_valid
+    return
 
 
 def check_impulsive_breaking(
