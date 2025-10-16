@@ -78,11 +78,11 @@ def check_validity_range(
         and not np.any(np.isnan(Tmm10))
         and not np.any(np.isnan(cot_alpha))
     ):
-        ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
             H=Hs, T=Tmm10, cot_alpha=cot_alpha
         )
         core_utility.check_variable_validity_range(
-            "Irribarren number ksi_m-1,0",
+            "Iribarren number ksi_m-1,0",
             "Modified Van der Meer (Van Gent et al., 2003)",
             ksi_mm10,
             1.3,
@@ -178,11 +178,11 @@ def calculate_damage_number_S(
 
     Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50=Dn50, M50=M50, rho_rock=rho_armour)
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hs, T=Tmm10, cot_alpha=cot_alpha
     )
 
-    ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+    ksi_mc = core_physics.calculate_critical_Iribarren_number_ksi_mc(
         c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha
     )
 
@@ -276,11 +276,11 @@ def calculate_nominal_rock_diameter_Dn50(
         The nominal rock diameter Dn50 (m)
     """
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hs, T=Tmm10, cot_alpha=cot_alpha
     )
 
-    ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+    ksi_mc = core_physics.calculate_critical_Iribarren_number_ksi_mc(
         c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha
     )
 
@@ -386,7 +386,7 @@ def calculate_significant_wave_height_Hs(
 
     Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50=Dn50, M50=M50, rho_rock=rho_armour)
 
-    ksi_mc = core_physics.calculate_critical_Irribarren_number_ksi_mc(
+    ksi_mc = core_physics.calculate_critical_Iribarren_number_ksi_mc(
         c_pl=c_pl, c_s=c_s, P=P, cot_alpha=cot_alpha
     )
 
@@ -421,11 +421,11 @@ def calculate_significant_wave_height_Hs(
         1.0 / (1.0 + 0.5 * P),
     )
 
-    ksi_mm10_pl = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10_pl = core_physics.calculate_Iribarren_number_ksi(
         H=Hs_pl, T=Tmm10, cot_alpha=cot_alpha
     )
 
-    ksi_mm10_s = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10_s = core_physics.calculate_Iribarren_number_ksi(
         H=Hs_s, T=Tmm10, cot_alpha=cot_alpha
     )
 

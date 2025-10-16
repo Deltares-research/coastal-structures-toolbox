@@ -77,11 +77,11 @@ def check_validity_range(
         and not np.any(np.isnan(Tmm10))
         and not np.any(np.isnan(cot_alpha))
     ):
-        ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
             H=Hm0, T=Tmm10, cot_alpha=cot_alpha
         )
         core_utility.check_variable_validity_range(
-            "Irribarren number ksi_mm10", "TAW (2002)", ksi_mm10, 0.4, 20.0
+            "Iribarren number ksi_mm10", "TAW (2002)", ksi_mm10, 0.4, 20.0
         )
 
     return
@@ -293,7 +293,7 @@ def calculate_dimensionless_wave_runup_height_z2p(
             db=db,
         )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hm0, T=Tmm10, cot_alpha=cot_alpha
     )
 
@@ -816,7 +816,7 @@ def calculate_adjusted_influence_roughness_gamma_f(
     gamma_b : float | npt.NDArray[np.float64]
         Influence factor for a berm
     ksi_mm10 : float | npt.NDArray[np.float64]
-        The Irribarren number based on the spectral wave period Tm-1,0 (-)
+        The Iribarren number based on the spectral wave period Tm-1,0 (-)
 
     Returns
     -------

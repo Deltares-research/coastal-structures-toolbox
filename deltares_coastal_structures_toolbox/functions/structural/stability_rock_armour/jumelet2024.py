@@ -46,11 +46,11 @@ def check_validity_range(
         and not np.any(np.isnan(Tmm10))
         and not np.any(np.isnan(cot_alpha))
     ):
-        ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
             H=Hs, T=Tmm10, cot_alpha=cot_alpha
         )
         core_utility.check_variable_validity_range(
-            "Irribarren number ksi_m-1,0",
+            "Iribarren number ksi_m-1,0",
             "Jumelet et al., 2024",
             ksi_mm10,
             0.42,
@@ -123,7 +123,7 @@ def calculate_damage_number_S(
 
     Dn50 = core_physics.check_usage_Dn50_or_M50(Dn50=Dn50, M50=M50, rho_rock=rho_armour)
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hs, T=Tmm10, cot_alpha=cot_alpha
     )
 
@@ -185,7 +185,7 @@ def calculate_nominal_rock_diameter_Dn50(
         The nominal rock diameter Dn50 (m)
     """
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hs, T=Tmm10, cot_alpha=cot_alpha
     )
 
@@ -271,7 +271,7 @@ def calculate_significant_wave_height_Hs(
 
     n_iter = 0
     Hs_init = smm10_init * np.power(Tmm10, 2) * g / (2 * np.pi)
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hs_init, T=Tmm10, cot_alpha=cot_alpha
     )
 
@@ -303,7 +303,7 @@ def calculate_significant_wave_height_Hs(
         Hs_diff = np.abs(Hs - Hs_prev)
         Hs_prev = Hs
 
-        ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
             H=Hs, T=Tmm10, cot_alpha=cot_alpha
         )
 
@@ -328,7 +328,7 @@ def calculate_fraction_plunging_waves_Fp(
     Parameters
     ----------
     ksi_mm10 : float | npt.NDArray[np.float64]
-        The Irribarren number based on the spectral wave period Tm-1,0 (-)
+        The Iribarren number based on the spectral wave period Tm-1,0 (-)
 
     Returns
     -------

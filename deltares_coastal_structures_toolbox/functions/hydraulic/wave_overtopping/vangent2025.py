@@ -33,9 +33,9 @@ def check_validity_range(
         and not np.any(np.isnan(Tmm10))
         and not np.any(np.isnan(cot_alpha))
     ):
-        ksi_smm10 = core_physics.calculate_Irribarren_number_ksi(Hm0, Tmm10, cot_alpha)
+        ksi_smm10 = core_physics.calculate_Iribarren_number_ksi(Hm0, Tmm10, cot_alpha)
         core_utility.check_variable_validity_range(
-            "Irribarren number ksi_m-1,0",
+            "Iribarren number ksi_m-1,0",
             "TAW (2002)",
             ksi_smm10,
             0.0,
@@ -48,7 +48,7 @@ def check_validity_range(
         and not np.any(np.isnan(cot_alpha))
         and not np.any(np.isnan(gamma_b))
     ):
-        ksi_smm10 = core_physics.calculate_Irribarren_number_ksi(Hm0, Tmm10, cot_alpha)
+        ksi_smm10 = core_physics.calculate_Iribarren_number_ksi(Hm0, Tmm10, cot_alpha)
         core_utility.check_variable_validity_range(
             "gamma_b * ksi_m-1,0",
             "TAW (2002)",
@@ -306,7 +306,7 @@ def calculate_dimensionless_overtopping_discharge_q(
             db=db,
         )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hm0, T=Tmm10, cot_alpha=cot_alpha
     )
 
@@ -408,7 +408,7 @@ def q_diml_max_equation(
     Hm0_swell : float | npt.NDArray[np.float64]
         Spectral significant wave height of swell or infragravity waves in case of a second wave field (m)
     ksi_mm10 : float | npt.NDArray[np.float64]
-        The Irribarren number based on the spectral wave period Tm-1,0 (-)
+        The Iribarren number based on the spectral wave period Tm-1,0 (-)
     cot_alpha : float | npt.NDArray[np.float64]
         Cotangent of the front-side slope of the structure (-)
     Rc : float | npt.NDArray[np.float64]
@@ -860,7 +860,7 @@ def calculate_dimensionless_crest_freeboard(
             db=db,
         )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hm0, T=Tmm10, cot_alpha=cot_alpha
     )
 

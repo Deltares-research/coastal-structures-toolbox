@@ -138,7 +138,7 @@ def calculate_dimensionless_overtopping_discharge_q_rubble_mound(
             beta=beta
         )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hm0, T=Tmm10, cot_alpha=cot_alpha
     )
 
@@ -309,7 +309,7 @@ def calculate_dimensionless_crest_freeboard_rubble_mound(
             beta=beta
         )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hm0, T=Tmm10, cot_alpha=cot_alpha
     )
 

@@ -65,11 +65,11 @@ def check_validity_range(
         and not np.any(np.isnan(Tmm10))
         and not np.any(np.isnan(cot_alpha))
     ):
-        ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+        ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
             H=Hs, T=Tmm10, cot_alpha=cot_alpha
         )
         core_utility.check_variable_validity_range(
-            "Irribarren number ksi_m-1,0",
+            "Iribarren number ksi_m-1,0",
             "Etemad-Shahidi et al., 2020",
             ksi_mm10,
             0.65,
@@ -233,7 +233,7 @@ def calculate_damage_number_S(
         Dn50=Dn50_core, M50=M50_core, rho_rock=rho_core
     )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hs, T=Tmm10, cot_alpha=cot_alpha
     )
 
@@ -362,7 +362,7 @@ def calculate_nominal_rock_diameter_Dn50(
         Dn50=Dn50_core, M50=M50_core, rho_rock=rho_core
     )
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hs, T=Tmm10, cot_alpha=cot_alpha
     )
 
@@ -546,11 +546,11 @@ def calculate_significant_wave_height_Hs(
         4.0 / 17.0,
     )
 
-    ksi_mm10_s = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10_s = core_physics.calculate_Iribarren_number_ksi(
         H=Hs_s, T=Tmm10, cot_alpha=cot_alpha
     )
 
-    ksi_mm10_pl = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10_pl = core_physics.calculate_Iribarren_number_ksi(
         H=Hs_pl, T=Tmm10, cot_alpha=cot_alpha
     )
 

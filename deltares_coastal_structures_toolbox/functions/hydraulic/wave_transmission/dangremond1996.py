@@ -88,7 +88,7 @@ def calculate_wave_transmission_Kt_permeable(
     Kt : float | npt.NDArray[np.float64]
         Wave Transmission Coefficient (-)
     """
-    ksi_op = core_physics.calculate_Irribarren_number_ksi(Hsi, Tpi, cot_alpha=cot_alpha)
+    ksi_op = core_physics.calculate_Iribarren_number_ksi(Hsi, Tpi, cot_alpha=cot_alpha)
     sop = core_physics.calculate_wave_steepness_s(H=Hsi, T=Tpi)
 
     Kt = -0.4 * (Rc / Hsi) + ((B / Hsi) ** -0.31) * (1 - np.exp(-0.5 * ksi_op)) * C1

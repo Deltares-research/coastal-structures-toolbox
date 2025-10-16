@@ -210,7 +210,7 @@ def calculate_wave_runup_height_zXp(
         The wave runup height z (m)
     """
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=H, T=Tmm10, cot_alpha=cot_alpha
     )
 
@@ -236,7 +236,7 @@ def _invert_for_Hs(
     c1: float = 5.1,
 ) -> float | npt.NDArray[np.float64]:
 
-    ksi_mm10 = core_physics.calculate_Irribarren_number_ksi(
+    ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hs_i0, T=Tmm10, cot_alpha=cot_alpha
     )
 

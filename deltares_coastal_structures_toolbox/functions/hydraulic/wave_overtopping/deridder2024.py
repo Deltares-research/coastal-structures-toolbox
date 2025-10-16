@@ -70,9 +70,9 @@ def check_validity_range(
         and not np.any(np.isnan(Tmm10))
         and not np.any(np.isnan(cot_alpha))
     ):
-        Ksi_smm10 = core_physics.calculate_Irribarren_number_ksi(Hm0, Tmm10, cot_alpha)
+        Ksi_smm10 = core_physics.calculate_Iribarren_number_ksi(Hm0, Tmm10, cot_alpha)
         core_utility.check_variable_validity_range(
-            "Irribarren number Ksi_m-1,0",
+            "Iribarren number Ksi_m-1,0",
             "De Ridder et al. (2024)",
             Ksi_smm10,
             0.05,

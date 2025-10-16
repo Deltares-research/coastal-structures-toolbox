@@ -35,14 +35,14 @@ def calculate_wave_steepness_s(
     return s
 
 
-def calculate_Irribarren_number_ksi(
+def calculate_Iribarren_number_ksi(
     H: float | npt.NDArray[np.float64],
     T: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the Irribarren number ksi
+    """Calculate the Iribarren number ksi
 
-    This function calculates the Irribarren number ksi, which is a dimensionless parameter that characterizes
+    This function calculates the Iribarren number ksi, which is a dimensionless parameter that characterizes
     different wave breaking regimes.
 
     Parameters
@@ -57,7 +57,7 @@ def calculate_Irribarren_number_ksi(
     Returns
     -------
     float | npt.NDArray[np.float64]
-        The Irribarren number ksi (-)
+        The Iribarren number ksi (-)
     """
 
     s = calculate_wave_steepness_s(H, T)
@@ -65,15 +65,15 @@ def calculate_Irribarren_number_ksi(
     return ksi
 
 
-def calculate_critical_Irribarren_number_ksi_mc(
+def calculate_critical_Iribarren_number_ksi_mc(
     c_pl: float | npt.NDArray[np.float64],
     c_s: float | npt.NDArray[np.float64],
     P: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64],
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the critical Irribarren number ksi_mc
+    """Calculate the critical Iribarren number ksi_mc
 
-    This function calculates the critical Irribarren number ksi_mc, used in different formulas for rock stability.
+    This function calculates the critical Iribarren number ksi_mc, used in different formulas for rock stability.
 
     Parameters
     ----------
@@ -89,7 +89,7 @@ def calculate_critical_Irribarren_number_ksi_mc(
     Returns
     -------
     float | npt.NDArray[np.float64]
-        The critical Irribarren number ksi_mc (-)
+        The critical Iribarren number ksi_mc (-)
     """
 
     ksi_mc = np.power(
