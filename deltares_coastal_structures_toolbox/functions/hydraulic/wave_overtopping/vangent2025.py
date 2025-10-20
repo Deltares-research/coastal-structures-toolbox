@@ -277,7 +277,6 @@ def calculate_dimensionless_overtopping_discharge_q(
     ValueError
         Raise an error if gamma_f is not provided and Dn50 is not provided so it cannot be calculated.
     """
-    # TODO include DOI when available
 
     if np.isnan(gamma_beta):
         gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta=beta)
