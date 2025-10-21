@@ -8,23 +8,64 @@ import deltares_coastal_structures_toolbox.functions.core_utility as core_utilit
 
 def check_validity_range(
     Hm0: float | npt.NDArray[np.float64] = np.nan,
+    Hm0_deep: float | npt.NDArray[np.float64] = np.nan,
     Tmm10: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
+    h: float | npt.NDArray[np.float64] = np.nan,
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
-    gamma_f: float | npt.NDArray[np.float64] = np.nan,
-    gamma_b: float | npt.NDArray[np.float64] = np.nan,
-    gamma_beta: float | npt.NDArray[np.float64] = np.nan,
-    gamma_v: float | npt.NDArray[np.float64] = np.nan,
+    Dn50: float | npt.NDArray[np.float64] = np.nan,
+    Rc: float | npt.NDArray[np.float64] = np.nan,
+    Ac: float | npt.NDArray[np.float64] = np.nan,
+    Gc: float | npt.NDArray[np.float64] = np.nan,
+    B_berm: float | npt.NDArray[np.float64] = np.nan,
+    db: float | npt.NDArray[np.float64] = np.nan,
 ) -> None:
+    """Check the parameter values vs the validity range of the Van Gent et al. (2025) formula.
 
-    # TODO adjust validity ranges to based on the paper
-    # TODO check of alleen ranges nodig zijn uit table 1, of is dat maar een deel van de data?
+    For all parameters supplied, their values are checked versus the validity range. Not that this
+    range is wider than that specified in Table 1 (Van Gent et al., 2025), since that does not describe
+    the entire data set the formula is derived from. When parameters are nan (by default), they are
+    not checked.
+
+    For more details, see: https://doi.org/10.59490/jchs.2025.0048
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64], optional
+        Spectral significant wave height (m), by default np.nan
+    Hm0_deep : float | npt.NDArray[np.float64], optional
+        Spectral significant wave height on deep water (m), by default np.nan
+    Tmm10 : float | npt.NDArray[np.float64], optional
+        Spectral wave period Tm-1,0 (s), by default np.nan
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    h : float | npt.NDArray[np.float64], optional
+        Water depth at toe of the structure (m), by default np.nan
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    Dn50 : float | npt.NDArray[np.float64], optional
+        Nominal rock diameter (m), by default np.nan
+    Rc : float | npt.NDArray[np.float64], optional
+        Crest freeboard of the structure (m), by default np.nan
+    Ac : float | npt.NDArray[np.float64], optional
+        Armour crest freeboard of the structure (m), by default np.nan
+    Gc : float | npt.NDArray[np.float64], optional
+        Width of the crest of the structure (m), by default np.nan
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default np.nan
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default np.nan
+    """
+
+    if not np.any(np.isnan(cot_alpha)):
+        core_utility.check_variable_validity_range(
+            "Cotangent alpha slope", "Van Gent et al. (2025)", cot_alpha, 1.5, 8.0
+        )
+
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(Hm0, Tmm10)
         core_utility.check_variable_validity_range(
-            "Wave steepness sm-1,0", "TAW (2002)", smm10, 0.0, 0.07
+            "Wave steepness sm-1,0", "Van Gent et al. (2025)", smm10, 0.001, 0.042
         )
 
     if (
@@ -35,64 +76,91 @@ def check_validity_range(
         ksi_smm10 = core_physics.calculate_Iribarren_number_ksi(Hm0, Tmm10, cot_alpha)
         core_utility.check_variable_validity_range(
             "Iribarren number ksi_m-1,0",
-            "TAW (2002)",
+            "Van Gent et al. (2025)",
             ksi_smm10,
+            0.05,
+            6.0,
+        )
+
+    if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(h)):
+        core_utility.check_variable_validity_range(
+            "Relative water depth h / Hm0",
+            "Van Gent et al. (2025)",
+            h / Hm0,
+            0.6,
+            5.0,
+        )
+
+    if not np.any(np.isnan(Hm0_deep)) and not np.any(np.isnan(h)):
+        core_utility.check_variable_validity_range(
+            "Ratio Hm0_deep / h",
+            "Van Gent et al. (2025)",
+            Hm0_deep / h,
             0.0,
-            7.0,
+            1.0,
+        )
+
+    if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Rc)):
+        core_utility.check_variable_validity_range(
+            "Non-dimensional crest freeboard Rc / Hm0",
+            "Van Gent et al. (2025)",
+            Rc / Hm0,
+            0.6,
+            5.0,
+        )
+
+    if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Dn50)):
+        core_utility.check_variable_validity_range(
+            "Non-dimensional stone diameter Dn50 / Hm0",
+            "Van Gent et al. (2025)",
+            Dn50 / Hm0,
+            0.12,
+            0.9,
         )
 
     if (
         not np.any(np.isnan(Hm0))
-        and not np.any(np.isnan(Tmm10))
-        and not np.any(np.isnan(cot_alpha))
-        and not np.any(np.isnan(gamma_b))
+        and not np.any(np.isnan(Rc))
+        and not np.any(np.isnan(Ac))
     ):
-        ksi_smm10 = core_physics.calculate_Iribarren_number_ksi(Hm0, Tmm10, cot_alpha)
         core_utility.check_variable_validity_range(
-            "gamma_b * ksi_m-1,0",
-            "TAW (2002)",
-            gamma_b * ksi_smm10,
+            "Non-dimensional protruding part of crest wall (Rc - Ac) / Hm0",
+            "Van Gent et al. (2025)",
+            (Rc - Ac) / Hm0,
+            0.0,
+            0.68,
+        )
+
+    if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Gc)):
+        core_utility.check_variable_validity_range(
+            "Non-dimensional armour width in front of crest wall Gc / Hm0",
+            "Van Gent et al. (2025)",
+            Rc / Hm0,
+            0.6,
+            5.0,
+        )
+
+    if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Rc)):
+        core_utility.check_variable_validity_range(
+            "Non-dimensional Berm width B / Hm0",
+            "Van Gent et al. (2025)",
+            B_berm / Hm0,
+            0.6,
+            5.0,
+        )
+
+    if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Rc)):
+        core_utility.check_variable_validity_range(
+            "Non-dimensional Berm height db / Hm0",
+            "Van Gent et al. (2025)",
+            db / Hm0,
+            -1.7,
             0.5,
-            10.0,
-        )
-
-    if not np.any(np.isnan(cot_alpha_down)):
-        core_utility.check_variable_validity_range(
-            "Cotangent alpha lower slope", "TAW (2002)", cot_alpha_down, 1.0, 7.0
-        )
-
-    if not np.any(np.isnan(cot_alpha_up)):
-        core_utility.check_variable_validity_range(
-            "Cotangent alpha upper slope", "TAW (2002)", cot_alpha_up, 1.0, 7.0
         )
 
     if not np.any(np.isnan(beta)):
         core_utility.check_variable_validity_range(
-            "Incident wave angle beta", "TAW (2002)", beta, 0.0, 90.0
-        )
-
-    if not np.any(np.isnan(gamma_b)):
-        core_utility.check_variable_validity_range(
-            "Influence factor berm gamma_b", "TAW (2002)", gamma_b, 0.4, 1.0
-        )
-
-    if not np.any(np.isnan(gamma_f)):
-        core_utility.check_variable_validity_range(
-            "Influence factor roughness gamma_f", "TAW (2002)", gamma_f, 0.4, 1.0
-        )
-
-    if not np.any(np.isnan(gamma_beta)):
-        core_utility.check_variable_validity_range(
-            "Influence factor oblique waves gamma_beta",
-            "TAW (2002)",
-            gamma_beta,
-            0.4,
-            1.0,
-        )
-
-    if not np.any(np.isnan(gamma_v)):
-        core_utility.check_variable_validity_range(
-            "Influence factor vertical wall gamma_v", "TAW (2002)", gamma_v, 0.4, 1.0
+            "Incident wave angle beta", "Van Gent et al. (2025)", beta, 0.0, 75.0
         )
 
     return
@@ -328,10 +396,11 @@ def calculate_dimensionless_overtopping_discharge_q(
         Tmm10=Tmm10,
         beta=beta,
         cot_alpha=cot_alpha,
-        gamma_f=gamma_f,
-        gamma_b=gamma_b,
-        gamma_beta=gamma_beta,
-        gamma_v=gamma_v,
+        Dn50=Dn50,
+        Rc=Rc,
+        Ac=Ac,
+        B_berm=B_berm,
+        db=db,
     )
 
     return q_diml, max_reached
@@ -527,8 +596,6 @@ def calculate_influence_oblique_waves_gamma_beta(
     float | npt.NDArray[np.float64]
         The influence factor for oblique wave incidence gamma_beta (-)
     """
-
-    # TODO check with Marcel: what to do for Hm0-deep/htoe >= 1.0?
 
     gamma_beta = (1 - c_beta) * np.power(np.cos(np.radians(beta)), 2) + c_beta
 
@@ -869,10 +936,11 @@ def calculate_dimensionless_crest_freeboard(
         Tmm10=Tmm10,
         beta=beta,
         cot_alpha=cot_alpha,
-        gamma_f=gamma_f,
-        gamma_b=gamma_b,
-        gamma_beta=gamma_beta,
-        gamma_v=gamma_v,
+        Dn50=Dn50,
+        Rc=Rc_diml * Hm0,
+        Ac=Ac,
+        B_berm=B_berm,
+        db=db,
     )
 
     return Rc_diml, max_reached
