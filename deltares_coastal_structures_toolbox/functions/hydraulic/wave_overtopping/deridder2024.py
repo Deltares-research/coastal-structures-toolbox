@@ -110,6 +110,81 @@ def check_validity_range(
 
     return
 
+def calculate_crest_freeboard_discharge_q_eq24(
+    Hm0: float | npt.NDArray[np.float64],
+    smm10_HF: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    q: float | npt.NDArray[np.float64],
+    g: float = 9.81,
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the crest freeboard given a q for a rubble mound breakwater following equation 24 in  De Ridder et al. (2024).
+
+    For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Significant spectral wave height (m)
+    smm10_HF : float | npt.NDArray[np.float64]
+        Wave steepness sm-1,0 based on the deep water wave length corresponding
+        to the high frequency spectral wave period Tm-1,0,HF(-)
+    gamma_f : float | npt.NDArray[np.float64]
+        Reduction factor for wave overtopping due to friction (-)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        Crest freeboard Rc (m)
+    """
+    Rc_diml = calculate_dimensionless_crest_freeboard_discharge_q_eq24(
+        Hm0=Hm0,
+        smm10_HF=smm10_HF,
+        gamma_f=gamma_f,
+        q=q,
+    )
+
+    Rc = Rc_diml * Hm0
+
+    return Rc
+
+def calculate_dimensionless_crest_freeboard_discharge_q_eq24(
+    Hm0: float | npt.NDArray[np.float64],
+    smm10_HF: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    q: float | npt.NDArray[np.float64],
+    g: float = 9.81,
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the dimensionless crest freeboard given a q for a rubble mound breakwater following equation 24 in  De Ridder et al. (2024).
+
+    For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Significant spectral wave height (m)
+    smm10_HF : float | npt.NDArray[np.float64]
+        Wave steepness sm-1,0 based on the deep water wave length corresponding
+        to the high frequency spectral wave period Tm-1,0,HF(-)
+    gamma_f : float | npt.NDArray[np.float64]
+        Reduction factor for wave overtopping due to friction (-)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        Dimensionless crest freeboard Rc (-)
+    """
+
+    Rc_diml = - (np.log(q / np.sqrt(g * np.power(Hm0, 3))) - np.log(0.74)) / (  8.51 * gamma_f * np.power(smm10_HF, 0.32) )
+    return Rc_diml
+
 
 def calculate_overtopping_discharge_q_eq24(
     Hm0: float | npt.NDArray[np.float64],
