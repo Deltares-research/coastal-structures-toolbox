@@ -359,8 +359,6 @@ def calculate_dimensionless_overtopping_discharge_q(
         )
         q_diml = q_diml * gamma_w
 
-    # TODO Check with Marcel: default should be design value following Eq. B8???
-    # TODO Check with Marcel: first apply wind influence, then design values?
     if design_calculation:
         q_diml = np.power(q_diml, 0.857)
 
@@ -456,7 +454,7 @@ def calculate_influence_friction_gamma_f(
     Hm0: float | npt.NDArray[np.float64],
     smm10: float | npt.NDArray[np.float64],
     c_f1: float = 0.70,
-    c_f2: float = 0.05,  # TODO Check whether this should be 0.05 or 0.1, conflicting values in the paper
+    c_f2: float = 0.05,
     smm10_lim: float = 0.012,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate influence factor for surface roughness gamma_f
@@ -771,6 +769,8 @@ def calculate_dimensionless_crest_freeboard(
     g: float = 9.81,
     design_calculation: bool = True,
     include_influence_wind: bool = False,
+    max_iter: int = 1000,
+    tolerance: float = 1e-4,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the dimensionless crest freeboard Rc/Hm0 with the Van Gent et al. (2025) formula.
 
@@ -879,9 +879,13 @@ def calculate_dimensionless_crest_freeboard(
         smm10 = core_physics.calculate_wave_steepness_s(Hm0, Tmm10)
         gamma_f = calculate_influence_friction_gamma_f(Dn50=Dn50, Hm0=Hm0, smm10=smm10)
 
-    # TODO Check with Marcel: how to handle wind influence and design conservatism in Rc?
+    q_diml = q / np.sqrt(g * Hm0**3)
+
+    if design_calculation:
+        q_diml = np.power(q_diml, 1.0 / 0.857)
+
     Rc_diml = (
-        np.log((1.0 / 6.8) * cot_alpha * q / np.sqrt(g * Hm0**3))
+        np.log((1.0 / 6.8) * cot_alpha * q_diml)
         * (-1.0 / 5.0)
         * gamma_f
         * gamma_b
@@ -890,6 +894,35 @@ def calculate_dimensionless_crest_freeboard(
         * ksi_mm10
         + 0.4 * Hm0_swell / Hm0
     )
+
+    if include_influence_wind:
+        Rc_diff = np.inf
+        n_iter = 0
+        while np.max(Rc_diff) > tolerance and n_iter < max_iter:
+            n_iter += 1
+
+            gamma_w = calculate_influence_wind_gamma_w(
+                Rc=Rc_diml * Hm0,
+                Ac=Ac,
+                Hm0=Hm0,
+                q_diml=q_diml,
+            )
+            q_diml_iter = q_diml / gamma_w
+
+            Rc_diml_prev = Rc_diml
+
+            Rc_diml = (
+                np.log((1.0 / 6.8) * cot_alpha * q_diml_iter)
+                * (-1.0 / 5.0)
+                * gamma_f
+                * gamma_b
+                * gamma_v
+                * gamma_beta
+                * ksi_mm10
+                + 0.4 * Hm0_swell / Hm0
+            )
+
+            Rc_diff = np.abs(Rc_diml - Rc_diml_prev)
 
     Rc_diml_max = Rc_diml_max_equation(
         Hm0=Hm0,
