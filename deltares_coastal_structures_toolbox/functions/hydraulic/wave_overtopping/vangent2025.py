@@ -106,8 +106,6 @@ def calculate_overtopping_discharge_q(
     Rc: float | npt.NDArray[np.float64],
     Ac: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
     B_berm: float | npt.NDArray[np.float64] = 0.0,
     db: float | npt.NDArray[np.float64] = 0.0,
@@ -141,10 +139,6 @@ def calculate_overtopping_discharge_q(
         Armour crest freeboard of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
         Cotangent of the front-side slope of the structure (-), by default np.nan
-    cot_alpha_down : float | npt.NDArray[np.float64], optional
-        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
-    cot_alpha_up : float | npt.NDArray[np.float64], optional
-        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
     B_berm : float | npt.NDArray[np.float64], optional
@@ -182,8 +176,6 @@ def calculate_overtopping_discharge_q(
         Rc=Rc,
         Ac=Ac,
         cot_alpha=cot_alpha,
-        cot_alpha_down=cot_alpha_down,
-        cot_alpha_up=cot_alpha_up,
         beta=beta,
         B_berm=B_berm,
         db=db,
@@ -207,8 +199,6 @@ def calculate_dimensionless_overtopping_discharge_q(
     Rc: float | npt.NDArray[np.float64],
     Ac: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
     B_berm: float | npt.NDArray[np.float64] = 0.0,
     db: float | npt.NDArray[np.float64] = 0.0,
@@ -241,10 +231,6 @@ def calculate_dimensionless_overtopping_discharge_q(
         Armour crest freeboard of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
         Cotangent of the front-side slope of the structure (-), by default np.nan
-    cot_alpha_down : float | npt.NDArray[np.float64], optional
-        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
-    cot_alpha_up : float | npt.NDArray[np.float64], optional
-        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
     B_berm : float | npt.NDArray[np.float64], optional
@@ -280,30 +266,6 @@ def calculate_dimensionless_overtopping_discharge_q(
 
     if np.isnan(gamma_beta):
         gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta=beta)
-
-    # TODO check with Marcel how to handle composite slopes (maybe irrelevant for RMB)
-    if wave_runup_taw2002.check_composite_slope(
-        cot_alpha=cot_alpha, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up
-    ):
-        z2p_for_slope = wave_runup_taw2002.iteration_procedure_z2p(
-            Hm0=Hm0,
-            Tmm10=Tmm10,
-            cot_alpha_down=cot_alpha_down,
-            cot_alpha_up=cot_alpha_up,
-            B_berm=B_berm,
-            db=db,
-            gamma_f=gamma_f,
-            gamma_beta=gamma_beta,
-        )
-
-        cot_alpha = wave_runup_taw2002.determine_average_slope(
-            Hm0=Hm0,
-            z2p=z2p_for_slope,
-            cot_alpha_down=cot_alpha_down,
-            cot_alpha_up=cot_alpha_up,
-            B_berm=B_berm,
-            db=db,
-        )
 
     ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hm0, T=Tmm10, cot_alpha=cot_alpha
@@ -367,8 +329,6 @@ def calculate_dimensionless_overtopping_discharge_q(
         Tmm10=Tmm10,
         beta=beta,
         cot_alpha=cot_alpha,
-        cot_alpha_down=cot_alpha_down,
-        cot_alpha_up=cot_alpha_up,
         gamma_f=gamma_f,
         gamma_b=gamma_b,
         gamma_beta=gamma_beta,
@@ -657,8 +617,6 @@ def calculate_crest_freeboard_Rc(
     q: float | npt.NDArray[np.float64],
     Ac: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
     B_berm: float | npt.NDArray[np.float64] = 0.0,
     db: float | npt.NDArray[np.float64] = 0.0,
@@ -691,10 +649,6 @@ def calculate_crest_freeboard_Rc(
         Armour crest freeboard of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
         Cotangent of the front-side slope of the structure (-), by default np.nan
-    cot_alpha_down : float | npt.NDArray[np.float64], optional
-        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
-    cot_alpha_up : float | npt.NDArray[np.float64], optional
-        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
     B_berm : float | npt.NDArray[np.float64], optional
@@ -730,8 +684,6 @@ def calculate_crest_freeboard_Rc(
         q=q,
         Ac=Ac,
         cot_alpha=cot_alpha,
-        cot_alpha_down=cot_alpha_down,
-        cot_alpha_up=cot_alpha_up,
         beta=beta,
         B_berm=B_berm,
         db=db,
@@ -756,8 +708,6 @@ def calculate_dimensionless_crest_freeboard(
     q: float | npt.NDArray[np.float64],
     Ac: float | npt.NDArray[np.float64],
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_down: float | npt.NDArray[np.float64] = np.nan,
-    cot_alpha_up: float | npt.NDArray[np.float64] = np.nan,
     beta: float | npt.NDArray[np.float64] = np.nan,
     B_berm: float | npt.NDArray[np.float64] = 0.0,
     db: float | npt.NDArray[np.float64] = 0.0,
@@ -770,7 +720,7 @@ def calculate_dimensionless_crest_freeboard(
     design_calculation: bool = True,
     include_influence_wind: bool = False,
     max_iter: int = 1000,
-    tolerance: float = 1e-4,
+    tolerance: float = 1e-5,
 ) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
     """Calculate the dimensionless crest freeboard Rc/Hm0 with the Van Gent et al. (2025) formula.
 
@@ -793,10 +743,6 @@ def calculate_dimensionless_crest_freeboard(
         Armour crest freeboard of the structure (m)
     cot_alpha : float | npt.NDArray[np.float64], optional
         Cotangent of the front-side slope of the structure (-), by default np.nan
-    cot_alpha_down : float | npt.NDArray[np.float64], optional
-        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
-    cot_alpha_up : float | npt.NDArray[np.float64], optional
-        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
     beta : float | npt.NDArray[np.float64], optional
         Angle of wave incidence (degrees), by default np.nan
     B_berm : float | npt.NDArray[np.float64], optional
@@ -819,6 +765,10 @@ def calculate_dimensionless_crest_freeboard(
         Use the 95% confidence level for design calculations, by default True
     include_influence_wind : bool, optional
         Include influence of wind on wave overtopping, by default False
+    max_iter : int, optional
+        Maximum number of iterations, by default 1000
+    tolerance : float, optional
+        Tolerance for convergence of the iterative solution, by default 1e-5
 
     Returns
     -------
@@ -834,30 +784,6 @@ def calculate_dimensionless_crest_freeboard(
 
     if np.isnan(gamma_beta):
         gamma_beta = calculate_influence_oblique_waves_gamma_beta(beta=beta)
-
-    # TODO check with Marcel how to handle composite slopes (maybe irrelevant for RMB)
-    if wave_runup_taw2002.check_composite_slope(
-        cot_alpha=cot_alpha, cot_alpha_down=cot_alpha_down, cot_alpha_up=cot_alpha_up
-    ):
-        z2p_for_slope = wave_runup_taw2002.iteration_procedure_z2p(
-            Hm0=Hm0,
-            Tmm10=Tmm10,
-            cot_alpha_down=cot_alpha_down,
-            cot_alpha_up=cot_alpha_up,
-            B_berm=B_berm,
-            db=db,
-            gamma_f=gamma_f,
-            gamma_beta=gamma_beta,
-        )
-
-        cot_alpha = wave_runup_taw2002.determine_average_slope(
-            Hm0=Hm0,
-            z2p=z2p_for_slope,
-            cot_alpha_down=cot_alpha_down,
-            cot_alpha_up=cot_alpha_up,
-            B_berm=B_berm,
-            db=db,
-        )
 
     ksi_mm10 = core_physics.calculate_Iribarren_number_ksi(
         H=Hm0, T=Tmm10, cot_alpha=cot_alpha
@@ -939,19 +865,11 @@ def calculate_dimensionless_crest_freeboard(
     Rc_diml = np.min([Rc_diml, Rc_diml_max], axis=0)
     max_reached = np.min([Rc_diml, Rc_diml_max], axis=0) == Rc_diml_max
 
-    if include_influence_wind:
-        print("Please implement wind influence calculation.")
-
-    if design_calculation:
-        print("Please implement design calculation.")
-
     check_validity_range(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
         cot_alpha=cot_alpha,
-        cot_alpha_down=cot_alpha_down,
-        cot_alpha_up=cot_alpha_up,
         gamma_f=gamma_f,
         gamma_b=gamma_b,
         gamma_beta=gamma_beta,
