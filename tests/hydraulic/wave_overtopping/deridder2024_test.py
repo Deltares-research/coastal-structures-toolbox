@@ -1,7 +1,6 @@
 import pytest
 
 
-
 import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.deridder2024 as deridder2024
 
 
@@ -12,20 +11,13 @@ import deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.
         ([2.5, 0.01, 0.55, 3.0, 0.1302]),
         ([2.0, 0.02, 0.55, 3.0, 0.0086]),
         ([2.5, 0.02, 0.55, 3.0, 0.0453]),
-
         ([2.0, 0.01, 0.55, 2.5, 0.0780]),
         ([2.5, 0.01, 0.55, 2.5, 0.2646]),
         ([2.0, 0.02, 0.55, 2.5, 0.0260]),
         ([2.5, 0.02, 0.55, 2.5, 0.1097]),
     ),
 )
-def test_internal_consistency_q_Rc(
-    Hm0,
-    smm10_HF,
-    gamma_f,
-    Rc,
-    q_calculated
-):
+def test_internal_consistency_q_Rc(Hm0, smm10_HF, gamma_f, Rc, q_calculated):
     q = deridder2024.calculate_overtopping_discharge_q_eq24(
         Hm0=Hm0,
         smm10_HF=smm10_HF,
@@ -43,20 +35,6 @@ def test_internal_consistency_q_Rc(
     assert Rc_calculated == pytest.approx(Rc, abs=1e-2)
 
 
-# @pytest.mark.parametrize(
-#     ("Hm0, Tmm10, beta, cot_alpha, Rc, gamma_f, q_expected"),
-#     (
-#         ([2.0, 0.01, 0.55, 3.0, 0.0322]),
-#         ([2.5, 0.01, 0.55, 3.0, 0.1302]),
-#         ([2.0, 0.02, 0.55, 3.0, 0.0086]),
-#         ([2.5, 0.02, 0.55, 3.0, 0.0453]),
-
-#         ([2.0, 0.01, 0.55, 2.5, 0.0780]),
-#         ([2.5, 0.01, 0.55, 2.5, 0.2646]),
-#         ([2.0, 0.02, 0.55, 2.5, 0.0260]),
-#         ([2.5, 0.02, 0.55, 2.5, 0.1097]),
-#     ),
-# )
 # def test_q_backward(
 #     Hm0,
 #     smm10_HF,
