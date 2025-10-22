@@ -297,12 +297,6 @@ def calculate_dimensionless_overtopping_discharge_eq24(
         -8.51 * (Rc / Hm0 * gamma_f) * np.power(smm10_HF, 0.32)
     )
 
-    check_validity_range(
-        Hm0=Hm0,
-        smm10_HF=smm10_HF,
-        gamma_f=gamma_f,
-        Rc=Rc,
-    )
 
     return q_dimensionless
 
