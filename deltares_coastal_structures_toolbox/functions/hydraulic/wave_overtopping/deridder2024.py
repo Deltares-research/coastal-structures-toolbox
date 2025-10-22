@@ -118,7 +118,8 @@ def calculate_crest_freeboard_discharge_q_eq24(
     q: float | npt.NDArray[np.float64],
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the crest freeboard given a q for a rubble mound breakwater following equation 24 in  De Ridder et al. (2024).
+    """Calculate the crest freeboard given a q for a rubble mound breakwater
+    following equation 24 in  De Ridder et al. (2024).
 
     For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
 
@@ -160,7 +161,8 @@ def calculate_dimensionless_crest_freeboard_discharge_q_eq24(
     q: float | npt.NDArray[np.float64],
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
-    """Calculate the dimensionless crest freeboard given a q for a rubble mound breakwater following equation 24 in  De Ridder et al. (2024).
+    """Calculate the dimensionless crest freeboard given a q for a rubble mound breakwater
+    following equation 24 in  De Ridder et al. (2024).
 
     For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
 
