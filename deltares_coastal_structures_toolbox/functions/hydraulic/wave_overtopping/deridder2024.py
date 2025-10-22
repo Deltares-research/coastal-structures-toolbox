@@ -154,6 +154,49 @@ def calculate_crest_freeboard_discharge_q_eq24(
     return Rc
 
 
+def calculate_crest_freeboard_discharge_q_eq26(
+    Hm0: float | npt.NDArray[np.float64],
+    smm10_HF: float | npt.NDArray[np.float64],
+    Hm0_LF: float | npt.NDArray[np.float64],
+    gamma_f: float | npt.NDArray[np.float64],
+    q: float | npt.NDArray[np.float64],
+    g: float = 9.81,
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the crest freeboard given a q for a rubble mound breakwater
+    following equation 26 in  De Ridder et al. (2024).
+
+    For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2024.104626
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Significant spectral wave height (m)
+    smm10_HF : float | npt.NDArray[np.float64]
+        Wave steepness sm-1,0 based on the deep water wave length corresponding
+        to the high frequency spectral wave period Tm-1,0,HF(-)
+    Hm0_LF : float | npt.NDArray[np.float64]
+        Low-frequency wave height (m)
+    gamma_f : float | npt.NDArray[np.float64]
+        Reduction factor for wave overtopping due to friction (-)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        Crest freeboard Rc (m)
+    """
+    Rc = (
+        -(np.log(q / np.sqrt(g * np.power(Hm0, 3))) - np.log(0.50))
+        / (7.91 * np.power(smm10_HF, 0.30))
+        * (gamma_f * Hm0)
+    ) + 0.21 * Hm0_LF
+
+    return Rc
+
+
 def calculate_dimensionless_crest_freeboard_discharge_q_eq24(
     Hm0: float | npt.NDArray[np.float64],
     smm10_HF: float | npt.NDArray[np.float64],
@@ -235,6 +278,7 @@ def calculate_overtopping_discharge_q_eq24(
 def calculate_overtopping_discharge_q_eq26(
     Hm0: float | npt.NDArray[np.float64],
     smm10_HF: float | npt.NDArray[np.float64],
+    Hm0_LF: float | npt.NDArray[np.float64],
     gamma_f: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
     g: float = 9.81,
@@ -267,7 +311,7 @@ def calculate_overtopping_discharge_q_eq26(
     """
 
     q = calculate_dimensionless_overtopping_discharge_eq26(
-        Hm0, smm10_HF, gamma_f, Rc
+        Hm0, smm10_HF, Hm0_LF, gamma_f, Rc
     ) * np.sqrt(g * np.power(Hm0, 3))
     return q
 
@@ -304,7 +348,11 @@ def calculate_dimensionless_overtopping_discharge_eq24(
     q_dimensionless = 0.74 * np.exp(
         -8.51 * (Rc / (Hm0 * gamma_f)) * np.power(smm10_HF, 0.32)
     )
-
+    check_validity_range(
+        Hm0=Hm0,
+        Tmm10_HF=np.sqrt((2 * np.pi * Hm0) / smm10_HF / 9.81),
+        Rc=Rc,
+    )
     return q_dimensionless
 
 
@@ -346,8 +394,7 @@ def calculate_dimensionless_overtopping_discharge_eq26(
 
     check_validity_range(
         Hm0=Hm0,
-        smm10_HF=smm10_HF,
-        gamma_f=gamma_f,
+        Tmm10_HF=np.sqrt((2 * np.pi * Hm0) / smm10_HF / 9.81),
         Rc=Rc,
         Hm0_LF=Hm0_LF,
     )
