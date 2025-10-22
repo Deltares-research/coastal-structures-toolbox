@@ -186,8 +186,10 @@ def calculate_dimensionless_crest_freeboard_discharge_q_eq24(
         Dimensionless crest freeboard Rc (-)
     """
 
-    Rc_diml = -(np.log(q / np.sqrt(g * np.power(Hm0, 3))) - np.log(0.74)) / (
-        8.51 * gamma_f * np.power(smm10_HF, 0.32)
+    Rc_diml = (
+        -(np.log(q / np.sqrt(g * np.power(Hm0, 3))) - np.log(0.74))
+        / (8.51 * np.power(smm10_HF, 0.32))
+        * gamma_f
     )
     return Rc_diml
 
@@ -300,7 +302,7 @@ def calculate_dimensionless_overtopping_discharge_eq24(
     """
 
     q_dimensionless = 0.74 * np.exp(
-        -8.51 * (Rc / Hm0 * gamma_f) * np.power(smm10_HF, 0.32)
+        -8.51 * (Rc / (Hm0 * gamma_f)) * np.power(smm10_HF, 0.32)
     )
 
     return q_dimensionless
@@ -339,7 +341,7 @@ def calculate_dimensionless_overtopping_discharge_eq26(
     """
 
     q_dimensionless = 0.50 * np.exp(
-        -7.91 * ((Rc - 0.21 * Hm0_LF) / Hm0 * gamma_f) * np.power(smm10_HF, 0.30)
+        -7.91 * ((Rc - 0.21 * Hm0_LF) / (Hm0 * gamma_f)) * np.power(smm10_HF, 0.30)
     )
 
     check_validity_range(
