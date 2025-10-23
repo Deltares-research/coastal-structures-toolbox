@@ -8,6 +8,9 @@ Deltares Coastal Structures Toolbox package contents
 Hydraulic - Wave Overtopping
 ============================
 
+Wave Overtopping
+~~~~~~~~~~~~~~~~
+
 TAW (2002)
 ----------
 
@@ -80,8 +83,6 @@ Van Gent et al. (2025)
    :members:
    :undoc-members:
    :show-inheritance:
-
-
 
 
 Hydraulic - Wave Runup
