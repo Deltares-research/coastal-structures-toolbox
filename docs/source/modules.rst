@@ -5,8 +5,8 @@ Deltares Coastal Structures Toolbox package contents
 ====================================================
 
 
-Hydraulic - Wave Overtopping
-============================
+Hydraulic
+=========
 
 Wave Overtopping
 ~~~~~~~~~~~~~~~~
@@ -85,36 +85,40 @@ Van Gent et al. (2025)
    :show-inheritance:
 
 
-Hydraulic - Wave Runup
-======================
+Wave Runup
+~~~~~~~~~~
 
 
-Hydraulic - Wave Transmission
-=============================
+Wave Transmission
+~~~~~~~~~~~~~~~~~
 
 
-Structural - Forces Caisson
-===========================
+Structural
+==========
 
 
-Structural - Forces Crest Wall
-==============================
+Forces Caisson
+~~~~~~~~~~~~~~
 
 
-Structural - Stability Concrete Armour
-======================================
+Forces Crest Wall
+~~~~~~~~~~~~~~~~~
 
 
-Structural - Stability Rock Armour
-==================================
+Stability Concrete Armour
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-Structural - Stability Rock Rear
-================================
+Stability Rock Armour
+~~~~~~~~~~~~~~~~~~~~~
 
 
-Structural - Stability Toe Berm
-===============================
+Stability Rock Rear
+~~~~~~~~~~~~~~~~~~~
+
+
+Stability Toe Berm
+~~~~~~~~~~~~~~~~~~
 
 
 General functions

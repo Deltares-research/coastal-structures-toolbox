@@ -405,32 +405,36 @@ def q_diml_max_equation(
     c3: float,
     cor3: float = 0.0,
     c2: float = 0.2,
-):
-    """_summary_
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the maximum wave overtopping discharge q with the TAW (2002) formula.
 
-    _extended_summary_
+    The maximum wave overtopping discharge q (m^3/s/m) is calculated using the TAW (2002) formulas. Here eqs. 23
+    and 25 from TAW (2002) are implemented.
+
+    For more details see TAW (2002), available here (in Dutch):
+    https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
 
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     Rc : float | npt.NDArray[np.float64]
-        _description_
+        Crest freeboard of the structure (m)
     gamma_beta : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for oblique wave incidence (-)
     gamma_f : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for surface roughness (-)
     c3 : float
-        _description_
+        Coefficient in the q max equation (-)
     cor3 : float, optional
-        _description_, by default 0.0
+        Uncertainty accounted for in coefficient c3, by default 0.0
     c2 : float, optional
-        _description_, by default 0.2
+        Coefficient in the q max equation (-), by default 0.2
 
     Returns
     -------
-    _type_
-        _description_
+    float | npt.NDArray[np.float64]
+        Maximum value for the dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-)
     """
 
     q_diml_max = c2 * np.exp(
@@ -780,34 +784,38 @@ def Rc_diml_max_equation(
     cor3: float = 0.0,
     c2: float = 0.2,
     g: float = 9.81,
-):
-    """_summary_
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the maximum of the dimensionless crest freeboard Rc/Hm0 with the TAW (2002) formula.
 
-    _extended_summary_
+    The maximum value of the dimensionless crest freeboard Rc/Hm0 (-) is calculated using the TAW (2002)
+    formulas. Here eqs. 23 and 25 from TAW (2002) are implemented.
+
+    For more details see TAW (2002), available here (in Dutch):
+    https://open.rijkswaterstaat.nl/open-overheid/onderzoeksrapporten/@97617/technisch-rapport-golfoploop/
 
     Parameters
     ----------
     Hm0 : float | npt.NDArray[np.float64]
-        _description_
+        Spectral significant wave height (m)
     q : float | npt.NDArray[np.float64]
-        _description_
+        Mean wave overtopping discharge (m^3/s/m)
     gamma_beta : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for oblique wave incidence (-)
     gamma_f : float | npt.NDArray[np.float64]
-        _description_
+        Influence factor for surface roughness (-)
     c3 : float
-        _description_
+        Coefficient in the q max equation (-)
     cor3 : float, optional
-        _description_, by default 0.0
+        Uncertainty accounted for in coefficient c3, by default 0.0
     c2 : float, optional
-        _description_, by default 0.2
+        Coefficient in the q max equation (-), by default 0.2
     g : float, optional
-        _description_, by default 9.81
+        Gravitational constant (m/s^2), by default 9.81
 
     Returns
     -------
-    _type_
-        _description_
+    float | npt.NDArray[np.float64]
+        The maximum value of the dimensionless crest freeboard of the structure Rc/Hm0 (-)
     """
 
     Rc_diml_max = (
