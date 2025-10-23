@@ -6,5 +6,5 @@ This package is coded and maintained by Deltares, a not-for-profit, world-leadin
 
 The main authors of this package are:
 
-* Ivo van der Werf <ivo.vanderwerf@deltares.nl>
 * Joost den Bieman <joost.denbieman@deltares.nl>
+* Ivo van der Werf <ivo.vanderwerf@deltares.nl>
