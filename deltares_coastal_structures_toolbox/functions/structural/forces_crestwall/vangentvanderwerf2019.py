@@ -334,7 +334,7 @@ def calculate_FH2p_perpendicular_from_z2p(
 
     FH2p = cFH * rho_water * g * Hwall * (z2p - Ac)
 
-    FH2p = np.min(FH2p, 0)
+    FH2p = np.max([FH2p, np.zeros_like(FH2p) * 0], axis=0)
 
     check_validity(Hm0=Hm0, Ac=Ac, Rc=Rc)
 
@@ -551,7 +551,7 @@ def calculate_FV2p_perpendicular_from_z2p(
         cFV * rho_water * g * Bwall * (z2p - 0.75 * Ac) * (1 - (np.power(Fb / Ac, cFb)))
     )
 
-    FV2p = np.min(FV2p, 0)
+    FV2p = np.max([FV2p, np.zeros_like(FV2p) * 0], axis=0)
 
     return FV2p
 

@@ -9,6 +9,7 @@ import deltares_coastal_structures_toolbox.functions.structural.stability_rock_a
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988_modified as stability_rock_vandermeer1988_modified
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_rear.vangent2007 as stability_rear_with_crest_vangent2007
 import deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.etemadshahidi2020 as etemadshahidi2020
+import deltares_coastal_structures_toolbox.functions.structural.forces_crestwall.vangentvanderwerf2019 as vangentvanderwerf2019
 
 Hm0 = 2.0
 Tmm10 = 5.0
@@ -28,6 +29,20 @@ H2p = 1.4 * Hm0
 Tm = 0.915 * Tmm10
 M50_core = 50
 S_var = np.linspace(2.0, 10.0, 1000)
+
+
+Rc = 3.0
+Ac = 2.0
+Hwall = np.linspace(3.5, 4.0, 1000)
+Bwall = np.linspace(0.8, 1.2, 1000)
+Fb = 0.8
+
+FH2p = vangentvanderwerf2019.calculate_FH2p_oblique(
+    Hm0=Hm0, Tmm10=Tmm10, beta=beta, cot_alpha=cot_alpha, Ac=Ac, Rc=Rc, Hwall=Hwall
+)
+FV2p = vangentvanderwerf2019.calculate_FV2p_oblique(
+    Hm0=Hm0, Tmm10=Tmm10, beta=beta, cot_alpha=cot_alpha, Ac=Ac, Bwall=Bwall, Fb=Fb
+)
 
 Dn50_es2020_var = etemadshahidi2020.calculate_nominal_rock_diameter_Dn50(
     Hs=Hm0,
