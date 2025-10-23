@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import warnings
+from typing import Union
 
+import deltares_wave_toolbox.cores.core_dispersion as dispersion
 import numpy as np
 import numpy.typing as npt
-from typing import Union
-import deltares_wave_toolbox.cores.core_dispersion as dispersion
 
 
 def calculate_wave_steepness_s(
