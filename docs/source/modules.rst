@@ -368,7 +368,7 @@ Gerding (1993)
 Van der Meer (1998)
 -------------
 
-.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.vandermeer1988
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.vandermeer1998
    :members:
    :undoc-members:
    :show-inheritance:
@@ -384,7 +384,7 @@ Van Gent & Van der Werf (2014)
 Etemad-Shahidi et al. (2021)
 -------------
 
-.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.etemad_shahidi2021
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.etemadshahidi2021
    :members:
    :undoc-members:
    :show-inheritance:
