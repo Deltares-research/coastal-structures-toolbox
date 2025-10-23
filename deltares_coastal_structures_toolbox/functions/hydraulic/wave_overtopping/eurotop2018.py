@@ -11,6 +11,21 @@ import deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw200
 def check_validity_range_rubble_mound(
     cot_alpha: float | npt.NDArray[np.float64] = np.nan,
 ) -> None:
+    """Check the parameter values vs the validity range of the EurOtop (2018) manual for rubble mound structures.
+
+    For all parameters supplied, their values are checked versus the range of test conditions specified by
+    EurOtop (2018) . When parameters are nan (by default), they are not checked.
+
+    For more details see EurOtop (2018) and the errata of November 2019, available here:
+    https://www.overtopping-manual.com/assets/downloads/EurOtop_II_2018_Final_version.pdf
+
+    https://www.overtopping-manual.com/assets/downloads/Errata_EurOtop_2018_Nov_2019.pdf
+
+    Parameters
+    ----------
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    """
 
     if not np.any(np.isnan(cot_alpha)):
         core_utility.check_variable_validity_range(
@@ -76,7 +91,7 @@ def calculate_overtopping_discharge_q(
     gamma_v : float | npt.NDArray[np.float64], optional
         Influence factor for a crest wall (-), by default 1.0
     gamma_star : float | npt.NDArray[np.float64], optional
-        _description_, by default 1.0
+        Influence factor for a promenade or storm wall on slope, by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional
         Berm width of the structure (m), by default 0.0
     db : float | npt.NDArray[np.float64], optional
@@ -184,7 +199,7 @@ def calculate_dimensionless_overtopping_discharge_q(
     gamma_v : float | npt.NDArray[np.float64], optional
         Influence factor for a crest wall (-), by default 1.0
     gamma_star : float | npt.NDArray[np.float64], optional
-        _description_, by default 1.0
+        Influence factor for a promenade or storm wall on slope, by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional
         Berm width of the structure (m), by default 0.0
     db : float | npt.NDArray[np.float64], optional
@@ -311,7 +326,39 @@ def q_diml_max_equation(
     gamma_star: float | npt.NDArray[np.float64] = 1.0,
     c2: float = 0.1035,
     c3: float = 1.35,
-):
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the maximum dimensionless mean wave overtopping discharge q with the EurOtop (2018) formula.
+
+    The maximum value of the dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-) is calculated
+    using the EurOtop (2018) formulas. Here eqs. 5.11 and 5.13 from EurOtop (2018) are implemented.
+
+    For more details see EurOtop (2018) and the errata of November 2019, available here:
+    https://www.overtopping-manual.com/assets/downloads/EurOtop_II_2018_Final_version.pdf
+
+    https://www.overtopping-manual.com/assets/downloads/Errata_EurOtop_2018_Nov_2019.pdf
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    gamma_star : float | npt.NDArray[np.float64], optional
+        Influence factor for a promenade or storm wall on slope, by default 1.0
+    c2 : float, optional
+        Coefficient in wave overtopping formula (-), by default 0.1035
+    c3 : float, optional
+        Coefficient in wave overtopping formula (-), by default 1.35
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        Maximum value for the dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-)
+    """
 
     q_diml_max = c2 * np.exp(
         -1.0
@@ -453,7 +500,7 @@ def calculate_crest_freeboard_Rc(
     gamma_v : float | npt.NDArray[np.float64], optional
         Influence factor for a crest wall (-), by default 1.0
     gamma_star : float | npt.NDArray[np.float64], optional
-        _description_, by default 1.0
+        Influence factor for a promenade or storm wall on slope, by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional
         Berm width of the structure (m), by default 0.0
     db : float | npt.NDArray[np.float64], optional
@@ -564,7 +611,7 @@ def calculate_dimensionless_crest_freeboard(
     gamma_v : float | npt.NDArray[np.float64], optional
         Influence factor for a crest wall (-), by default 1.0
     gamma_star : float | npt.NDArray[np.float64], optional
-        _description_, by default 1.0
+        Influence factor for a promenade or storm wall on slope, by default 1.0
     B_berm : float | npt.NDArray[np.float64], optional
         Berm width of the structure (m), by default 0.0
     db : float | npt.NDArray[np.float64], optional
@@ -698,7 +745,41 @@ def Rc_diml_max_equation(
     c2: float = 0.1035,
     c3: float = 1.35,
     g: float = 9.81,
-):
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the maximum dimensionless crest freeboard Rc/Hm0 with the EurOtop (2018) formula.
+
+    The maximum value of the dimensionless crest freeboard Rc/Hm0 (-) is calculated using the
+    EurOtop (2018) formulas. Here eqs. 5.11 and 5.13 from EurOtop (2018) are implemented.
+
+    For more details see EurOtop (2018) and the errata of November 2019, available here:
+    https://www.overtopping-manual.com/assets/downloads/EurOtop_II_2018_Final_version.pdf
+
+    https://www.overtopping-manual.com/assets/downloads/Errata_EurOtop_2018_Nov_2019.pdf
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    gamma_star : float | npt.NDArray[np.float64], optional
+        Influence factor for a promenade or storm wall on slope, by default 1.0
+    c2 : float, optional
+         Coefficient in wave overtopping formula (-), by default 0.1035
+    c3 : float, optional
+         Coefficient in wave overtopping formula (-), by default 1.35
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The maximum value of the dimensionless crest freeboard of the structure Rc/Hm0 (-)
+    """
 
     Rc_diml_max = (
         np.power(-np.log((q / np.sqrt(g * np.power(Hm0, 3))) * (1.0 / c2)), 1.0 / 1.3)
@@ -728,6 +809,55 @@ def calculate_overtopping_discharge_q_rubble_mound(
     use_best_fit: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the mean wave overtopping discharge q with the EurOtop (2018) formula (rubble mound).
+
+    The mean wave overtopping discharge q/sqrt(g*Hm0^3) (-) for rubble mound structures is calculated using the
+    EurOtop (2018) formulas. Here eq. 6.6 from EurOtop (2018) is  implemented for design calculations and eq. 6.5
+    for best fit calculations (using the option best_fit=True).
+
+    For more details see EurOtop (2018) and the errata of November 2019, available here:
+    https://www.overtopping-manual.com/assets/downloads/EurOtop_II_2018_Final_version.pdf
+
+    https://www.overtopping-manual.com/assets/downloads/Errata_EurOtop_2018_Nov_2019.pdf
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    c2 : float, optional
+        Coefficient in wave overtopping formula (-), by default 0.1035
+    c3 : float, optional
+        Coefficient in wave overtopping formula (-), by default 1.35
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge q (m^3/s/m)
+    """
 
     q_diml = calculate_dimensionless_overtopping_discharge_q_rubble_mound(
         Hm0=Hm0,
@@ -766,6 +896,53 @@ def calculate_dimensionless_overtopping_discharge_q_rubble_mound(
     c3: float = 1.35,
     use_best_fit: bool = False,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the dimensionless mean wave overtopping discharge q with the EurOtop (2018) formula (rubble mound).
+
+    The dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-) for rubble mound structures is calculated
+    using the EurOtop (2018) formulas. Here eq. 6.6 from EurOtop (2018) is  implemented for design calculations and
+    eq. 6.5 for best fit calculations (using the option best_fit=True).
+
+    For more details see EurOtop (2018) and the errata of November 2019, available here:
+    https://www.overtopping-manual.com/assets/downloads/EurOtop_II_2018_Final_version.pdf
+
+    https://www.overtopping-manual.com/assets/downloads/Errata_EurOtop_2018_Nov_2019.pdf
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    Rc : float | npt.NDArray[np.float64]
+        Crest freeboard of the structure (m)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    c2 : float, optional
+        Coefficient in wave overtopping formula (-), by default 0.1035
+    c3 : float, optional
+        Coefficient in wave overtopping formula (-), by default 1.35
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        Dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-)
+    """
 
     _, c2, c3, _ = check_best_fit(
         c1=np.nan, c2=c2, c3=c3, c4=np.nan, use_best_fit=use_best_fit
@@ -841,6 +1018,55 @@ def calculate_crest_freeboard_Rc_rubble_mound(
     use_best_fit: bool = False,
     g: float = 9.81,
 ) -> float | npt.NDArray[np.float64]:
+    """Calculate the crest freeboard Rc/Hm0 with the EurOtop (2018) formula for rubble mound structures.
+
+    The crest freeboard Rc/Hm0 (-) for rubble mound structures is calculated using the EurOtop (2018) formulas.
+    Here eq. 6.6 from EurOtop (2018) is implemented for design calculations and eq. 6.5 for best fit
+    calculations (using the option best_fit=True).
+
+    For more details see EurOtop (2018) and the errata of November 2019, available here:
+    https://www.overtopping-manual.com/assets/downloads/EurOtop_II_2018_Final_version.pdf
+
+    https://www.overtopping-manual.com/assets/downloads/Errata_EurOtop_2018_Nov_2019.pdf
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    c2 : float, optional
+        Coefficient in wave overtopping formula (-), by default 0.1035
+    c3 : float, optional
+        Coefficient in wave overtopping formula (-), by default 1.35
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The crest freeboard of the structure Rc (m)
+    """
 
     Rc_diml, max_reached = calculate_dimensionless_crest_freeboard_rubble_mound(
         Hm0=Hm0,
@@ -881,7 +1107,56 @@ def calculate_dimensionless_crest_freeboard_rubble_mound(
     c3: float = 1.35,
     use_best_fit: bool = False,
     g: float = 9.81,
-) -> tuple[float | npt.NDArray[np.float64], bool | npt.NDArray[np.bool]]:
+) -> float | npt.NDArray[np.float64]:
+    """Calculate the dimensionless crest freeboard Rc/Hm0 with the EurOtop (2018) formula for rubble mound structures.
+
+    The dimensionless crest freeboard Rc/Hm0 (-) for rubble mound structures is calculated using the EurOtop (2018)
+    formulas. Here eq. 6.6 from EurOtop (2018) is implemented for design calculations and eq. 6.5 for best fit
+    calculations (using the option best_fit=True).
+
+    For more details see EurOtop (2018) and the errata of November 2019, available here:
+    https://www.overtopping-manual.com/assets/downloads/EurOtop_II_2018_Final_version.pdf
+
+    https://www.overtopping-manual.com/assets/downloads/Errata_EurOtop_2018_Nov_2019.pdf
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        Spectral significant wave height (m)
+    Tmm10 : float | npt.NDArray[np.float64]
+        Spectral wave period Tm-1,0 (s)
+    q : float | npt.NDArray[np.float64]
+        Mean wave overtopping discharge (m^3/s/m)
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for oblique wave incidence (-), by default np.nan
+    gamma_f : float | npt.NDArray[np.float64], optional
+        Influence factor for surface roughness (-), by default 1.0
+    B_berm : float | npt.NDArray[np.float64], optional
+        Berm width of the structure (m), by default 0.0
+    db : float | npt.NDArray[np.float64], optional
+        Berm height of the structure (m), by default 0.0
+    cot_alpha : float | npt.NDArray[np.float64], optional
+        Cotangent of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_down : float | npt.NDArray[np.float64], optional
+        Cotangent of the lower part of the front-side slope of the structure (-), by default np.nan
+    cot_alpha_up : float | npt.NDArray[np.float64], optional
+        Cotangent of the upper part of the front-side slope of the structure (-), by default np.nan
+    c2 : float, optional
+        Coefficient in wave overtopping formula (-), by default 0.1035
+    c3 : float, optional
+        Coefficient in wave overtopping formula (-), by default 1.35
+    use_best_fit : bool, optional
+        Switch to either use best fit values for the coefficients (true) or the design values (false), by default False
+    g : float, optional
+        Gravitational constant (m/s^2), by default 9.81
+
+    Returns
+    -------
+    float | npt.NDArray[np.float64]
+        The dimensionless crest freeboard of the structure Rc/Hm0 (-)
+    """
 
     _, c2, c3, _ = check_best_fit(
         c1=np.nan, c2=c2, c3=c3, c4=np.nan, use_best_fit=use_best_fit
