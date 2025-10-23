@@ -24,6 +24,10 @@ functions.core\_utility module
    :undoc-members:
    :show-inheritance:
 
+
+Hydraulic - Wave Overtopping
+============================
+
 functions.hydraulic.wave\_overtopping module
 --------------------------------------------
 
@@ -51,3 +55,35 @@ functions.hydraulic.wave\_overtopping module
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+Hydraulic - Wave Runup
+======================
+
+
+Hydraulic - Wave Transmission
+=============================
+
+
+Structural - Forces Caisson
+===========================
+
+
+Structural - Forces Crest Wall
+==============================
+
+
+Structural - Stability Concrete Armour
+======================================
+
+
+Structural - Stability Rock Armour
+==================================
+
+
+Structural - Stability Rock Rear
+================================
+
+
+Structural - Stability Toe Berm
+===============================
