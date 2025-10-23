@@ -305,7 +305,7 @@ Kramer & Burcharth (2004)
 Etemad-Shahidi et al. (2020)
 ----------------------------
 
-.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.etemad_shahidi2020
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.etemadshahidi2020
    :members:
    :undoc-members:
    :show-inheritance:
