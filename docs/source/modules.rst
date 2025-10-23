@@ -117,7 +117,7 @@ Wave Transmission
 ~~~~~~~~~~~~~~~~~
 
 Goda et al. (1967)
---------------
+------------------
 
 .. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.goda1967_caisson
    :members:
@@ -125,7 +125,7 @@ Goda et al. (1967)
    :show-inheritance:
 
 D'Angremond et al. (1996)
---------------
+-------------------------
 
 .. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.dangremond1996
    :members:
@@ -133,7 +133,7 @@ D'Angremond et al. (1996)
    :show-inheritance:
 
 Briganti et al. (2003)
---------------
+----------------------
 
 .. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.briganti2003
    :members:
@@ -141,7 +141,7 @@ Briganti et al. (2003)
    :show-inheritance:
 
 Van Gent et al. (2023)
---------------
+----------------------
 
 .. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.vangent2023
    :members:
@@ -149,9 +149,9 @@ Van Gent et al. (2023)
    :show-inheritance:
 
 Van Gent (2024)
---------------
+---------------
 
-.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.vangent2024_runup
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.vangent2024_setup
    :members:
    :undoc-members:
    :show-inheritance:
@@ -163,26 +163,231 @@ Structural
 Forces Caisson
 ~~~~~~~~~~~~~~
 
+Goda (1985)
+-----------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.forces_caisson.goda1985
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Forces Crest Wall
 ~~~~~~~~~~~~~~~~~
+
+Van Gent & Van der Werf (2019)
+------------------------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.forces_crest_wall.vangentvanderwerf2019
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Stability Concrete Armour
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Cubes (double layer) Hudson (1959)
+---------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubes_double_layer_hudson1959
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Cubes (double layer) Van der Meer (1988)
+---------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubes_double_layer_vandermeer1988
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Cubes (single layer) Van Gent (2002)
+---------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubes_single_layer_vangent2002
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Accropode
+---------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.accropode_hudson1959
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Accropode II
+------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.accropode2_hudson1959
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Core Loc
+--------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.core_loc_hudson1959
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Cubipod
+-------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.cubipod_hudson1959
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Tetrapod
+--------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.tetrapod_hudson1959
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Xbloc
+-----
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.xbloc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+XblocPlus
+---------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_concrete_armour.xblocplus
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Stability Rock Armour
 ~~~~~~~~~~~~~~~~~~~~~
+
+Hudson (1959)
+-------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.hudson1959
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Van der Meer (1988)
+-------------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+modified Van der Meer (Van Gent et al., 2003)
+---------------------------------------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer1988_modified
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Kramer & Burcharth (2004)
+-------------------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.kramer_burcharth2004
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Etemad-Shahidi et al. (2020)
+----------------------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.etemad_shahidi2020
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Van der Meer (2021)
+-------------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.vandermeer2021
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Scaravaglione et al. (2025)
+---------------------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.scaravaglione2025
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Stability Rock Rear
 ~~~~~~~~~~~~~~~~~~~
 
+Van Gent & Pozueta (2004)
+-------------------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_rear.vangentpozueta2004
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Van Gent (2007)
+---------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_rear.vangent2007
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Stability Toe Berm
 ~~~~~~~~~~~~~~~~~~
 
+Takahashi et al. (1990)
+-------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.takahashi1990_caisson
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Gerding (1993)
+-------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.gerding1993
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Van der Meer (1998)
+-------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.vandermeer1988
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Van Gent & Van der Werf (2014)
+-------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.vangentvanderwerf2014
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Etemad-Shahidi et al. (2021)
+-------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_toe_berm.etemad_shahidi2021
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 General functions
 =================
