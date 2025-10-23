@@ -116,6 +116,45 @@ EurOtop (2018)
 Wave Transmission
 ~~~~~~~~~~~~~~~~~
 
+Goda et al. (1967)
+--------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.goda1967_caisson
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+D'Angremond et al. (1996)
+--------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.dangremond1996
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Briganti et al. (2003)
+--------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.briganti2003
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Van Gent et al. (2023)
+--------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.vangent2023
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Van Gent (2024)
+--------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_transmission.vangent2024_runup
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Structural
 ==========
