@@ -8,7 +8,7 @@ Deltares Coastal Structures Toolbox package contents
 Functions
 =========
 
-deltares\_coastal\_structures\_toolbox.functions.core\_physics module
+functions.core\_physics module
 -----------------------------------------------------
 
 .. automodule:: deltares_coastal_structures_toolbox.functions.core_physics
@@ -16,7 +16,7 @@ deltares\_coastal\_structures\_toolbox.functions.core\_physics module
    :undoc-members:
    :show-inheritance:
    
-deltares\_coastal\_structures\_toolbox.functions.core\_utility module
+functions.core\_utility module
 -------------------------------------------------
 
 .. automodule:: deltares_coastal_structures_toolbox.functions.core_utility
@@ -24,10 +24,10 @@ deltares\_coastal\_structures\_toolbox.functions.core\_utility module
    :undoc-members:
    :show-inheritance:
 
-deltares\_coastal\_structures\_toolbox.functions.hydraulic.wave\_overtopping.eurotop2007 module
+functions.hydraulic.wave\_overtopping.eurotop2007 module
 ---------------------------------------------------
 
-.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.eurotop2007
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping
    :members:
    :undoc-members:
    :show-inheritance:
