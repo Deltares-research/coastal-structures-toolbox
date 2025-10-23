@@ -8,6 +8,7 @@ Welcome to the Deltares Coastal Structures Toolbox documentation!
    introduction
    installation
    usage
+   ../../examples.ipynb
    authors
    modules
    
