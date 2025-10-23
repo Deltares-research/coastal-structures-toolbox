@@ -4,3 +4,4 @@ scipy
 Sphinx
 sphinx-rtd-theme
 nbsphinx
+deltares_wave_toolbox

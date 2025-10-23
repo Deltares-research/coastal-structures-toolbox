@@ -1,5 +1,5 @@
 Welcome to the Deltares Coastal Structures Toolbox documentation!
-===================================================
+=================================================================
 
 .. toctree::
    :maxdepth: 2
