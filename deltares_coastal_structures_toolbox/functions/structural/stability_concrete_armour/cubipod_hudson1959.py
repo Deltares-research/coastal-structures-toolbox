@@ -17,7 +17,7 @@ unit_properties = {
 
 
 def check_validity_range():
-
+    """No validity ranges provided"""
     pass
 
 

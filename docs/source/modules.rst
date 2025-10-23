@@ -177,7 +177,7 @@ Forces Crest Wall
 Van Gent & Van der Werf (2019)
 ------------------------------
 
-.. automodule:: deltares_coastal_structures_toolbox.functions.structural.forces_crest_wall.vangentvanderwerf2019
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.forces_crestwall.vangentvanderwerf2019
    :members:
    :undoc-members:
    :show-inheritance:
@@ -297,7 +297,7 @@ modified Van der Meer (Van Gent et al., 2003)
 Kramer & Burcharth (2004)
 -------------------------
 
-.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.kramer_burcharth2004
+.. automodule:: deltares_coastal_structures_toolbox.functions.structural.stability_rock_armour.kramerburcharth2004_lowcrested
    :members:
    :undoc-members:
    :show-inheritance:

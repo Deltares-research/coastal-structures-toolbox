@@ -81,18 +81,44 @@ def check_validity_range(
 
 
 def check_impulsive_breaking(
-    beta: float | npt.NDArray[np.float64] = np.nan,  # wave angle wrt normal
-    B1: float | npt.NDArray[np.float64] = np.nan,  # width toe berm
-    L: float | npt.NDArray[np.float64] = np.nan,  # local wave length
-    cota_seabed: float | npt.NDArray[np.float64] = np.nan,  # seabed slope
-    offshore_wave_steepness: (
-        float | npt.NDArray[np.float64]
-    ) = np.nan,  # Hoffshore/Loffshoredeep
-    Rc: float | npt.NDArray[np.float64] = np.nan,  # Crest freeboard
-    Hsi: float | npt.NDArray[np.float64] = np.nan,  # Incident wave height
-    d: float | npt.NDArray[np.float64] = np.nan,  # water depth above toe berm
-    h_s: float | npt.NDArray[np.float64] = np.nan,  # water depth at site
-):
+    beta: float | npt.NDArray[np.float64] = np.nan,
+    B1: float | npt.NDArray[np.float64] = np.nan,
+    L: float | npt.NDArray[np.float64] = np.nan,
+    cota_seabed: float | npt.NDArray[np.float64] = np.nan,
+    offshore_wave_steepness: float | npt.NDArray[np.float64] = np.nan,
+    Rc: float | npt.NDArray[np.float64] = np.nan,
+    Hsi: float | npt.NDArray[np.float64] = np.nan,
+    d: float | npt.NDArray[np.float64] = np.nan,
+    h_s: float | npt.NDArray[np.float64] = np.nan,
+) -> bool:
+    """Check whether impulsive breaking occurs
+
+    Parameters
+    ----------
+    beta : float | npt.NDArray[np.float64], optional
+        Angle of wave incidence (degrees), by default np.nan
+    B1 : float | npt.NDArray[np.float64], optional
+        Width of the toe berm (m), by default np.nan
+    L : float | npt.NDArray[np.float64], optional
+        Local wave length (m), by default np.nan
+    cota_seabed : float | npt.NDArray[np.float64], optional
+        Cotangent of the sea bed slope (-), by default np.nan
+    offshore_wave_steepness : float | npt.NDArray[np.float64], optional
+        Offshore wave steepness (-), by default np.nan
+    Rc : float | npt.NDArray[np.float64], optional
+        Crest freeboard of the structure (m), by default np.nan
+    Hsi : float | npt.NDArray[np.float64], optional
+        Incident significant wave height (m), by default np.nan
+    d : float | npt.NDArray[np.float64], optional
+        Water depth above the toe berm (m), by default np.nan
+    h_s : float | npt.NDArray[np.float64], optional
+        Water depth (m), by default np.nan
+
+    Returns
+    -------
+    bool
+        Boolean indicating whether impulsive breaking occurs
+    """
 
     all_is_nans = [
         np.isnan(beta),
