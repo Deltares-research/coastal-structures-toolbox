@@ -17,7 +17,6 @@ TAW (2002)
 .. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.taw2002
    :members:
    :undoc-members:
-   :show-inheritance:
 
 Van Gent (2002)
 ----------
