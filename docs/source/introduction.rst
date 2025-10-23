@@ -13,16 +13,16 @@ The Deltares Coastal Structures Toolbox package implements a large selection of 
 Structure
 =========
 
-The available formulas are grouped into the following categories:
+The package is split into a hydraulic part, containing functions related to the hydraulic load on or hydraulic performance of a structure, and a structural part, concerning the structural performance. Withing these two parts, the modules are grouped together based on either physical mechanism or structural component. The resulting structure looks as follows:
 
-* hydraulic
-    * wave overtopping
-    * wave run-up
-    * wave transmission
-* structural
-    * forces on caissons
-    * forces on crest walls
-    * stability of concrete armour units
-    * stability of rock armour
-    * stability of rock armour rear side
-    * stability of toe berm
+* Hydraulic
+    * Wave overtopping
+    * Wave runup
+    * Wave transmission
+* Structural
+    * Forces on caissons
+    * Forces on crest walls
+    * Stability of concrete armour units
+    * Stability of rock armour
+    * Stability of rock armour rear side
+    * Stability of toe berm
