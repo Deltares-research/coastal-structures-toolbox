@@ -8,7 +8,7 @@ Introduction
 Purpose
 =======
 
-The Deltares Coastal Structures Toolbox package implements a large selection of (design) formulas for coastal structures. 
+The Deltares Coastal Structures Toolbox package implements a large selection of (design) formulas for coastal structures. The intent is to make applying these formulas as easy as possible for the user, so most formulas are implemented in multiple ways to enable the calculation of different variables. When applying the formulas from the toolbox, the validity range of those formulas (where available) is checked and a warning is given when the formula is used outside its validity range (including which variable is out of range). The toolbox contains a significant number of tests to ensure the enduring quality of the implementations.
 
 Structure
 =========
