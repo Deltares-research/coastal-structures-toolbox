@@ -5,26 +5,6 @@ Deltares Coastal Structures Toolbox package contents
 ====================================================
 
 
-Functions
-=========
-
-Physics module
---------------
-
-.. automodule:: deltares_coastal_structures_toolbox.functions.core_physics
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   
-Utility module
---------------
-
-.. automodule:: deltares_coastal_structures_toolbox.functions.core_utility
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Hydraulic - Wave Overtopping
 ============================
 
@@ -134,3 +114,23 @@ Structural - Stability Rock Rear
 
 Structural - Stability Toe Berm
 ===============================
+
+
+General functions
+=================
+
+Physics module
+--------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.core_physics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   
+Utility module
+--------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.core_utility
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -406,6 +406,32 @@ def q_diml_max_equation(
     cor3: float = 0.0,
     c2: float = 0.2,
 ):
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        _description_
+    Rc : float | npt.NDArray[np.float64]
+        _description_
+    gamma_beta : float | npt.NDArray[np.float64]
+        _description_
+    gamma_f : float | npt.NDArray[np.float64]
+        _description_
+    c3 : float
+        _description_
+    cor3 : float, optional
+        _description_, by default 0.0
+    c2 : float, optional
+        _description_, by default 0.2
+
+    Returns
+    -------
+    _type_
+        _description_
+    """
 
     q_diml_max = c2 * np.exp(
         -1.0 * (c3 + cor3) * (Rc / Hm0) * (1.0 / (gamma_f * gamma_beta))
@@ -755,6 +781,34 @@ def Rc_diml_max_equation(
     c2: float = 0.2,
     g: float = 9.81,
 ):
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    Hm0 : float | npt.NDArray[np.float64]
+        _description_
+    q : float | npt.NDArray[np.float64]
+        _description_
+    gamma_beta : float | npt.NDArray[np.float64]
+        _description_
+    gamma_f : float | npt.NDArray[np.float64]
+        _description_
+    c3 : float
+        _description_
+    cor3 : float, optional
+        _description_, by default 0.0
+    c2 : float, optional
+        _description_, by default 0.2
+    g : float, optional
+        _description_, by default 9.81
+
+    Returns
+    -------
+    _type_
+        _description_
+    """
 
     Rc_diml_max = (
         np.log((1.0 / c2) * q / np.sqrt(g * Hm0**3))
