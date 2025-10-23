@@ -88,6 +88,30 @@ Van Gent et al. (2025)
 Wave Runup
 ~~~~~~~~~~
 
+Van Gent (2001)
+---------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.vangent2001
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   
+
+TAW (2002)
+----------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.taw2002
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+EurOtop (2018)
+--------------
+
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_runup.eurotop2018
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Wave Transmission
 ~~~~~~~~~~~~~~~~~
