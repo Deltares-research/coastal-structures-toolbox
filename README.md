@@ -1,4 +1,4 @@
-# coastal-structures-toolbox
+# Deltares Coastal Structures Toolbox
 
 A Python toolbox with (empirical) formulas for the design of Coastal Structures
 
@@ -12,7 +12,7 @@ The package is available at pip. To install the package run:
 
 ## Where to find information about the Deltares Wave Toolbox?
 
-See the online manual for information about the toolbox. In addition, the examples folder contains scripts with applications of the toolbox and a Jupyter notebook is available in the documentation folder.
+See the online manual (https://deltares-coastal-structures-toolbox.readthedocs.io/en) for information about the toolbox. In addition, the examples folder contains scripts with applications of the toolbox and a Jupyter notebook is available in the documentation folder.
 
 ## Credits
 
