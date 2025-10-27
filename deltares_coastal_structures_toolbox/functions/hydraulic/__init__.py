@@ -1,4 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-from .wave_overtopping import *  # noqa
-from .wave_runup import *  # noqa
-from .wave_transmission import *  # noqa
+from . import wave_overtopping  # noqa
+from . import wave_runup  # noqa
+from . import wave_transmission  # noqa
+
+__all__ = ["wave_overtopping", "wave_runup", "wave_transmission"]
