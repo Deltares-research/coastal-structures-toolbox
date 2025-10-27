@@ -1,6 +1,6 @@
 [project]
 name = "deltares_coastal_structures_toolbox"
-version = "1.0.0rc0"
+version = "1.0.0rc1"
 description = ""
 authors = [
     {name = "Joost den Bieman",email = "joost.denbieman@deltares.nl"},
