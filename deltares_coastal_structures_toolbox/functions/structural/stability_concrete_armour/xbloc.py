@@ -2,7 +2,6 @@
 import numpy as np
 import numpy.typing as npt
 
-# import deltares_coastal_structures_toolbox.functions.core_utility as core_utility
 import deltares_coastal_structures_toolbox.functions.core_physics as core_physics
 
 unit_properties = {
@@ -20,7 +19,7 @@ def check_validity_range():
     pass
 
 
-def xbloc_calculate_wave_height_Hs_from_V(
+def calculate_wave_height_Hs_from_V(
     V: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -56,7 +55,7 @@ def xbloc_calculate_wave_height_Hs_from_V(
     return Hs
 
 
-def xbloc_calculate_wave_height_Hs_from_M(
+def calculate_wave_height_Hs_from_M(
     M: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -89,7 +88,7 @@ def xbloc_calculate_wave_height_Hs_from_M(
 
     V = M / rho_armour
 
-    Hs = xbloc_calculate_wave_height_Hs_from_V(
+    Hs = calculate_wave_height_Hs_from_V(
         V=V,
         rho_armour=rho_armour,
         rho_water=rho_water,
@@ -99,7 +98,7 @@ def xbloc_calculate_wave_height_Hs_from_M(
     return Hs
 
 
-def xbloc_calculate_unit_volume_V(
+def calculate_unit_volume_V(
     Hs: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -144,7 +143,7 @@ def xbloc_calculate_unit_volume_V(
     return V
 
 
-def xbloc_calculate_unit_mass_M(
+def calculate_unit_mass_M(
     Hs: float | npt.NDArray[np.float64],
     rho_water: float | npt.NDArray[np.float64],
     rho_armour: float | npt.NDArray[np.float64],
@@ -175,7 +174,7 @@ def xbloc_calculate_unit_mass_M(
         Mass of unit (kg)
     """
 
-    V = xbloc_calculate_unit_volume_V(
+    V = calculate_unit_volume_V(
         Hs=Hs,
         rho_water=rho_water,
         rho_armour=rho_armour,

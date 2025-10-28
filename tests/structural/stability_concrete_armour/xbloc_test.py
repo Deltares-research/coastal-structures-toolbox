@@ -18,7 +18,7 @@ def test_M_backward(
     rho_armour,
     V_expected,
 ):
-    M_calculated = Xbloc.xbloc_calculate_unit_mass_M(
+    M_calculated = Xbloc.calculate_unit_mass_M(
         Hs=Hs,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -45,7 +45,7 @@ def test_M_corrfactor_backward(
     V_expected,
     corr_fact,
 ):
-    M_calculated = Xbloc.xbloc_calculate_unit_mass_M(
+    M_calculated = Xbloc.calculate_unit_mass_M(
         Hs=Hs,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -74,7 +74,7 @@ def test_Hs_backward(
     V,
 ):
     M = V * rho_armour
-    Hs_calculated = Xbloc.xbloc_calculate_wave_height_Hs_from_M(
+    Hs_calculated = Xbloc.calculate_wave_height_Hs_from_M(
         M=M,
         rho_water=rho_water,
         rho_armour=rho_armour,
@@ -100,7 +100,7 @@ def test_Hs_corrfactor_backward(
     corr_fact,
 ):
     M = V * rho_armour
-    Hs_calculated = Xbloc.xbloc_calculate_wave_height_Hs_from_M(
+    Hs_calculated = Xbloc.calculate_wave_height_Hs_from_M(
         M=M,
         rho_water=rho_water,
         rho_armour=rho_armour,
