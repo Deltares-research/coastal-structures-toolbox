@@ -1,12 +1,12 @@
 [project]
 name = "deltares_coastal_structures_toolbox"
-version = "1.0.0"
+version = "1.0.1"
 description = ""
 authors = [
     {name = "Joost den Bieman",email = "joost.denbieman@deltares.nl"},
 	{name = "Ivo van der Werf",email = "ivo.vanderwerf@deltares.nl"},
 ]
-license = {text = "Proprietary"}
+license = "GPL-3.0-or-later"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
