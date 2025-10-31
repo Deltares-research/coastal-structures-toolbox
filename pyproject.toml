@@ -1,7 +1,7 @@
 [project]
 name = "deltares_coastal_structures_toolbox"
 version = "1.0.1"
-description = ""
+description = "A Python toolbox with (empirical) formulas for the design of Coastal Structures."
 authors = [
     {name = "Joost den Bieman",email = "joost.denbieman@deltares.nl"},
 	{name = "Ivo van der Werf",email = "ivo.vanderwerf@deltares.nl"},
