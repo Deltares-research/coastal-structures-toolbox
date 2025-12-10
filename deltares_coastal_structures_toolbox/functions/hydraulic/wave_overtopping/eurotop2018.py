@@ -1068,7 +1068,7 @@ def calculate_crest_freeboard_Rc_rubble_mound(
         The crest freeboard of the structure Rc (m)
     """
 
-    Rc_diml, max_reached = calculate_dimensionless_crest_freeboard_rubble_mound(
+    Rc_diml = calculate_dimensionless_crest_freeboard_rubble_mound(
         Hm0=Hm0,
         Tmm10=Tmm10,
         beta=beta,
@@ -1088,7 +1088,7 @@ def calculate_crest_freeboard_Rc_rubble_mound(
 
     Rc = Rc_diml * Hm0
 
-    return Rc, max_reached
+    return Rc
 
 
 def calculate_dimensionless_crest_freeboard_rubble_mound(
