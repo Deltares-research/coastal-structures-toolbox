@@ -170,3 +170,160 @@ def test_Rc_backward(
     )
 
     assert Rc_calculated == pytest.approx(Rc_expected, abs=1e-2)
+
+
+@pytest.mark.parametrize(
+    ("Hm0, Tmm10, beta, cot_alpha_down, cot_alpha_up, Rc, B_berm, dh, gamma_f"),
+    (
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0]),
+        ([2.5, 5.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0]),
+        ([2.0, 7.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0]),
+        ([2.0, 5.00, 30.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.5, 3.0, 5.0, 0.0, 0.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 2.0, 5.0, 0.0, 0.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 4.5, 0.0, 0.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 1.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 2.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 1.0, 0.8, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 2.0, 0.0, 0.0, 0.45]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.5, 3.0, 5.0, 2.0, 1.0, 1.0]),
+        ([2.0, 5.00, 0.0, 3.0, 2.0, 5.0, 2.0, 1.0, 1.0]),
+        ([2.0, 5.00, 30.0, 3.0, 3.0, 2.0, 0.0, 0.0, 0.45]),
+    ),
+)
+def test_internal_consistency_q_Rc_RMB(
+    Hm0,
+    Tmm10,
+    beta,
+    cot_alpha_down,
+    cot_alpha_up,
+    Rc,
+    B_berm,
+    dh,
+    gamma_f,
+):
+    q_calculated = eurotop2018.calculate_overtopping_discharge_q_rubble_mound(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        Rc=Rc,
+        B_berm=B_berm,
+        db=dh,
+        gamma_f=gamma_f,
+        use_best_fit=False,
+    )
+
+    Rc_calculated = eurotop2018.calculate_crest_freeboard_Rc_rubble_mound(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        q=q_calculated,
+        B_berm=B_berm,
+        db=dh,
+        gamma_f=gamma_f,
+        use_best_fit=False,
+    )
+
+    assert Rc_calculated == pytest.approx(Rc, abs=1e-2)
+
+
+@pytest.mark.parametrize(
+    (
+        "Hm0, Tmm10, beta, cot_alpha_down, cot_alpha_up, Rc, B_berm, dh, gamma_f, q_expected"
+    ),
+    (
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 7.0969]),
+        ([2.5, 5.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 33.7325]),
+        ([2.0, 7.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 7.097]),
+        ([2.0, 5.00, 30.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 3.5046]),
+        ([2.0, 5.00, 0.0, 3.5, 3.0, 5.0, 0.0, 0.0, 1.0, 7.0969]),
+        ([2.0, 5.00, 0.0, 3.0, 2.0, 5.0, 0.0, 0.0, 1.0, 7.0969]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 4.5, 0.0, 0.0, 1.0, 13.2225]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 1.0, 1.0, 1.0, 7.0969]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 2.0, 1.0, 1.0, 7.0969]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 1.0, 0.8, 1.0, 7.0969]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 2.0, 0.0, 0.0, 0.45, 14.1516]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 5.0, 0.0, 0.0, 1.0, 7.0969]),
+        ([2.0, 5.00, 0.0, 3.5, 3.0, 5.0, 2.0, 1.0, 1.0, 7.0969]),
+        ([2.0, 5.00, 0.0, 3.0, 2.0, 5.0, 2.0, 1.0, 1.0, 7.0969]),
+        ([2.0, 5.00, 30.0, 3.0, 3.0, 2.0, 0.0, 0.0, 0.45, 3.8349]),
+    ),
+)
+def test_q_RMB_backward(
+    Hm0,
+    Tmm10,
+    beta,
+    cot_alpha_down,
+    cot_alpha_up,
+    Rc,
+    B_berm,
+    dh,
+    gamma_f,
+    q_expected,
+):
+    q_calculated = eurotop2018.calculate_overtopping_discharge_q_rubble_mound(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        Rc=Rc,
+        B_berm=B_berm,
+        db=dh,
+        gamma_f=gamma_f,
+        use_best_fit=False,
+    )
+
+    assert q_calculated * 1000 == pytest.approx(q_expected, abs=1e-3)
+
+
+@pytest.mark.parametrize(
+    (
+        "Hm0, Tmm10, beta, cot_alpha_down, cot_alpha_up, q, B_berm, dh, gamma_f, Rc_expected"
+    ),
+    (
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 1.0e-3, 0.0, 0.0, 1.0, 6.49]),
+        ([2.5, 5.00, 0.0, 3.0, 3.0, 1.0e-3, 0.0, 0.0, 1.0, 8.41]),
+        ([2.0, 7.00, 0.0, 3.0, 3.0, 1.0e-3, 0.0, 0.0, 1.0, 6.49]),
+        ([2.0, 5.00, 30.0, 3.0, 3.0, 1.0e-3, 0.0, 0.0, 1.0, 5.85]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 1.0e-2, 0.0, 0.0, 1.0, 4.73]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 1.0e-3, 2.0, 1.0, 1.0, 6.49]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 1.0e-3, 1.0, 0.8, 1.0, 6.49]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 1.0e-3, 0.0, 0.0, 0.45, 2.92]),
+        ([2.0, 5.00, 0.0, 3.0, 3.0, 1.0e-3, 0.0, 0.0, 1.0, 6.49]),
+        ([2.0, 5.00, 0.0, 3.5, 3.0, 1.0e-3, 2.0, 1.0, 1.0, 6.49]),
+        ([2.0, 5.00, 0.0, 3.0, 2.0, 1.0e-3, 2.0, 1.0, 1.0, 6.49]),
+        ([2.0, 5.00, 30.0, 3.0, 3.0, 1.0e-3, 0.0, 0.0, 0.45, 2.37]),
+    ),
+)
+def test_Rc_RMB_backward(
+    Hm0,
+    Tmm10,
+    beta,
+    cot_alpha_down,
+    cot_alpha_up,
+    q,
+    B_berm,
+    dh,
+    gamma_f,
+    Rc_expected,
+):
+    Rc_calculated = eurotop2018.calculate_crest_freeboard_Rc_rubble_mound(
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        beta=beta,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        q=q,
+        B_berm=B_berm,
+        db=dh,
+        gamma_f=gamma_f,
+        use_best_fit=False,
+    )
+
+    assert Rc_calculated == pytest.approx(Rc_expected, abs=1e-2)
