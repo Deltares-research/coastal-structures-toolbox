@@ -85,7 +85,6 @@ def check_validity_range(
     return
 
 
-
 def calculate_crest_freeboard_discharge_q_eq28(
     Hm0: float | npt.NDArray[np.float64],
     smm10_HF: float | npt.NDArray[np.float64],
