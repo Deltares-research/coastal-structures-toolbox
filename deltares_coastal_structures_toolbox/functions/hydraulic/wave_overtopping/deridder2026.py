@@ -22,7 +22,7 @@ def check_validity_range(
     For all parameters supplied, their values are checked versus the range of test conditions specified in Table 3
     (De Ridder et al., 2026). When parameters are nan (by default), they are not checked.
 
-    For more details see De Ridder et al. (2024), available here TODO
+    For more details see De Ridder et al. (2024), available here https://doi.org/10.1016/j.coastaleng.2026.105039
 
     Parameters
     ----------
@@ -85,7 +85,7 @@ def check_validity_range(
     return
 
 
-# todo
+
 def calculate_crest_freeboard_discharge_q_eq28(
     Hm0: float | npt.NDArray[np.float64],
     smm10_HF: float | npt.NDArray[np.float64],
@@ -96,7 +96,7 @@ def calculate_crest_freeboard_discharge_q_eq28(
     """Calculate the crest freeboard given a q for a rubble mound breakwater
     following equation 24 in  De Ridder et al. (2026).
 
-    For more details see De Ridder et al. (2026), available here TODO
+    For more details see De Ridder et al. (2026), available here https://doi.org/10.1016/j.coastaleng.2026.105039
 
     Parameters
     ----------
@@ -141,7 +141,7 @@ def calculate_crest_freeboard_discharge_q_eq32(
     """Calculate the crest freeboard given a q for a rubble mound breakwater
     following equation 32 in  De Ridder et al. (2026).
 
-    For more details see De Ridder et al. (2026), available here TODO
+    For more details see De Ridder et al. (2026), available here https://doi.org/10.1016/j.coastaleng.2026.105039
 
     Parameters
     ----------
@@ -186,7 +186,7 @@ def calculate_dimensionless_crest_freeboard_discharge_q_eq28(
     """Calculate the dimensionless crest freeboard given a q for a rubble mound breakwater
     following equation 28 in  De Ridder et al. (2026).
 
-    For more details see De Ridder et al. (2026), available here....TODO
+    For more details see De Ridder et al. (2026), available here https://doi.org/10.1016/j.coastaleng.2026.105039
 
     Parameters
     ----------
@@ -226,7 +226,7 @@ def calculate_overtopping_discharge_q_eq28(
     """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 28 in
      De Ridder et al. (2026).
 
-    For more details see De Ridder et al. (2026), available here TODO
+    For more details see De Ridder et al. (2026), available here https://doi.org/10.1016/j.coastaleng.2026.105039
 
     Parameters
     ----------
@@ -265,7 +265,7 @@ def calculate_overtopping_discharge_q_eq32(
     """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 32 in
      De Ridder et al. (2026).
 
-    For more details see De Ridder et al. (2026), available here TODO
+    For more details see De Ridder et al. (2026), available here https://doi.org/10.1016/j.coastaleng.2026.105039
 
     Parameters
     ----------
@@ -304,7 +304,7 @@ def calculate_dimensionless_overtopping_discharge_eq28(
     """Calculate the dimensionless mean wave overtopping discharge q for a rubble mound breakwater following
     De Ridder et al. (2026) using equation 28.
 
-    For more details see De Ridder et al. (2026), available here TODO
+    For more details see De Ridder et al. (2026), available here https://doi.org/10.1016/j.coastaleng.2026.105039
 
     Parameters
     ----------
@@ -340,7 +340,7 @@ def calculate_gamma_beta(
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the influence factor for the wave direction as described in Van Gent & van der Werf, 2019
 
-    Args:
+    Parameters:
         theta (float | npt.NDArray[np.float64]):
         Wave direction
 
@@ -362,7 +362,7 @@ def calculate_dimensionless_overtopping_discharge_eq32(
     """Calculate the dimensionless mean wave overtopping discharge q for a rubble mound breakwater following
     De Ridder et al. (2026) using equation 32.
 
-    For more details see De Ridder et al. (2026), available here TODO
+    For more details see De Ridder et al. (2026), available here https://doi.org/10.1016/j.coastaleng.2026.105039
 
     Parameters
     ----------
