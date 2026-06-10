@@ -118,7 +118,7 @@ def calculate_crest_freeboard_discharge_q_eq28(
         Gravitational constant (m/s^2), by default 9.81
     theta : float | npt.NDArray[np.float64], optional
         Wave direction w.r.t to the structure (degrees), by default 0.0
-        
+
     Returns
     -------
     float | npt.NDArray[np.float64]
@@ -223,7 +223,8 @@ def calculate_dimensionless_crest_freeboard_discharge_q_eq28(
     Rc_diml = (
         -(np.log(q / np.sqrt(g * np.power(Hm0, 3))) - np.log(0.16))
         / (6.93 * np.power(smm10_HF, 0.36))
-        * gamma_f * gamma_beta
+        * gamma_f
+        * gamma_beta
     )
     return Rc_diml
 
