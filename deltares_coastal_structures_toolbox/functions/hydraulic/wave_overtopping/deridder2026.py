@@ -15,7 +15,7 @@ def check_validity_range(
     Tmm10_HF: float | npt.NDArray[np.float64] = np.nan,
     Rc: float | npt.NDArray[np.float64] = np.nan,
     Dn50: float | npt.NDArray[np.float64] = np.nan,
-    sigma_theta: float | npt.NDArray[np.float64] = np.nan,
+    theta: float | npt.NDArray[np.float64] = np.nan,
 ) -> None:
     """Check the parameter values vs the validity range as defined in De Ridder et al. (2026).
 
@@ -42,8 +42,8 @@ def check_validity_range(
         Freeboard of the structure (m), by default np.nan
     Dn50 : float | npt.NDArray[np.float64], optional
         Median nominal rock diameter (m), by default np.nan
-    sigma_theta : float | npt.NDArray[np.float64], optional
-        Directional spreading in deegrees, by default np.nan
+    theta : float | npt.NDArray[np.float64], optional
+        Wave direction w.r.t to the structure (degrees), by default np.nan
     """
 
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
@@ -82,6 +82,11 @@ def check_validity_range(
             "h/Hm0", "De Ridder et al. (2024)", h / Hm0, 1.41, 2.15
         )
 
+    if not np.any(np.isnan(theta)):
+        core_utility.check_variable_validity_range(
+            "theta", "De Ridder et al. (2024)", theta, 0.0, 56
+        )
+
     return
 
 
@@ -91,6 +96,7 @@ def calculate_crest_freeboard_discharge_q_eq28(
     gamma_f: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
     g: float = 9.81,
+    theta: float | npt.NDArray[np.float64] = 0.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the crest freeboard given a q for a rubble mound breakwater
     following equation 24 in  De Ridder et al. (2026).
@@ -110,17 +116,22 @@ def calculate_crest_freeboard_discharge_q_eq28(
         Mean wave overtopping discharge (m^3/s/m)
     g : float, optional
         Gravitational constant (m/s^2), by default 9.81
+    theta : float | npt.NDArray[np.float64], optional
+        Wave direction w.r.t to the structure (degrees), by default 0.0
 
     Returns
     -------
     float | npt.NDArray[np.float64]
         Crest freeboard Rc (m)
     """
+    gamma_beta = calculate_gamma_beta(theta=theta)
     Rc_diml = calculate_dimensionless_crest_freeboard_discharge_q_eq28(
         Hm0=Hm0,
         smm10_HF=smm10_HF,
         gamma_f=gamma_f,
         q=q,
+        g=g,
+        gamma_beta=gamma_beta,
     )
 
     Rc = Rc_diml * Hm0
@@ -181,6 +192,7 @@ def calculate_dimensionless_crest_freeboard_discharge_q_eq28(
     gamma_f: float | npt.NDArray[np.float64],
     q: float | npt.NDArray[np.float64],
     g: float = 9.81,
+    gamma_beta: float | npt.NDArray[np.float64] = 1.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the dimensionless crest freeboard given a q for a rubble mound breakwater
     following equation 28 in  De Ridder et al. (2026).
@@ -200,17 +212,19 @@ def calculate_dimensionless_crest_freeboard_discharge_q_eq28(
         Mean wave overtopping discharge (m^3/s/m)
     g : float, optional
         Gravitational constant (m/s^2), by default 9.81
+    gamma_beta : float | npt.NDArray[np.float64], optional
+        Influence factor for the wave direction (-), by default 1.0
 
     Returns
     -------
     float | npt.NDArray[np.float64]
         Dimensionless crest freeboard Rc (-)
     """
-
     Rc_diml = (
         -(np.log(q / np.sqrt(g * np.power(Hm0, 3))) - np.log(0.16))
         / (6.93 * np.power(smm10_HF, 0.36))
         * gamma_f
+        * gamma_beta
     )
     return Rc_diml
 
@@ -221,6 +235,7 @@ def calculate_overtopping_discharge_q_eq28(
     gamma_f: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
     g: float = 9.81,
+    theta: float | npt.NDArray[np.float64] = 0.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 28 in
      De Ridder et al. (2026).
@@ -240,6 +255,8 @@ def calculate_overtopping_discharge_q_eq28(
         Freeboard of the structure (m)
     g : float, optional
         Gravitational constant (m/s^2), by default 9.81
+    theta : float | npt.NDArray[np.float64], optional
+        Wave direction w.r.t to the structure (degrees), by default 0.0
 
     Returns
     -------
@@ -248,7 +265,7 @@ def calculate_overtopping_discharge_q_eq28(
     """
 
     q = calculate_dimensionless_overtopping_discharge_eq28(
-        Hm0, smm10_HF, gamma_f, Rc
+        Hm0, smm10_HF, gamma_f, Rc, theta
     ) * np.sqrt(g * np.power(Hm0, 3))
     return q
 
@@ -260,6 +277,7 @@ def calculate_overtopping_discharge_q_eq32(
     gamma_f: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
     g: float = 9.81,
+    theta: float | npt.NDArray[np.float64] = 0.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the mean wave overtopping discharge q for a rubble mound breakwater following equation 32 in
      De Ridder et al. (2026).
@@ -281,6 +299,8 @@ def calculate_overtopping_discharge_q_eq32(
         Freeboard of the structure (m)
     g : float, optional
         Gravitational constant (m/s^2), by default 9.81
+    theta : float | npt.NDArray[np.float64], optional
+        Wave direction w.r.t to the structure (degrees), by default 0.0
 
     Returns
     -------
@@ -289,7 +309,7 @@ def calculate_overtopping_discharge_q_eq32(
     """
 
     q = calculate_dimensionless_overtopping_discharge_eq32(
-        Hm0_HF, smm10_HF, Hm0_LF, gamma_f, Rc
+        Hm0_HF, smm10_HF, Hm0_LF, gamma_f, Rc, theta
     ) * np.sqrt(g * np.power(Hm0_HF, 3))
     return q
 
@@ -299,6 +319,7 @@ def calculate_dimensionless_overtopping_discharge_eq28(
     smm10_HF: float | npt.NDArray[np.float64],
     gamma_f: float | npt.NDArray[np.float64],
     Rc: float | npt.NDArray[np.float64],
+    theta: float | npt.NDArray[np.float64] = 0.0,
 ) -> float | npt.NDArray[np.float64]:
     """Calculate the dimensionless mean wave overtopping discharge q for a rubble mound breakwater following
     De Ridder et al. (2026) using equation 28.
@@ -316,20 +337,23 @@ def calculate_dimensionless_overtopping_discharge_eq28(
         Reduction factor for wave overtopping due to friction (-)
     Rc : float | npt.NDArray[np.float64]
         Freeboard of the structure (m)
+    theta : float | npt.NDArray[np.float64], optional
+        Wave direction w.r.t to the structure (degrees), by default 0.0
 
     Returns
     -------
     float | npt.NDArray[np.float64]
         Dimensionless mean wave overtopping discharge q/sqrt(g*Hm0^3) (-)
     """
-
+    gamma_beta = calculate_gamma_beta(theta=theta)
     q_dimensionless = 0.16 * np.exp(
-        -6.93 * (Rc / (Hm0 * gamma_f)) * np.power(smm10_HF, 0.36)
+        -6.93 * (Rc / (Hm0 * gamma_f * gamma_beta)) * np.power(smm10_HF, 0.36)
     )
     check_validity_range(
         Hm0=Hm0,
         Tmm10_HF=np.sqrt((2 * np.pi * Hm0) / smm10_HF / 9.81),
         Rc=Rc,
+        theta=theta,
     )
     return q_dimensionless
 
@@ -341,10 +365,10 @@ def calculate_gamma_beta(
 
     Parameters:
         theta (float | npt.NDArray[np.float64]):
-        Wave direction
+        Wave direction w.r.t to the structure (degrees), by default 0.0
 
     Returns:
-        float | npt.NDArray[np.float64]: _description_
+        float | npt.NDArray[np.float64]: influence factor for the wave direction (-)
     """
     gamma_beta = 0.65 * np.cos(np.deg2rad(np.abs(theta))) ** 2 + 0.35
     return gamma_beta
@@ -399,6 +423,7 @@ def calculate_dimensionless_overtopping_discharge_eq32(
         Tmm10_HF=np.sqrt((2 * np.pi * Hm0_HF) / smm10_HF / 9.81),
         Rc=Rc,
         Hm0_LF=Hm0_LF,
+        theta=theta,
     )
 
     return q_dimensionless
