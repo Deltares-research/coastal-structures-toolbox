@@ -49,14 +49,14 @@ def check_validity_range(
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Tmm10)):
         smm10 = core_physics.calculate_wave_steepness_s(Hm0, Tmm10)
         core_utility.check_variable_validity_range(
-            "Wave steepness sm-1,0", "De Ridder et al. (2024)", smm10, 0.003, 0.041
+            "Wave steepness sm-1,0", "De Ridder et al. (2026)", smm10, 0.003, 0.041
         )
 
     if not np.any(np.isnan(Hm0_HF)) and not np.any(np.isnan(Tmm10_HF)):
         smm10 = core_physics.calculate_wave_steepness_s(Hm0_HF, Tmm10_HF)
         core_utility.check_variable_validity_range(
             "Short wave steepness sm-1,0_HF",
-            "De Ridder et al. (2024)",
+            "De Ridder et al. (2026)",
             smm10,
             0.012,
             0.049,
@@ -64,27 +64,27 @@ def check_validity_range(
 
     if not np.any(np.isnan(Rc)) and not np.any(np.isnan(Hm0)):
         core_utility.check_variable_validity_range(
-            "Rc/Hm0", "De Ridder et al. (2024)", Rc / Hm0, 0.98, 1.94
+            "Rc/Hm0", "De Ridder et al. (2026)", Rc / Hm0, 0.98, 1.94
         )
 
     if not np.any(np.isnan(Dn50)) and not np.any(np.isnan(Hm0)):
         core_utility.check_variable_validity_range(
-            "Dn50/Hm0", "De Ridder et al. (2024)", Dn50 / Hm0, 0.18, 0.35
+            "Dn50/Hm0", "De Ridder et al. (2026)", Dn50 / Hm0, 0.18, 0.35
         )
 
     if not np.any(np.isnan(Hm0)) and not np.any(np.isnan(Hm0_LF)):
         core_utility.check_variable_validity_range(
-            "Hm0_LF/Hm0", "De Ridder et al. (2024)", Hm0_LF / Hm0, 0.15, 0.55
+            "Hm0_LF/Hm0", "De Ridder et al. (2026)", Hm0_LF / Hm0, 0.15, 0.55
         )
 
     if not np.any(np.isnan(h)) and not np.any(np.isnan(Hm0)):
         core_utility.check_variable_validity_range(
-            "h/Hm0", "De Ridder et al. (2024)", h / Hm0, 1.41, 2.15
+            "h/Hm0", "De Ridder et al. (2026)", h / Hm0, 1.41, 2.15
         )
 
     if not np.any(np.isnan(theta)):
         core_utility.check_variable_validity_range(
-            "theta", "De Ridder et al. (2024)", theta, 0.0, 56
+            "theta", "De Ridder et al. (2026)", theta, 0.0, 56
         )
 
     return
