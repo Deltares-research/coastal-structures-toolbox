@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 from . import denbieman2021  # noqa
 from . import deridder2024  # noqa
+from . import deridder2026  # noqa
 from . import eurotop2007  # noqa
 from . import eurotop2018  # noqa
 from . import taw2002  # noqa
@@ -12,6 +13,7 @@ from . import vangent2025  # noqa
 __all__ = [
     "denbieman2021",
     "deridder2024",
+    "deridder2026",
     "eurotop2007",
     "eurotop2018",
     "taw2002",
