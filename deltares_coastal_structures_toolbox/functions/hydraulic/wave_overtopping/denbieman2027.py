@@ -7,6 +7,58 @@ import numpy.typing as npt
 import pandas as pd
 
 
+def create_input(
+    beta: float | npt.NDArray[np.float64],
+    h: float | npt.NDArray[np.float64],
+    Hm0: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    Bt: float | npt.NDArray[np.float64],
+    ht: float | npt.NDArray[np.float64],
+    B_berm: float | npt.NDArray[np.float64],
+    db: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+    Ac: float | npt.NDArray[np.float64],
+    Gc: float | npt.NDArray[np.float64],
+    cot_alpha_down: float | npt.NDArray[np.float64],
+    cot_alpha_up: float | npt.NDArray[np.float64],
+    gamma_f_down: float | npt.NDArray[np.float64],
+    gamma_f_up: float | npt.NDArray[np.float64],
+    tan_alpha_f: float | npt.NDArray[np.float64],
+    output_dir: str,
+    trained_weights_dir: str = "",
+):
+
+    if isinstance(beta, float):
+        index = [0]
+    else:
+        index = None
+
+    input_dataframe = pd.DataFrame(
+        data={
+            "b": beta,
+            "h": h,
+            "Hm0 toe": Hm0,
+            "Tm-1,0 toe": Tmm10,
+            "ht": ht,
+            "Bt": Bt,
+            "hb": db,
+            "B": B_berm,
+            "Rc": Rc,
+            "Ac": Ac,
+            "Gc": Gc,
+            "cotad": cot_alpha_down,
+            "cotau": cot_alpha_up,
+            "gf_d": gamma_f_down,
+            "gf_u": gamma_f_up,
+            "tanaf": tan_alpha_f,
+        },
+        index=index,
+    )
+    # input_dataframe.to_csv(os.path.join(output_dir, f"{file_name}.csv"), sep=";")
+
+    return input_dataframe
+
+
 def run_XGB_conformal(
     beta: float | npt.NDArray[np.float64],
     h: float | npt.NDArray[np.float64],
@@ -26,6 +78,7 @@ def run_XGB_conformal(
     tan_alpha_f: float | npt.NDArray[np.float64],
     output_dir: str,
     trained_weights_dir: str = "",
+    trained_weights_name: str = "mapie_QR_model_XGB_v74_CI_90.pickle",
 ):
     """Generate input file for XGBc Overtopping model described by Den Bieman & Van Gent (2027).
 
@@ -68,51 +121,84 @@ def run_XGB_conformal(
         Directory where the input file will be saved.
     trained_weights_dir : str, optional
         Directory containing the trained weights for the XGBc Overtopping model, by default ""
+    trained_weights_name : str, optional
+        Name of the trained weights file for the XGBc Overtopping model, by default "mapie_QR_model_XGB_v74_CI_90.pickle"
     """
 
+    # Create input dataframe for the model
+    input_dataframe = create_input(
+        beta=beta,
+        h=h,
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        Bt=Bt,
+        ht=ht,
+        B_berm=B_berm,
+        db=db,
+        Rc=Rc,
+        Ac=Ac,
+        Gc=Gc,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        gamma_f_down=gamma_f_down,
+        gamma_f_up=gamma_f_up,
+        tan_alpha_f=tan_alpha_f,
+    )
+
     # load trained XGBc Overtopping model
-    model_save_name_mapie = "mapie_cqr.pkl"
     mapie_cqr = pickle.load(
         open(
-            os.path.join(trained_weights_dir, model_save_name_mapie),
+            os.path.join(trained_weights_dir, trained_weights_name),
             "rb",
         )
     )
 
-    if isinstance(beta, float):
-        index = [0]
-    else:
-        index = None
-
-    input_dataframe = pd.DataFrame(
-        data={
-            "b": beta,
-            "h": h,
-            "Hm0 toe": Hm0,
-            "Tm-1,0 toe": Tmm10,
-            "ht": ht,
-            "Bt": Bt,
-            "hb": db,
-            "B": B_berm,
-            "Rc": Rc,
-            "Ac": Ac,
-            "Gc": Gc,
-            "cotad": cot_alpha_down,
-            "cotau": cot_alpha_up,
-            "gf_d": gamma_f_down,
-            "gf_u": gamma_f_up,
-            "tanaf": tan_alpha_f,
-        },
-        index=index,
-    )
-    # input_dataframe.to_csv(os.path.join(output_dir, f"{file_name}.csv"), sep=";")
-
     X = input_dataframe.values  # TODO make this work
 
-    mapie_cqr.predict_interval(X)
+    y_pred, y_90p_interval = mapie_cqr.predict_interval(X)
 
-    return
+    return y_pred, y_90p_interval
 
 
-def run_XGB_bootstrap():
+def run_XGB_bootstrap(
+    beta: float | npt.NDArray[np.float64],
+    h: float | npt.NDArray[np.float64],
+    Hm0: float | npt.NDArray[np.float64],
+    Tmm10: float | npt.NDArray[np.float64],
+    Bt: float | npt.NDArray[np.float64],
+    ht: float | npt.NDArray[np.float64],
+    B_berm: float | npt.NDArray[np.float64],
+    db: float | npt.NDArray[np.float64],
+    Rc: float | npt.NDArray[np.float64],
+    Ac: float | npt.NDArray[np.float64],
+    Gc: float | npt.NDArray[np.float64],
+    cot_alpha_down: float | npt.NDArray[np.float64],
+    cot_alpha_up: float | npt.NDArray[np.float64],
+    gamma_f_down: float | npt.NDArray[np.float64],
+    gamma_f_up: float | npt.NDArray[np.float64],
+    tan_alpha_f: float | npt.NDArray[np.float64],
+    output_dir: str,
+    trained_weights_dir: str = "",
+):
+
+    # Create input dataframe for the model
+    input_dataframe = create_input(
+        beta=beta,
+        h=h,
+        Hm0=Hm0,
+        Tmm10=Tmm10,
+        Bt=Bt,
+        ht=ht,
+        B_berm=B_berm,
+        db=db,
+        Rc=Rc,
+        Ac=Ac,
+        Gc=Gc,
+        cot_alpha_down=cot_alpha_down,
+        cot_alpha_up=cot_alpha_up,
+        gamma_f_down=gamma_f_down,
+        gamma_f_up=gamma_f_up,
+        tan_alpha_f=tan_alpha_f,
+    )
+
     return
