@@ -79,7 +79,6 @@ def run_XGB_conformal(
     gamma_f_down: float | npt.NDArray[np.float64],
     gamma_f_up: float | npt.NDArray[np.float64],
     tan_alpha_f: float | npt.NDArray[np.float64],
-    output_dir: str,
     trained_weights_dir: str = "",
     trained_weights_name: str = "mapie_QR_model_XGB_v74_CI_90.pickle",
 ):
@@ -156,13 +155,15 @@ def run_XGB_conformal(
         )
     )
 
-    y_pred, y_90p_interval = mapie_cqr.predict_interval(input_dataframe)
+    y_prediction, y_confidence_interval = mapie_cqr.predict_interval(input_dataframe)
 
     # convert to actual wave overtopping discharges (invert earlier Froude scaling)
-    q_pred = np.power(10.0, y_pred) / np.power(scale_factor, 1.5)
-    q_90p_interval = np.power(10.0, y_90p_interval) / np.power(scale_factor, 1.5)
+    q_prediction = np.power(10.0, y_prediction) / np.power(scale_factor, 1.5)
+    q_confidence_interval = np.power(10.0, y_confidence_interval) / np.power(
+        scale_factor, 1.5
+    )
 
-    return q_pred, q_90p_interval
+    return q_prediction, q_confidence_interval
 
 
 def run_XGB_bootstrap(
@@ -182,12 +183,12 @@ def run_XGB_bootstrap(
     gamma_f_down: float | npt.NDArray[np.float64],
     gamma_f_up: float | npt.NDArray[np.float64],
     tan_alpha_f: float | npt.NDArray[np.float64],
-    output_dir: str,
     trained_weights_dir: str = "",
+    confidence_interval_width: float = 0.9,
 ):
 
     # Create input dataframe for the model
-    input_dataframe = create_input(
+    input_dataframe, scale_factor = create_and_scale_input(
         beta=beta,
         h=h,
         Hm0=Hm0,
@@ -206,4 +207,45 @@ def run_XGB_bootstrap(
         tan_alpha_f=tan_alpha_f,
     )
 
-    return
+    # fixed number of bootstraps in the trained XGBrt model
+    number_of_bootstraps = 500
+
+    y_prediction_all = np.zeros((number_of_bootstraps, input_dataframe.shape[0]))
+
+    for model_number in range(number_of_bootstraps):
+        if model_number < 10:
+            model_save_name = "xgb_model_00{}.pickle".format(model_number)
+        elif 10 <= model_number < 100:
+            model_save_name = "xgb_model_0{}.pickle".format(model_number)
+        else:
+            model_save_name = "xgb_model_{}.pickle".format(model_number)
+
+        print("Predicting with trained model: {}".format(model_save_name))
+
+        xgb_model = pickle.load(
+            open(os.path.join(trained_weights_dir, model_save_name), "rb")
+        )
+        tmp_pred = []
+        tmp_pred = xgb_model.predict(input_dataframe)
+        y_prediction_all[model_number, :] = tmp_pred
+    y_prediction = pd.DataFrame(y_prediction_all)
+
+    q_prediction = np.power(10, y_prediction.quantile(q=0.50)) / np.power(
+        scale_factor, 1.5
+    )
+
+    ci_lower = (1 - confidence_interval_width) / 2
+    ci_upper = 1 - ci_lower
+
+    q_confidence_interval_upper = np.power(
+        10, y_prediction.quantile(q=ci_lower)
+    ) / np.power(scale_factor, 1.5)
+    q_confidence_interval_lower = np.power(
+        10, y_prediction.quantile(q=ci_upper)
+    ) / np.power(scale_factor, 1.5)
+
+    q_confidence_interval = np.vstack(
+        (q_confidence_interval_lower, q_confidence_interval_upper)
+    )
+
+    return q_prediction, q_confidence_interval
