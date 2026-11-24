@@ -67,7 +67,7 @@ def write_input_file_XGB_Overtopping(
     cot_alpha_down : float | npt.NDArray[np.float64]
         Cotangent of the lower part of the front-side slope of the structure (-)
     cot_alpha_up : float | npt.NDArray[np.float64]
-        Cotangent of the lower part of the front-side slope of the structure (-)
+        Cotangent of the upper part of the front-side slope of the structure (-)
     gamma_f_down : float | npt.NDArray[np.float64]
         Influence factor for surface roughness of the lower part of the structure (-)
     gamma_f_up : float | npt.NDArray[np.float64]

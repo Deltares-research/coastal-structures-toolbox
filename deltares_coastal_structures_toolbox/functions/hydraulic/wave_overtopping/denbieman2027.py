@@ -82,7 +82,7 @@ def run_XGB_conformal(
     trained_weights_dir: str = "",
     trained_weights_name: str = "mapie_QR_model_XGB_v74_CI_90.pickle",
 ):
-    """Generate input file for XGBc Overtopping model described by Den Bieman & Van Gent (2027).
+    """Predict with the XGBcr Overtopping model described by Den Bieman & Van Gent (2027).
 
 
     Parameters
@@ -112,7 +112,7 @@ def run_XGB_conformal(
     cot_alpha_down : float | npt.NDArray[np.float64]
         Cotangent of the lower part of the front-side slope of the structure (-)
     cot_alpha_up : float | npt.NDArray[np.float64]
-        Cotangent of the lower part of the front-side slope of the structure (-)
+        Cotangent of the upper part of the front-side slope of the structure (-)
     gamma_f_down : float | npt.NDArray[np.float64]
         Influence factor for surface roughness of the lower part of the structure (-)
     gamma_f_up : float | npt.NDArray[np.float64]
@@ -122,9 +122,9 @@ def run_XGB_conformal(
     output_dir : str
         Directory where the input file will be saved.
     trained_weights_dir : str, optional
-        Directory containing the trained weights for the XGBc Overtopping model, by default ""
+        Directory containing the trained weights for the XGBcr Overtopping model, by default ""
     trained_weights_name : str, optional
-        Name of the trained weights file for the XGBc Overtopping model, by default "mapie_QR_model_XGB_v74_CI_90.pickle"
+        Trained weights file for the XGBcr Overtopping model, by default "mapie_QR_model_XGB_v74_CI_90.pickle"
     """
 
     # Create input dataframe for the model
