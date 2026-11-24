@@ -12,9 +12,11 @@ requires-python = ">=3.11"
 dependencies = [
     "numpy (>=2.2.3)",
     "deltares-wave-toolbox (>=1.1.2)",
+    "mapie (==1.2.0)",
     "matplotlib (>=3.10.0)",
     "pandas (>=2.3.1)",
-    "pillow (>=13.0.0)"
+    "pillow (>=13.0.0)",
+    "xgboost (>=3.0.3)"
 ]
 
 [tool.poetry]
