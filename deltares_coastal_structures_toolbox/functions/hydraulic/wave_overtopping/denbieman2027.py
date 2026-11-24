@@ -2,12 +2,14 @@
 import os
 import pickle
 
+import mapie
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+import xgboost
 
 
-def create_input(
+def create_and_scale_input(
     beta: float | npt.NDArray[np.float64],
     h: float | npt.NDArray[np.float64],
     Hm0: float | npt.NDArray[np.float64],
@@ -24,9 +26,12 @@ def create_input(
     gamma_f_down: float | npt.NDArray[np.float64],
     gamma_f_up: float | npt.NDArray[np.float64],
     tan_alpha_f: float | npt.NDArray[np.float64],
-    output_dir: str,
-    trained_weights_dir: str = "",
 ):
+
+    # Models have been trained with data Froude scaled to Hm0 = 1.0 m
+    scale_to_Hm0 = 1.0
+
+    Fr_factor = scale_to_Hm0 / Hm0
 
     if isinstance(beta, float):
         index = [0]
@@ -36,27 +41,25 @@ def create_input(
     input_dataframe = pd.DataFrame(
         data={
             "b": beta,
-            "h": h,
-            "Hm0 toe": Hm0,
-            "Tm-1,0 toe": Tmm10,
-            "ht": ht,
-            "Bt": Bt,
-            "hb": db,
-            "B": B_berm,
-            "Rc": Rc,
-            "Ac": Ac,
-            "Gc": Gc,
             "cotad": cot_alpha_down,
             "cotau": cot_alpha_up,
-            "gf_d": gamma_f_down,
+            "sc_Tm-1,0 toe": Tmm10 * np.sqrt(Fr_factor),
+            "sc_h": h * Fr_factor,
+            "sc_ht": (h - ht) * Fr_factor,  # note: tt instead of ht
+            "sc_Bt": Bt * Fr_factor,
+            "sc_Rc": Rc * Fr_factor,
+            "sc_B": B_berm * Fr_factor,
+            "sc_hb": db * Fr_factor,
+            "sc_Ac": (Ac - Rc) * Fr_factor,  # note: dAc instead of Ac
+            "sc_Gc": Gc * Fr_factor,
+            "tanaF": tan_alpha_f,
             "gf_u": gamma_f_up,
-            "tanaf": tan_alpha_f,
+            "gf_diff": gamma_f_down / gamma_f_up,
         },
         index=index,
     )
-    # input_dataframe.to_csv(os.path.join(output_dir, f"{file_name}.csv"), sep=";")
 
-    return input_dataframe
+    return input_dataframe, Fr_factor
 
 
 def run_XGB_conformal(
@@ -126,7 +129,7 @@ def run_XGB_conformal(
     """
 
     # Create input dataframe for the model
-    input_dataframe = create_input(
+    input_dataframe, scale_factor = create_and_scale_input(
         beta=beta,
         h=h,
         Hm0=Hm0,
@@ -153,11 +156,13 @@ def run_XGB_conformal(
         )
     )
 
-    X = input_dataframe.values  # TODO make this work
+    y_pred, y_90p_interval = mapie_cqr.predict_interval(input_dataframe)
 
-    y_pred, y_90p_interval = mapie_cqr.predict_interval(X)
+    # convert to actual wave overtopping discharges (invert earlier Froude scaling)
+    q_pred = np.power(10.0, y_pred) / np.power(scale_factor, 1.5)
+    q_90p_interval = np.power(10.0, y_90p_interval) / np.power(scale_factor, 1.5)
 
-    return y_pred, y_90p_interval
+    return q_pred, q_90p_interval
 
 
 def run_XGB_bootstrap(
