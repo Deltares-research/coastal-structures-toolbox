@@ -92,7 +92,14 @@ De Ridder et al. (2026)
    :members:
    :undoc-members:
    :show-inheritance:
+   
+Den Bieman et al. (2027)
+------------------------
 
+.. automodule:: deltares_coastal_structures_toolbox.functions.hydraulic.wave_overtopping.denbieman2027
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Wave Runup
 ~~~~~~~~~~

@@ -2,11 +2,11 @@
 import os
 import pickle
 
-import mapie
+import mapie  # noqa
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-import xgboost
+import xgboost  # noqa
 
 
 def create_and_scale_input(
@@ -27,9 +27,15 @@ def create_and_scale_input(
     gamma_f_up: float | npt.NDArray[np.float64],
     tan_alpha_f: float | npt.NDArray[np.float64],
 ) -> tuple[pd.DataFrame, float]:
-    """_summary_
+    """Create input dataframe and Froude scale the contents
 
-    _extended_summary_
+    This function creates a pandas DataFrame containing the input parameters for both
+    the XGBcr and the XGBrt wave overtopping model described in Den Bieman & Van Gent (2027).
+    These input parameters are Froude scaled to a Hm0 of 1.0 m, as that is the way these models
+    have been trained.
+
+    For more details, see Den Bieman & Van Gent (2027), which is available here:
+        TODO DOI
 
     Parameters
     ----------
@@ -127,9 +133,20 @@ def run_XGB_conformal(
     trained_weights_dir: str = "",
     trained_weights_name: str = "mapie_QR_model_XGB_v74_CI_90.pickle",
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Predict with the XGBcr conformal overtopping model described by Den Bieman & Van Gent (2027).
+    """Predict with the XGBcr conformal overtopping model described by Den Bieman & Van Gent (2027)
 
-    _extended_summary_
+    Important: to use this function, the trained weights for the XGBcr Overtopping model must first
+    be downloaded and saved locally in a directory to be supplied via the "trained_weights_dir"
+    keyword. These trained weights are freely available here:
+        TODO DOI
+
+    The XGBcr conformal overtopping model both predicts the expected mean wave overtopping
+    discharge and provides the boundaries of the associated 90% confidence intervals. Note that
+    Den Bieman & Van Gent (2027) recommend using of the XGBcr conformal model (this function) over
+    the XGBrt bootstrapped model (run_XGB_bootstrap function).
+
+    For more details, see Den Bieman & Van Gent (2027), which is available here:
+        TODO DOI
 
     Parameters
     ----------
@@ -173,7 +190,9 @@ def run_XGB_conformal(
     Returns
     -------
     tuple[np.ndarray, np.ndarray]
-        _description_
+        The first array contains the predicted (50th percentile) mean wave overtopping discharge
+        q (m^3/s/m).The second array contains the corresponding boundaries of the 90% confidence
+        intervals for the predicted overtopping discharges.
     """
 
     # Create input dataframe for the model
@@ -242,9 +261,22 @@ def run_XGB_bootstrap(
     trained_weights_dir: str = "",
     confidence_interval_width: float = 0.9,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """_summary_
+    """Predict with the XGBrt bootstrapped overtopping model described by Den Bieman & Van Gent (2027).
 
-    _extended_summary_
+    Important: to use this function, the trained weights for the XGBrt Overtopping model must first
+    be downloaded and saved locally in a directory to be supplied via the "trained_weights_dir"
+    keyword. These trained weights are freely available here:
+        TODO DOI
+
+    The XGBrt bootstrapped overtopping model both predicts the expected mean wave overtopping
+    discharge and provides the boundaries of an associated confidence intervals, by default the
+    90% confidence interval. Note that Den Bieman & Van Gent (2027) recommend using of the XGBcr
+    conformal model (run_XGB_conformal function) over the XGBrt bootstrapped model (this function).
+    Additionally, the bootstrapped model tends is slower to perform predictions compared to the
+    conformal model, as it needs to load and predict with 500 individual models.
+
+    For more details, see Den Bieman & Van Gent (2027), which is available here:
+        TODO DOI
 
     Parameters
     ----------
@@ -288,7 +320,9 @@ def run_XGB_bootstrap(
     Returns
     -------
     tuple[np.ndarray, np.ndarray]
-        _description_
+        The first array contains the predicted (50th percentile) mean wave overtopping discharge
+        q (m^3/s/m).The second array contains the corresponding boundaries of the 90% confidence
+        intervals for the predicted overtopping discharges.
     """
 
     # Create input dataframe for the model
