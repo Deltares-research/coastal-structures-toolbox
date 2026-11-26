@@ -166,7 +166,7 @@ def run_XGB_conformal(
     tan_alpha_f : float | npt.NDArray[np.float64]
         Tangent of the foreshore slope (-)
     trained_weights_dir : str, optional
-        Directory containing the trained model weights, by default ""
+        Directory containing the trained weights for the XGBcr Overtopping model, by default ""
     trained_weights_name : str, optional
         Name of the trained model weights file, by default "mapie_QR_model_XGB_v74_CI_90.pickle"
 
